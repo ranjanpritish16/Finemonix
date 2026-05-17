@@ -4,92 +4,35 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/dashboard",     label: "Dashboard",     icon: "⊞" },
-  { href: "/integrations",  label: "Integrations",  icon: "⇄" },
-  { href: "/cashflow",      label: "Cash Flow",     icon: "↗" },
-  { href: "/loan",          label: "Loan Analyzer", icon: "⬡" },
-  { href: "/watchlist",     label: "Risk Monitor",  icon: "⚑" },
+  { href: "/dashboard",    label: "Dashboard" },
+  { href: "/integrations", label: "Integrations" },
+  { href: "/cashflow",     label: "Cash Flow" },
+  { href: "/loan",         label: "Loan Analyzer" },
+  { href: "/watchlist",    label: "Risk Monitor" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside style={{
-      width: "220px",
-      minHeight: "100vh",
-      backgroundColor: "var(--sidebar-bg)",
-      display: "flex",
-      flexDirection: "column",
-      flexShrink: 0,
-    }}>
-      {/* Logo */}
-      <div style={{ padding: "20px 16px 16px", borderBottom: "1px solid #1e293b" }}>
-        <div style={{
-          backgroundColor: "#1d4ed8",
-          borderRadius: "8px",
-          padding: "6px 10px",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          marginBottom: "4px",
-        }}>
-          <span style={{ color: "white", fontWeight: "700", fontSize: "15px" }}>NeevFinance</span>
-        </div>
-        <div style={{ color: "#475569", fontSize: "11px", marginTop: "4px" }}>BUSINESS INTELLIGENCE</div>
-      </div>
-
-      {/* Nav */}
-      <nav style={{ flex: 1, padding: "12px 8px" }}>
-        {navItems.map(({ href, label, icon }) => {
-          const active = pathname === href || pathname.startsWith(href + "/");
-          return (
-            <Link key={href} href={href} style={{ textDecoration: "none" }}>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "9px 12px",
-                borderRadius: "6px",
-                marginBottom: "2px",
-                backgroundColor: active ? "#1e3a8a" : "transparent",
-                color: active ? "#ffffff" : "var(--sidebar-text)",
-                fontSize: "13.5px",
-                fontWeight: active ? "600" : "400",
-                cursor: "pointer",
-                transition: "background 0.15s",
-              }}>
-                <span style={{ fontSize: "15px", lineHeight: 1 }}>{icon}</span>
-                {label}
-              </div>
-            </Link>
-          );
-        })}
+    <aside style={{ width: "200px", minHeight: "100vh", borderRight: "1px solid #e2e8f0", backgroundColor: "#ffffff" }}>
+      <nav style={{ padding: "16px 8px" }}>
+        {navItems.map(({ href, label }) => (
+          <Link key={href} href={href} style={{ textDecoration: "none" }}>
+            <div style={{
+              padding: "8px 12px",
+              marginBottom: "2px",
+              borderRadius: "6px",
+              backgroundColor: pathname.startsWith(href) ? "#f1f5f9" : "transparent",
+              color: pathname.startsWith(href) ? "#0f172a" : "#64748b",
+              fontSize: "14px",
+              fontWeight: pathname.startsWith(href) ? "600" : "400",
+            }}>
+              {label}
+            </div>
+          </Link>
+        ))}
       </nav>
-
-      {/* Bottom */}
-      <div style={{ padding: "12px 8px", borderTop: "1px solid #1e293b" }}>
-        <div style={{ color: "var(--sidebar-text)", fontSize: "13px", padding: "8px 12px", cursor: "pointer" }}>
-          ⓘ Support
-        </div>
-        <div style={{ color: "var(--sidebar-text)", fontSize: "13px", padding: "8px 12px", cursor: "pointer" }}>
-          → Sign Out
-        </div>
-        <button style={{
-          width: "100%",
-          marginTop: "8px",
-          padding: "10px",
-          backgroundColor: "#1d4ed8",
-          color: "white",
-          border: "none",
-          borderRadius: "6px",
-          fontSize: "13px",
-          fontWeight: "600",
-          cursor: "pointer",
-        }}>
-          Connect Data
-        </button>
-      </div>
     </aside>
   );
 }

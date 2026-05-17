@@ -1,147 +1,170 @@
 export default function DashboardPage() {
   return (
-    <div style={{ maxWidth: "1200px" }}>
-      {/* Header */}
-      <div style={{ marginBottom: "24px" }}>
-        <div style={{ fontSize: "11px", color: "#64748b", fontWeight: "600", letterSpacing: "0.08em", marginBottom: "6px" }}>
-          PORTFOLIO OVERVIEW
-        </div>
-        <h1 style={{ fontSize: "32px", fontWeight: "700", color: "#0f172a", margin: 0 }}>
-          Your cash position is <span style={{ color: "#0d9488" }}>Steady.</span>
-        </h1>
-        <p style={{ color: "#64748b", fontSize: "14px", marginTop: "8px", maxWidth: "480px" }}>
-          Financial liquidity remains within optimal thresholds for Q3 expansion plans. However,
-          predictive modeling suggests attention is needed on upcoming receivables.
-        </p>
-      </div>
+    <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "24px" }}>
-        {/* Left column */}
-        <div>
-          {/* KPI Cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1px", backgroundColor: "#e2e8f0", borderRadius: "10px", overflow: "hidden", marginBottom: "24px" }}>
-            {[
-              { label: "CASH ON HAND", value: "$428,950.00", sub: "▲ 4.9% vs last month", subColor: "#16a34a" },
-              { label: "PROJECTED BURN", value: "$82,400.00", sub: "⊘ 30 days coverage", subColor: "#64748b" },
-              { label: "TOTAL DEBT", value: "$1.2M", sub: "⊘ 7.1% Avg APR", subColor: "#64748b" },
-            ].map((kpi) => (
-              <div key={kpi.label} style={{ backgroundColor: "#fff", padding: "20px 24px" }}>
-                <div style={{ fontSize: "10px", color: "#94a3b8", fontWeight: "600", letterSpacing: "0.08em", marginBottom: "8px" }}>{kpi.label}</div>
-                <div style={{ fontSize: "24px", fontWeight: "700", color: "#0f172a", marginBottom: "6px" }}>{kpi.value}</div>
-                <div style={{ fontSize: "12px", color: kpi.subColor }}>{kpi.sub}</div>
-              </div>
-            ))}
-          </div>
+      {/* ── ROW 1: Heading + Priority Alert & Client Monitoring ── */}
+      <div style={{ display: "flex", gap: "16px", height: "300px" }}>
 
-          {/* Chart placeholder */}
-          <div style={{ backgroundColor: "#fff", borderRadius: "10px", padding: "20px", marginBottom: "24px", border: "1px solid #e2e8f0" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <div style={{ fontWeight: "600", fontSize: "14px" }}>Revenue vs. Expenses</div>
-              <span style={{ color: "#94a3b8", fontSize: "18px", cursor: "pointer" }}>⌄</span>
+        {/* Heading area */}
+        <div style={{ flex: 1 }}>
+          <p style={{ color: "#16a34a", margin: "0 0 6px 0", fontSize: "10px", fontWeight: "bold", letterSpacing: "0.08em" }}>PORTFOLIO OVERVIEW</p>
+          <h1 style={{ margin: "0 0 10px 0", fontSize: "28px", fontWeight: "bold" }}>Your cash position is Steady</h1>
+          <p style={{ margin: "0", fontSize: "13px", color: "#64748b" }}>Financial liquidity remains within optimal thresholds for Q3 expansion plans. However, predictive modelling suggests attention is needed on upcoming receivables.</p>
+          <div style={{ display: "flex", gap: "16px" }}>
+            <div style={{ backgroundColor: "white", height: "150px", flex: 1, marginTop: "30px", borderRadius: "12px", padding: "16px", border: "1px solid #e2e8f0" }}>
+              <p style={{ margin: "0 0 8px 0", fontSize: "10px", fontWeight: "600", color: "#94a3b8", letterSpacing: "0.08em" }}>CASH ON HAND</p>
+              <p style={{ margin: "0 0 8px 0", fontSize: "22px", fontWeight: "700", color: "#0f172a" }}>$428,950.00</p>
+              <p style={{ margin: "0", fontSize: "11px", color: "#16a34a" }}>↗ 4.2% vs last month</p>
             </div>
-            {/* Simple bar chart approximation */}
-            <div style={{ display: "flex", alignItems: "flex-end", gap: "16px", height: "140px", paddingBottom: "8px" }}>
-              {[
-                { month: "MAR", rev: 70, exp: 45 },
-                { month: "APR", rev: 85, exp: 60 },
-                { month: "MAY", rev: 90, exp: 55 },
-                { month: "JUN", rev: 100, exp: 70 },
-                { month: "JUL", rev: 60, exp: 80 },
-              ].map((d) => (
-                <div key={d.month} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", width: "100%", justifyContent: "center" }}>
-                    <div style={{ width: "20px", height: `${d.rev}px`, backgroundColor: "#1e3a8a", borderRadius: "3px 3px 0 0" }} />
-                    <div style={{ width: "20px", height: `${d.exp}px`, backgroundColor: "#93c5fd", borderRadius: "3px 3px 0 0" }} />
-                  </div>
-                  <div style={{ fontSize: "10px", color: "#94a3b8" }}>{d.month}</div>
-                </div>
-              ))}
+            <div style={{ backgroundColor: "white", height: "150px", flex: 1, marginTop: "30px", borderRadius: "12px", padding: "16px", border: "1px solid #e2e8f0" }}>
+              <p style={{ margin: "0 0 8px 0", fontSize: "10px", fontWeight: "600", color: "#94a3b8", letterSpacing: "0.08em" }}>PROJECTED BURN</p>
+              <p style={{ margin: "0 0 8px 0", fontSize: "22px", fontWeight: "700", color: "#0f172a" }}>$82,400.00</p>
+              <p style={{ margin: "0", fontSize: "11px", color: "#64748b" }}>⊙ 32 days coverage</p>
             </div>
-            <div style={{ display: "flex", gap: "16px", marginTop: "8px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "#64748b" }}>
-                <div style={{ width: "10px", height: "10px", backgroundColor: "#1e3a8a", borderRadius: "2px" }} /> Revenue
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "#64748b" }}>
-                <div style={{ width: "10px", height: "10px", backgroundColor: "#93c5fd", borderRadius: "2px" }} /> Expenses
-              </div>
+            <div style={{ backgroundColor: "white", height: "150px", flex: 1, marginTop: "30px", borderRadius: "12px", padding: "16px", border: "1px solid #e2e8f0", borderLeft: "3px solid #1d4ed8" }}>
+              <p style={{ margin: "0 0 8px 0", fontSize: "10px", fontWeight: "600", color: "#94a3b8", letterSpacing: "0.08em" }}>TOTAL DEBT</p>
+              <p style={{ margin: "0 0 8px 0", fontSize: "22px", fontWeight: "700", color: "#0f172a" }}>$1.2M</p>
+              <p style={{ margin: "0", fontSize: "11px", color: "#64748b" }}>⊙ 2.1% Avg APR</p>
             </div>
-          </div>
-
-          {/* Quick action cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-            {[
-              { title: "Upload Ledger", sub: "Sync your latest bank statements", icon: "📄", bg: "#1e3a8a" },
-              { title: "Run Loan Check", sub: "Check eligibility for lines of credit", icon: "📋", bg: "#1e3a8a" },
-            ].map((card) => (
-              <div key={card.title} style={{
-                backgroundColor: card.bg,
-                borderRadius: "10px",
-                padding: "20px",
-                color: "white",
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-              }}>
-                <span style={{ fontSize: "24px" }}>{card.icon}</span>
-                <div style={{ fontWeight: "600", fontSize: "15px" }}>{card.title}</div>
-                <div style={{ fontSize: "12px", color: "#93c5fd" }}>{card.sub}</div>
-              </div>
-            ))}
           </div>
         </div>
 
-        {/* Right column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {/* Right column — Priority Alert + Client Monitoring */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "375px" }}>
+
           {/* Priority Alert */}
-          <div style={{ backgroundColor: "#fef2f2", border: "1px solid #fecaca", borderRadius: "10px", padding: "16px" }}>
-            <div style={{ fontSize: "10px", color: "#dc2626", fontWeight: "600", letterSpacing: "0.08em", marginBottom: "8px" }}>⚡ PRIORITY ALERT</div>
-            <div style={{ fontWeight: "700", color: "#dc2626", fontSize: "14px", marginBottom: "6px" }}>Low cash expected in 15 days</div>
-            <div style={{ fontSize: "12px", color: "#64748b", marginBottom: "12px" }}>
-              Upcoming vendor payments total $145k expense, a predicted balance of $110k.
-            </div>
-            <button style={{
-              backgroundColor: "#dc2626", color: "white", border: "none",
-              borderRadius: "6px", padding: "7px 14px", fontSize: "12px", fontWeight: "600", cursor: "pointer",
-            }}>Adjust Cash Flow</button>
+          <div style={{ backgroundColor: "#fef2f2", border: "1px solid #fecaca", borderRadius: "12px", padding: "16px", height: "125px" }}>
+            <p style={{ margin: "0 0 4px 0", fontSize: "10px", fontWeight: "bold", color: "#dc2626", letterSpacing: "0.08em" }}>⚡ PRIORITY ALERT</p>
+            <p style={{ margin: "0 0 6px 0", fontSize: "13px", fontWeight: "bold", color: "#dc2626" }}>Low cash expected in 15 days</p>
+            <p style={{ margin: "0 0 12px 0", fontSize: "12px", color: "#64748b" }}>Upcoming vendor payments total $145k against a predicted balance of $110k.</p>
+            <button style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>Adjust Cash Flow</button>
           </div>
 
-          {/* Client monitoring */}
-          <div style={{ backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "16px" }}>
-            <div style={{ fontSize: "10px", color: "#94a3b8", fontWeight: "600", letterSpacing: "0.08em", marginBottom: "8px" }}>⊙ CLIENT MONITORING</div>
-            <div style={{ fontWeight: "600", fontSize: "14px", marginBottom: "6px" }}>Major client ABC at risk</div>
-            <div style={{ fontSize: "12px", color: "#64748b" }}>
-              Delayed payment behavior detected over 3 consecutive cycles. Credit score dropped 12 pts.
+          {/* Client Monitoring */}
+          <div style={{ backgroundColor: "#bfd5f1ff", border: "1px solid #bfdbfe", borderRadius: "12px", padding: "16px", height: "125px" }}>
+            <p style={{ margin: "0 0 4px 0", fontSize: "10px", fontWeight: "bold", color: "#1d4ed8", letterSpacing: "0.08em" }}>⊙ CLIENT MONITORING</p>
+            <p style={{ margin: "0 0 6px 0", fontSize: "13px", fontWeight: "bold", color: "#1e293b" }}>Major client ABC at risk</p>
+            <p style={{ margin: "0", fontSize: "12px", color: "#64748b" }}>Delayed payment behavior detected over 3 consecutive cycles. Credit score dropped 12 pts.</p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* ── ROW 2: Chart + Upload/Loan cards + Quick Insights ── */}
+      <div style={{ display: "flex", gap: "16px" }}>
+
+        {/* Chart placeholder */}
+        <div style={{ flex: 1, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "20px", minHeight: "350px" }}>
+          <p style={{ margin: "0 0 16px 0", fontWeight: "600", fontSize: "14px" }}>Revenue vs. Expenses</p>
+          <p style={{ color: "#94a3b8", fontSize: "12px" }}>Chart will go here</p>
+        </div>
+
+        {/* Upload Ledger + Run Loan Check */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "500px" }}>
+
+          {/* Upload Ledger */}
+          <div style={{ backgroundColor: "#1e3a8a", borderRadius: "12px", padding: "20px", color: "white", height: "175px", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+            <p style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: "700" }}>Upload Ledger</p>
+            <p style={{ margin: "0", fontSize: "11px", color: "#93c5fd" }}>Sync your latest bank statements</p>
+          </div>
+
+          {/* Run Loan Check */}
+          <div style={{ backgroundColor: "#2563eb", borderRadius: "12px", padding: "20px", color: "white", height: "175px", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+            <p style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: "700" }}>Run Loan Check</p>
+            <p style={{ margin: "0", fontSize: "11px", color: "#bfdbfe" }}>Instant eligibility score for lines of credit</p>
+          </div>
+
+        </div>
+
+        {/* Quick Insights */}
+        <div style={{ backgroundColor: "#0f2218", borderRadius: "12px", padding: "20px", width: "350px", color: "white", display: "flex", flexDirection: "column", gap: "12px" }}>
+          <p style={{ margin: "0", fontWeight: "700", fontSize: "14px" }}>⚡ Quick Insights</p>
+
+          <div style={{ backgroundColor: "#1a3326", borderRadius: "8px", padding: "12px" }}>
+            <p style={{ margin: "0 0 4px 0", fontSize: "9px", fontWeight: "700", color: "#0d9488", letterSpacing: "0.08em" }}>COST OPTIMIZATION</p>
+            <p style={{ margin: "0", fontSize: "11px", color: "#cbd5e1" }}>Subscriptions for "SaaS Tool Alpha" increased 40%. Save <span style={{ color: "#0d9488" }}>$1,200/yr</span> by consolidating licenses.</p>
+          </div>
+
+          <div style={{ backgroundColor: "#1a3326", borderRadius: "8px", padding: "12px" }}>
+            <p style={{ margin: "0 0 4px 0", fontSize: "9px", fontWeight: "700", color: "#0d9488", letterSpacing: "0.08em" }}>GROWTH OPPORTUNITY</p>
+            <p style={{ margin: "0", fontSize: "11px", color: "#cbd5e1" }}>Cash reserve is 2.1x above benchmark. Allocate $90k to high-yield sweep account.</p>
+          </div>
+
+          <button style={{ marginTop: "auto", backgroundColor: "#0d9488", color: "white", border: "none", borderRadius: "6px", padding: "10px", fontSize: "12px", fontWeight: "700", cursor: "pointer", letterSpacing: "0.05em" }}>EXPLORE STRATEGY</button>
+        </div>
+
+      </div>
+      <div style={{ display: "flex", gap: "16px" }}>
+        <div style={{ backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: "12px", width: "100%", overflow: "hidden", }}>
+          {/* Header */}
+          <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", }}>
+            <p style={{ margin: "0", fontSize: "16px", fontWeight: "700", color: "#0f172a", }}>
+              Recent Institutional Activity
+            </p>
+
+            <p style={{ margin: "0", fontSize: "12px", fontWeight: "600", color: "#2563eb", cursor: "pointer", }}>
+              View All →
+            </p>
+          </div>
+
+          {/* Table Header */}
+          <div style={{ backgroundColor: "#f1f5f9", display: "grid", gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr", padding: "14px 24px", fontSize: "10px", fontWeight: "700", color: "#64748b", letterSpacing: "0.12em", }}>
+            <div>TRANSACTION ID</div>
+            <div>COUNTERPARTY</div>
+            <div>STATUS</div>
+            <div style={{ textAlign: "right" }}>AMOUNT</div>
+          </div>
+
+          {/* Row 1 */}
+          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr", padding: "18px 24px", alignItems: "center", borderBottom: "1px solid #f1f5f9", }}>
+            <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", }}>
+              #TRX-99201
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", }}>
+              <div style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: "700", color: "#475569", }}>
+                CC
+              </div>
+              <p style={{ margin: "0", fontSize: "14px", color: "#0f172a", }}>Cloud Core Systems</p>
+            </div>
+
+            <div>
+              <span style={{ backgroundColor: "#99f6e4", color: "#065f46", padding: "6px 12px", borderRadius: "999px", fontSize: "11px", fontWeight: "600", }}>
+                Cleared
+              </span>
+            </div>
+
+            <div style={{ textAlign: "right", fontSize: "14px", fontWeight: "700", color: "#0f172a", }}>
+              -$12,450.00
             </div>
           </div>
 
-          {/* Quick Insights */}
-          <div style={{ backgroundColor: "#0f172a", borderRadius: "10px", padding: "16px", color: "white", flex: 1 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-              <div style={{ fontWeight: "600", fontSize: "14px" }}>⚡ Quick Insights</div>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <div style={{ backgroundColor: "#1e293b", borderRadius: "8px", padding: "12px" }}>
-                <div style={{ fontSize: "10px", color: "#0d9488", fontWeight: "600", marginBottom: "6px" }}>COST OPTIMIZATION</div>
-                <div style={{ fontSize: "12px", color: "#cbd5e1" }}>
-                  Subscriptions for "SaaS Tool Alpha" have increased 40% this quarter. You could save <span style={{ color: "#0d9488" }}>$1,200/yr</span> by consolidating licenses.
-                </div>
+          {/* Row 2 */}
+          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr", padding: "18px 24px", alignItems: "center", }}>
+            <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", }}>#TRX-99185</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", }}>
+              <div style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#dbeafe", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: "700", color: "#2563eb", }}>
+                LM
               </div>
-              <div style={{ backgroundColor: "#1e293b", borderRadius: "8px", padding: "12px" }}>
-                <div style={{ fontSize: "10px", color: "#0d9488", fontWeight: "600", marginBottom: "6px" }}>GROWTH OPPORTUNITY</div>
-                <div style={{ fontSize: "12px", color: "#cbd5e1" }}>
-                  Cash reserve is 2.1x above benchmark. Recommended action: Allocate $90k to high-yield sweep account or marketing R&D.
-                </div>
-              </div>
+
+              <p style={{ margin: "0", fontSize: "14px", color: "#0f172a", }}>
+                Lunar Media Group
+              </p>
             </div>
-            <button style={{
-              width: "100%", marginTop: "14px",
-              backgroundColor: "#0d9488", color: "white", border: "none",
-              borderRadius: "6px", padding: "10px", fontSize: "13px", fontWeight: "600", cursor: "pointer",
-            }}>EXPLORE STRATEGY</button>
+
+            <div>
+              <span style={{ backgroundColor: "#dbeafe", color: "#1d4ed8", padding: "6px 12px", borderRadius: "999px", fontSize: "11px", fontWeight: "600", }}>
+                Pending
+              </span>
+            </div>
+
+            <div style={{ textAlign: "right", fontSize: "14px", fontWeight: "700", color: "#2563eb", }}>
+              +$45,000.00
+            </div>
           </div>
         </div>
       </div>
+
     </div>
   );
 }
