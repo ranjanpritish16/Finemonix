@@ -1,170 +1,386 @@
+"use client";
+
+import React, { useEffect, useRef } from "react";
+import { Chart, registerables } from "chart.js";
+
+Chart.register(...registerables);
+
+const cardBase: React.CSSProperties = {
+  background: "white",
+  border: "0.5px solid #e2e8f0",
+  borderRadius: "12px",
+  padding: "18px",
+  transition: "border-color 0.2s, transform 0.15s",
+  cursor: "default",
+};
+
+const labelBase: React.CSSProperties = {
+  fontSize: "10px",
+  fontWeight: "700",
+  letterSpacing: "0.1em",
+  color: "#94a3b8",
+  marginBottom: "6px",
+};
+
+const statVal: React.CSSProperties = {
+  fontSize: "22px",
+  fontWeight: "700",
+  color: "#0f172a",
+  margin: "6px 0 4px",
+};
+
+const btn: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "6px",
+  border: "none",
+  borderRadius: "6px",
+  padding: "7px 14px",
+  fontSize: "12px",
+  fontWeight: "700",
+  cursor: "pointer",
+  letterSpacing: "0.04em",
+  transition: "opacity 0.15s, transform 0.1s",
+};
+
 export default function DashboardPage() {
+  const chartRef = useRef<HTMLCanvasElement | null>(null);
+  const chartInstance = useRef<Chart | null>(null);
+
+  useEffect(() => {
+    if (!chartRef.current) return;
+    chartInstance.current?.destroy();
+
+    chartInstance.current = new Chart(chartRef.current, {
+      type: "bar",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        datasets: [
+          {
+            label: "Revenue",
+            data: [210, 245, 230, 280, 265, 310, 295],
+            backgroundColor: "#3b82f6",
+            borderRadius: 4,
+            barPercentage: 0.55,
+          },
+          {
+            label: "Expenses",
+            data: [160, 175, 190, 200, 185, 220, 210],
+            backgroundColor: "rgba(148,163,184,0.35)",
+            borderRadius: 4,
+            barPercentage: 0.55,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { font: { size: 11 }, color: "#64748b", boxWidth: 10, padding: 12 },
+          },
+          tooltip: {
+            callbacks: { label: (ctx) => ` $${ctx.parsed.y}k` },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11 }, color: "#94a3b8" },
+          },
+          y: {
+            grid: { color: "rgba(148,163,184,0.15)" },
+            ticks: {
+              font: { size: 11 },
+              color: "#94a3b8",
+              callback: (v: string | number) => `$${v}k`,
+            },
+            border: { display: false },
+          },
+        },
+      },
+    });
+
+    return () => { chartInstance.current?.destroy(); };
+  }, []);
+
   return (
-    <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px", fontFamily: "sans-serif" }}>
 
-      {/* ── ROW 1: Heading + Priority Alert & Client Monitoring ── */}
-      <div style={{ display: "flex", gap: "16px", height: "300px" }}>
+      {/* ── Heading ── */}
+      <div>
+        <p style={{ ...labelBase, color: "#16a34a" }}>PORTFOLIO OVERVIEW</p>
+        <h1 style={{ fontSize: "26px", fontWeight: "700", color: "#0f172a", marginBottom: "6px" }}>
+          Your cash position is <span style={{ color: "#16a34a" }}>Steady</span>
+        </h1>
+        <p style={{ fontSize: "13px", color: "#64748b", maxWidth: "580px" }}>
+          Financial liquidity remains within optimal thresholds for Q3 expansion plans. Predictive modelling suggests
+          attention on upcoming receivables.
+        </p>
+      </div>
 
-        {/* Heading area */}
-        <div style={{ flex: 1 }}>
-          <p style={{ color: "#16a34a", margin: "0 0 6px 0", fontSize: "10px", fontWeight: "bold", letterSpacing: "0.08em" }}>PORTFOLIO OVERVIEW</p>
-          <h1 style={{ margin: "0 0 10px 0", fontSize: "28px", fontWeight: "bold" }}>Your cash position is Steady</h1>
-          <p style={{ margin: "0", fontSize: "13px", color: "#64748b" }}>Financial liquidity remains within optimal thresholds for Q3 expansion plans. However, predictive modelling suggests attention is needed on upcoming receivables.</p>
-          <div style={{ display: "flex", gap: "16px" }}>
-            <div style={{ backgroundColor: "white", height: "150px", flex: 1, marginTop: "30px", borderRadius: "12px", padding: "16px", border: "1px solid #e2e8f0" }}>
-              <p style={{ margin: "0 0 8px 0", fontSize: "10px", fontWeight: "600", color: "#94a3b8", letterSpacing: "0.08em" }}>CASH ON HAND</p>
-              <p style={{ margin: "0 0 8px 0", fontSize: "22px", fontWeight: "700", color: "#0f172a" }}>$428,950.00</p>
-              <p style={{ margin: "0", fontSize: "11px", color: "#16a34a" }}>↗ 4.2% vs last month</p>
+      {/* ── ROW 1: Stat Cards + Alerts ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "14px" }}>
+
+        {/* Stat cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "14px" }}>
+          <HoverCard style={{ ...cardBase, borderLeft: "3px solid #16a34a", borderRadius: "0 12px 12px 0" }}>
+            <p style={labelBase}>CASH ON HAND</p>
+            <p style={statVal}>$428,950</p>
+            <p style={{ fontSize: "11px", color: "#16a34a" }}>↗ 4.2% vs last month</p>
+          </HoverCard>
+
+          <HoverCard style={{ ...cardBase, borderLeft: "3px solid #ee0d0dff", borderRadius: "0 12px 12px 0" }}>
+            <p style={labelBase}>PROJECTED BURN</p>
+            <p style={statVal}>$82,400</p>
+            <p style={{ fontSize: "11px", color: "#64748b" }}>⊙ 32 days coverage</p>
+          </HoverCard>
+
+          <HoverCard style={{ ...cardBase, borderLeft: "3px solid #1d4ed8", borderRadius: "0 12px 12px 0" }}>
+            <p style={labelBase}>TOTAL DEBT</p>
+            <p style={statVal}>$1.2M</p>
+            <p style={{ fontSize: "11px", color: "#64748b" }}>⊙ 2.1% Avg APR</p>
+            <div style={{ height: "4px", background: "rgba(148,163,184,0.25)", borderRadius: "2px", marginTop: "8px", overflow: "hidden" }}>
+              <div style={{ height: "100%", width: "48%", background: "#60a5fa", borderRadius: "2px", transition: "width 1s ease" }} />
             </div>
-            <div style={{ backgroundColor: "white", height: "150px", flex: 1, marginTop: "30px", borderRadius: "12px", padding: "16px", border: "1px solid #e2e8f0" }}>
-              <p style={{ margin: "0 0 8px 0", fontSize: "10px", fontWeight: "600", color: "#94a3b8", letterSpacing: "0.08em" }}>PROJECTED BURN</p>
-              <p style={{ margin: "0 0 8px 0", fontSize: "22px", fontWeight: "700", color: "#0f172a" }}>$82,400.00</p>
-              <p style={{ margin: "0", fontSize: "11px", color: "#64748b" }}>⊙ 32 days coverage</p>
-            </div>
-            <div style={{ backgroundColor: "white", height: "150px", flex: 1, marginTop: "30px", borderRadius: "12px", padding: "16px", border: "1px solid #e2e8f0", borderLeft: "3px solid #1d4ed8" }}>
-              <p style={{ margin: "0 0 8px 0", fontSize: "10px", fontWeight: "600", color: "#94a3b8", letterSpacing: "0.08em" }}>TOTAL DEBT</p>
-              <p style={{ margin: "0 0 8px 0", fontSize: "22px", fontWeight: "700", color: "#0f172a" }}>$1.2M</p>
-              <p style={{ margin: "0", fontSize: "11px", color: "#64748b" }}>⊙ 2.1% Avg APR</p>
-            </div>
-          </div>
+          </HoverCard>
         </div>
 
-        {/* Right column — Priority Alert + Client Monitoring */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "375px" }}>
+        {/* Alert + Monitor */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <HoverCard style={{ background: "#fef2f2", border: "0.5px solid #fecaca", borderRadius: "12px", padding: "18px", flex: 1 }}>
+            <p style={{ ...labelBase, color: "#dc2626" }}>⚡ PRIORITY ALERT</p>
+            <p style={{ fontSize: "13px", fontWeight: "700", color: "#dc2626", marginBottom: "5px" }}>
+              Low cash expected in 15 days
+            </p>
+            <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "12px" }}>
+              Upcoming vendor payments total $145k against a predicted balance of $110k.
+            </p>
+            <button style={{ ...btn, background: "#dc2626", color: "#fff" }}>Adjust Cash Flow →</button>
+          </HoverCard>
 
-          {/* Priority Alert */}
-          <div style={{ backgroundColor: "#fef2f2", border: "1px solid #fecaca", borderRadius: "12px", padding: "16px", height: "125px" }}>
-            <p style={{ margin: "0 0 4px 0", fontSize: "10px", fontWeight: "bold", color: "#dc2626", letterSpacing: "0.08em" }}>⚡ PRIORITY ALERT</p>
-            <p style={{ margin: "0 0 6px 0", fontSize: "13px", fontWeight: "bold", color: "#dc2626" }}>Low cash expected in 15 days</p>
-            <p style={{ margin: "0 0 12px 0", fontSize: "12px", color: "#64748b" }}>Upcoming vendor payments total $145k against a predicted balance of $110k.</p>
-            <button style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>Adjust Cash Flow</button>
-          </div>
-
-          {/* Client Monitoring */}
-          <div style={{ backgroundColor: "#bfd5f1ff", border: "1px solid #bfdbfe", borderRadius: "12px", padding: "16px", height: "125px" }}>
-            <p style={{ margin: "0 0 4px 0", fontSize: "10px", fontWeight: "bold", color: "#1d4ed8", letterSpacing: "0.08em" }}>⊙ CLIENT MONITORING</p>
-            <p style={{ margin: "0 0 6px 0", fontSize: "13px", fontWeight: "bold", color: "#1e293b" }}>Major client ABC at risk</p>
-            <p style={{ margin: "0", fontSize: "12px", color: "#64748b" }}>Delayed payment behavior detected over 3 consecutive cycles. Credit score dropped 12 pts.</p>
-          </div>
-
+          <HoverCard style={{ background: "#eff6ff", border: "0.5px solid #bfdbfe", borderRadius: "12px", padding: "18px", flex: 1 }}>
+            <p style={{ ...labelBase, color: "#1d4ed8" }}>⊙ CLIENT MONITORING</p>
+            <p style={{ fontSize: "13px", fontWeight: "700", color: "#1e3a8a", marginBottom: "5px" }}>
+              Major client ABC at risk
+            </p>
+            <p style={{ fontSize: "12px", color: "#64748b" }}>
+              Delayed payment detected over 3 consecutive cycles. Credit score dropped 12 pts.
+            </p>
+          </HoverCard>
         </div>
       </div>
 
-      {/* ── ROW 2: Chart + Upload/Loan cards + Quick Insights ── */}
-      <div style={{ display: "flex", gap: "16px" }}>
+      {/* ── ROW 2: Chart + Dark Cards + Insights ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 440px 300px", gap: "14px" }}>
 
-        {/* Chart placeholder */}
-        <div style={{ flex: 1, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "20px", minHeight: "350px" }}>
-          <p style={{ margin: "0 0 16px 0", fontWeight: "600", fontSize: "14px" }}>Revenue vs. Expenses</p>
-          <p style={{ color: "#94a3b8", fontSize: "12px" }}>Chart will go here</p>
+        {/* Chart */}
+        <div style={{ background: "white", border: "0.5px solid #e2e8f0", borderRadius: "12px", padding: "18px" }}>
+          <p style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a", marginBottom: "14px" }}>Revenue vs. Expenses</p>
+          <div style={{ height: "180px", position: "relative" }}>
+            <canvas ref={chartRef} />
+          </div>
         </div>
 
         {/* Upload Ledger + Run Loan Check */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "500px" }}>
-
-          {/* Upload Ledger */}
-          <div style={{ backgroundColor: "#1e3a8a", borderRadius: "12px", padding: "20px", color: "white", height: "175px", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-            <p style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: "700" }}>Upload Ledger</p>
-            <p style={{ margin: "0", fontSize: "11px", color: "#93c5fd" }}>Sync your latest bank statements</p>
-          </div>
-
-          {/* Run Loan Check */}
-          <div style={{ backgroundColor: "#2563eb", borderRadius: "12px", padding: "20px", color: "white", height: "175px", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-            <p style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: "700" }}>Run Loan Check</p>
-            <p style={{ margin: "0", fontSize: "11px", color: "#bfdbfe" }}>Instant eligibility score for lines of credit</p>
-          </div>
-
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <DarkCard
+            color="#1e3a8a"
+            label="SYNC DATA"
+            labelColor="#93c5fd"
+            title="Upload Ledger"
+            sub="Sync your latest bank statements →"
+          />
+          <DarkCard
+            color="#2563eb"
+            label="CREDIT"
+            labelColor="#bfdbfe"
+            title="Run Loan Check"
+            sub="Instant eligibility score →"
+          />
         </div>
 
         {/* Quick Insights */}
-        <div style={{ backgroundColor: "#0f2218", borderRadius: "12px", padding: "20px", width: "350px", color: "white", display: "flex", flexDirection: "column", gap: "12px" }}>
-          <p style={{ margin: "0", fontWeight: "700", fontSize: "14px" }}>⚡ Quick Insights</p>
-
-          <div style={{ backgroundColor: "#1a3326", borderRadius: "8px", padding: "12px" }}>
-            <p style={{ margin: "0 0 4px 0", fontSize: "9px", fontWeight: "700", color: "#0d9488", letterSpacing: "0.08em" }}>COST OPTIMIZATION</p>
-            <p style={{ margin: "0", fontSize: "11px", color: "#cbd5e1" }}>Subscriptions for "SaaS Tool Alpha" increased 40%. Save <span style={{ color: "#0d9488" }}>$1,200/yr</span> by consolidating licenses.</p>
-          </div>
-
-          <div style={{ backgroundColor: "#1a3326", borderRadius: "8px", padding: "12px" }}>
-            <p style={{ margin: "0 0 4px 0", fontSize: "9px", fontWeight: "700", color: "#0d9488", letterSpacing: "0.08em" }}>GROWTH OPPORTUNITY</p>
-            <p style={{ margin: "0", fontSize: "11px", color: "#cbd5e1" }}>Cash reserve is 2.1x above benchmark. Allocate $90k to high-yield sweep account.</p>
-          </div>
-
-          <button style={{ marginTop: "auto", backgroundColor: "#0d9488", color: "white", border: "none", borderRadius: "6px", padding: "10px", fontSize: "12px", fontWeight: "700", cursor: "pointer", letterSpacing: "0.05em" }}>EXPLORE STRATEGY</button>
-        </div>
-
-      </div>
-      <div style={{ display: "flex", gap: "16px" }}>
-        <div style={{ backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: "12px", width: "100%", overflow: "hidden", }}>
-          {/* Header */}
-          <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", }}>
-            <p style={{ margin: "0", fontSize: "16px", fontWeight: "700", color: "#0f172a", }}>
-              Recent Institutional Activity
-            </p>
-
-            <p style={{ margin: "0", fontSize: "12px", fontWeight: "600", color: "#2563eb", cursor: "pointer", }}>
-              View All →
-            </p>
-          </div>
-
-          {/* Table Header */}
-          <div style={{ backgroundColor: "#f1f5f9", display: "grid", gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr", padding: "14px 24px", fontSize: "10px", fontWeight: "700", color: "#64748b", letterSpacing: "0.12em", }}>
-            <div>TRANSACTION ID</div>
-            <div>COUNTERPARTY</div>
-            <div>STATUS</div>
-            <div style={{ textAlign: "right" }}>AMOUNT</div>
-          </div>
-
-          {/* Row 1 */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr", padding: "18px 24px", alignItems: "center", borderBottom: "1px solid #f1f5f9", }}>
-            <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", }}>
-              #TRX-99201
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", }}>
-              <div style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: "700", color: "#475569", }}>
-                CC
-              </div>
-              <p style={{ margin: "0", fontSize: "14px", color: "#0f172a", }}>Cloud Core Systems</p>
-            </div>
-
-            <div>
-              <span style={{ backgroundColor: "#99f6e4", color: "#065f46", padding: "6px 12px", borderRadius: "999px", fontSize: "11px", fontWeight: "600", }}>
-                Cleared
-              </span>
-            </div>
-
-            <div style={{ textAlign: "right", fontSize: "14px", fontWeight: "700", color: "#0f172a", }}>
-              -$12,450.00
-            </div>
-          </div>
-
-          {/* Row 2 */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr", padding: "18px 24px", alignItems: "center", }}>
-            <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", }}>#TRX-99185</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", }}>
-              <div style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#dbeafe", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: "700", color: "#2563eb", }}>
-                LM
-              </div>
-
-              <p style={{ margin: "0", fontSize: "14px", color: "#0f172a", }}>
-                Lunar Media Group
-              </p>
-            </div>
-
-            <div>
-              <span style={{ backgroundColor: "#dbeafe", color: "#1d4ed8", padding: "6px 12px", borderRadius: "999px", fontSize: "11px", fontWeight: "600", }}>
-                Pending
-              </span>
-            </div>
-
-            <div style={{ textAlign: "right", fontSize: "14px", fontWeight: "700", color: "#2563eb", }}>
-              +$45,000.00
-            </div>
-          </div>
+        <div style={{ background: "#0f2218", borderRadius: "12px", padding: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
+          <p style={{ fontSize: "13px", fontWeight: "700", color: "#fff" }}>⚡ Quick Insights</p>
+          <InsightItem
+            tag="COST OPTIMIZATION"
+            text={<>Subscriptions for "SaaS Tool Alpha" up 40%. Save <strong style={{ color: "#2dd4bf" }}>$1,200/yr</strong> by consolidating licenses.</>}
+          />
+          <InsightItem
+            tag="GROWTH OPPORTUNITY"
+            text="Cash reserve is 2.1× above benchmark. Allocate $90k to a high-yield sweep account."
+          />
+          <button style={{ ...btn, background: "#0d9488", color: "#fff", marginTop: "auto", width: "100%", justifyContent: "center" }}>
+            EXPLORE STRATEGY →
+          </button>
         </div>
       </div>
 
+      {/* ── ROW 3: Transaction Table ── */}
+      <div style={{ background: "white", border: "0.5px solid #e2e8f0", borderRadius: "12px", overflow: "hidden" }}>
+        <div style={{ padding: "16px 22px", borderBottom: "0.5px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <p style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a" }}>Recent Institutional Activity</p>
+          <button style={{ ...btn, background: "#2563eb", color: "#fff", fontSize: "11px", padding: "5px 12px" }}>View All →</button>
+        </div>
+
+        <div style={{
+          background: "#f8fafc",
+          display: "grid",
+          gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr",
+          padding: "10px 22px",
+          fontSize: "10px",
+          fontWeight: "700",
+          color: "#94a3b8",
+          letterSpacing: "0.1em",
+        }}>
+          <div>TRANSACTION ID</div>
+          <div>COUNTERPARTY</div>
+          <div>STATUS</div>
+          <div style={{ textAlign: "right" }}>AMOUNT</div>
+        </div>
+
+        <TxRow
+          id="#TRX-99201"
+          initials="CC"
+          avatarBg="#e2e8f0"
+          avatarColor="#475569"
+          name="Cloud Core Systems"
+          badge="Cleared"
+          badgeBg="#d1fae5"
+          badgeColor="#065f46"
+          amount="-$12,450.00"
+          amountColor="#0f172a"
+        />
+        <TxRow
+          id="#TRX-99185"
+          initials="LM"
+          avatarBg="#dbeafe"
+          avatarColor="#2563eb"
+          name="Lunar Media Group"
+          badge="Pending"
+          badgeBg="#dbeafe"
+          badgeColor="#1d4ed8"
+          amount="+$45,000.00"
+          amountColor="#2563eb"
+          last
+        />
+      </div>
+
+    </div>
+  );
+}
+
+/* ── Sub-components ── */
+
+function HoverCard({ style, children }: { style: React.CSSProperties; children: React.ReactNode }) {
+  return (
+    <div
+      style={style}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-1px)";
+        e.currentTarget.style.borderColor = "#cbd5e1";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "";
+        e.currentTarget.style.borderColor = "";
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function DarkCard({
+  color, label, labelColor, title, sub,
+}: {
+  color: string; label: string; labelColor: string; title: string; sub: string;
+}) {
+  return (
+    <div
+      style={{
+        background: color,
+        borderRadius: "12px",
+        padding: "20px",
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        cursor: "pointer",
+        transition: "transform 0.15s, opacity 0.15s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-2px)";
+        e.currentTarget.style.opacity = "0.92";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "";
+        e.currentTarget.style.opacity = "";
+      }}
+    >
+      <p style={{ fontSize: "10px", fontWeight: "700", color: labelColor, letterSpacing: "0.1em", marginBottom: "auto" }}>
+        {label}
+      </p>
+      <div style={{ marginTop: "16px" }}>
+        <p style={{ fontSize: "15px", fontWeight: "700", color: "#fff", marginBottom: "3px" }}>{title}</p>
+        <p style={{ fontSize: "11px", color: labelColor }}>{sub}</p>
+      </div>
+    </div>
+  );
+}
+
+function InsightItem({ tag, text }: { tag: string; text: React.ReactNode }) {
+  return (
+    <div
+      style={{ background: "rgba(255,255,255,0.07)", borderRadius: "8px", padding: "12px", transition: "background 0.15s", cursor: "default" }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.12)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; }}
+    >
+      <p style={{ fontSize: "9px", fontWeight: "700", color: "#0d9488", letterSpacing: "0.1em", marginBottom: "5px" }}>{tag}</p>
+      <p style={{ fontSize: "11px", color: "#cbd5e1" }}>{text}</p>
+    </div>
+  );
+}
+
+function TxRow({
+  id, initials, avatarBg, avatarColor, name, badge, badgeBg, badgeColor, amount, amountColor, last = false,
+}: {
+  id: string; initials: string; avatarBg: string; avatarColor: string;
+  name: string; badge: string; badgeBg: string; badgeColor: string;
+  amount: string; amountColor: string; last?: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1.2fr 1.8fr 1fr 1fr",
+        padding: "16px 22px",
+        alignItems: "center",
+        borderBottom: last ? "none" : "0.5px solid #f1f5f9",
+        cursor: "pointer",
+        transition: "background 0.15s",
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = "#f8fafc"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = ""; }}
+    >
+      <div style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a" }}>{id}</div>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{
+          width: "32px", height: "32px", borderRadius: "50%",
+          background: avatarBg, color: avatarColor,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "11px", fontWeight: "700", flexShrink: 0,
+        }}>
+          {initials}
+        </div>
+        <span style={{ fontSize: "13px", color: "#0f172a" }}>{name}</span>
+      </div>
+      <div>
+        <span style={{ display: "inline-block", padding: "4px 12px", borderRadius: "999px", fontSize: "11px", fontWeight: "700", background: badgeBg, color: badgeColor }}>
+          {badge}
+        </span>
+      </div>
+      <div style={{ textAlign: "right", fontSize: "13px", fontWeight: "700", color: amountColor }}>{amount}</div>
     </div>
   );
 }
