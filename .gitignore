@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+venv/
+env/
+.venv/
+pip-log.txt
+
+# Environment
+.env
+.env.local
+
+# ML Artifacts
+*.pkl
+*.joblib
+*.h5
+models/*.pt
+models/*.bin
+models/*.onnx
+data/*.parquet
+
+# Docker volumes
+docker/volumes/
+postgres_data/
+redis_data/
+neo4j_data/
+qdrant_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Logs & testing
+*.log
+logs/
+.pytest_cache/
+.coverage
+htmlcov/
