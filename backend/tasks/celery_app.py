@@ -1,4 +1,6 @@
+# pyrefly: ignore [missing-import]
 from celery import Celery
+
 from backend.config import get_settings
 
 settings = get_settings()
@@ -17,5 +19,5 @@ celery_app.conf.update(
     enable_utc=True,
 )
 
-# Import tasks so Celery discovers them
+# Auto-discover tasks in backend/tasks/
 celery_app.autodiscover_tasks(["backend.tasks"])
