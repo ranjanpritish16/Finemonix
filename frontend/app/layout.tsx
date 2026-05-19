@@ -5,7 +5,7 @@ import "./globals.css";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FinSentry — Business Intelligence",
+  title: "Finemonix — Business Intelligence",
   description: "ML-powered financial intelligence for Indian MSMEs",
 };
 

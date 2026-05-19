@@ -6,7 +6,7 @@ from backend.config import get_settings
 settings = get_settings()
 
 celery_app = Celery(
-    "finsentry",
+    "Finemonix",
     broker=settings.REDIS_URL,
     backend=settings.REDIS_URL,
 )
