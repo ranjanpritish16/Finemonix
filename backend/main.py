@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="NeevFinance API",
+    title="FinSentry API",
     version="1.0",
     description="ML-powered financial intelligence platform for Indian MSMEs",
     lifespan=lifespan,

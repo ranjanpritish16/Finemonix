@@ -1,6 +1,6 @@
-# NeevFinance
+# FinSentry
 
-NeevFinance is an ML-powered financial intelligence platform for Indian MSMEs that ingests multi-source financial data (Tally XML, GST JSON, bank CSVs) and delivers three core capabilities: a 90-day cash flow forecast powered by a Prophet/LSTM hybrid model, a loan eligibility engine using calibrated XGBoost classifiers with SHAP-based explainability for sub-100ms what-if analysis, and a regulatory risk monitor that scrapes BSE filings, extracts promoter pledge data and auditor opinions via NLP, detects anomalies using Isolation Forest, and maps entity relationships in a Neo4j knowledge graph.
+FinSentry is an ML-powered financial intelligence platform for Indian MSMEs that ingests multi-source financial data (Tally XML, GST JSON, bank CSVs) and delivers three core capabilities: a 90-day cash flow forecast powered by a Prophet/LSTM hybrid model, a loan eligibility engine using calibrated XGBoost classifiers with SHAP-based explainability for sub-100ms what-if analysis, and a regulatory risk monitor that scrapes BSE filings, extracts promoter pledge data and auditor opinions via NLP, detects anomalies using Isolation Forest, and maps entity relationships in a Neo4j knowledge graph.
 
 ---
 
