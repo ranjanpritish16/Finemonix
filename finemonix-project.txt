@@ -1,0 +1,1831 @@
+% ============================================================
+%  NeevFinance --- 30-Day Build Planner
+%  Compile with: pdflatex NeevFinance_DailyPlanner.tex
+%  (run twice for correct TOC page numbers)
+% ============================================================
+\documentclass[11pt, a4paper]{article}
+
+% ---------- packages ----------
+\usepackage[a4paper, top=2.2cm, bottom=2.2cm, left=2.4cm, right=2.4cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{parskip}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{calc}
+\usepackage{setspace}
+\usepackage{tocloft}
+
+\tcbuselibrary{skins, breakable, listings}
+
+% ---------- colours ----------
+\definecolor{phase1}{HTML}{185FA5}
+\definecolor{phase1bg}{HTML}{E6F1FB}
+\definecolor{phase2}{HTML}{0F6E56}
+\definecolor{phase2bg}{HTML}{E1F5EE}
+\definecolor{phase3}{HTML}{993C1D}
+\definecolor{phase3bg}{HTML}{FAECE7}
+\definecolor{phase4}{HTML}{534AB7}
+\definecolor{phase4bg}{HTML}{EEEDFE}
+\definecolor{phase5}{HTML}{854F0B}
+\definecolor{phase5bg}{HTML}{FAEEDA}
+\definecolor{promptbg}{HTML}{F5F5F5}
+\definecolor{promptborder}{HTML}{CCCCCC}
+\definecolor{tagfe}{HTML}{185FA5}
+\definecolor{tagbe}{HTML}{854F0B}
+\definecolor{tagml}{HTML}{3B6D11}
+\definecolor{tagdb}{HTML}{993556}
+\definecolor{taginfra}{HTML}{534AB7}
+\definecolor{darktext}{HTML}{1A1A1A}
+\definecolor{mutedtext}{HTML}{5A5A5A}
+\definecolor{lightgray}{HTML}{F0F0F0}
+
+% ---------- hyperref ----------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=phase1,
+  urlcolor=phase1,
+  pdftitle={NeevFinance --- 30-Day Build Planner},
+  pdfauthor={NeevFinance Project},
+  bookmarksnumbered=true
+}
+
+% ---------- header / footer ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{mutedtext}\textbf{NeevFinance} --- 30-Day Build Planner}
+\fancyhead[R]{\small\color{mutedtext}Confidential}
+\fancyfoot[C]{\small\color{mutedtext}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{lightgray}\leaders\hrule height \headrulewidth\hfill}}
+
+% ---------- section styling ----------
+\titleformat{\section}[block]
+  {\Large\bfseries\color{darktext}}
+  {}
+  {0pt}
+  {}
+\titleformat{\subsection}[block]
+  {\normalsize\bfseries\color{darktext}}
+  {}
+  {0pt}
+  {}
+\titlespacing{\section}{0pt}{1.5em}{0.5em}
+\titlespacing{\subsection}{0pt}{1em}{0.3em}
+
+% ---------- toc styling ----------
+\setlength{\cftbeforesecskip}{4pt}
+\renewcommand{\cftsecfont}{\small}
+\renewcommand{\cftsecpagefont}{\small}
+
+% ---------- custom environments ----------
+
+% Phase header box
+\newenvironment{phasebox}[3]{%
+  \begin{tcolorbox}[
+    colback=#2,
+    colframe=#1,
+    boxrule=1pt,
+    arc=4pt,
+    left=10pt, right=10pt, top=8pt, bottom=8pt,
+    breakable
+  ]
+  \textbf{\color{#1}#3}\\[2pt]
+}{%
+  \end{tcolorbox}
+}
+
+% Day card
+\newenvironment{daycard}[4]{%
+  \begin{tcolorbox}[
+    colback=white,
+    colframe=#1,
+    boxrule=0.5pt,
+    arc=6pt,
+    left=10pt, right=10pt, top=8pt, bottom=8pt,
+    breakable,
+    title={%
+      \begin{tikzpicture}[baseline=-0.5ex]
+        \node[circle, fill=#2, draw=#1, line width=0.5pt,
+              inner sep=0pt, minimum size=22pt,
+              font=\small\bfseries\color{#1}] {#3};
+      \end{tikzpicture}
+      \hspace{6pt}\textbf{\color{darktext}Day #3 --- #4}%
+    },
+    coltitle=darktext,
+    attach boxed title to top left={yshift=-2mm, xshift=8pt},
+    boxed title style={colback=white, colframe=#1, boxrule=0.5pt, arc=4pt}
+  ]
+}{%
+  \end{tcolorbox}%
+  \vspace{6pt}
+}
+
+% Prompt box
+\newenvironment{promptbox}{%
+  \begin{tcolorbox}[
+    colback=promptbg,
+    colframe=promptborder,
+    boxrule=0.5pt,
+    arc=4pt,
+    left=10pt, right=10pt, top=8pt, bottom=8pt,
+    breakable,
+    fontupper=\small\ttfamily,
+    title={\small\bfseries\color{mutedtext}Claude Prompt --- paste this to start your session},
+    coltitle=mutedtext,
+    attach boxed title to top left={yshift=-2mm, xshift=6pt},
+    boxed title style={colback=promptbg, colframe=promptborder, boxrule=0.4pt, arc=3pt}
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+% Tag command
+\newcommand{\ctag}[2]{%
+  \tikz[baseline=-0.5ex]\node[
+    fill=#1!15, draw=#1!60, rounded corners=3pt,
+    inner xsep=5pt, inner ysep=2pt,
+    font=\tiny\bfseries\color{#1}
+  ]{#2};%
+  \hspace{2pt}%
+}
+
+\newcommand{\tagfe}{\ctag{tagfe}{FRONTEND}}
+\newcommand{\tagbe}{\ctag{tagbe}{BACKEND}}
+\newcommand{\tagml}{\ctag{tagml}{ML}}
+\newcommand{\tagdb}{\ctag{tagdb}{DATABASE}}
+\newcommand{\taginfra}{\ctag{taginfra}{INFRA}}
+
+% Task list
+\newlist{tasklist}{itemize}{1}
+\setlist[tasklist]{
+  label=\textcolor{mutedtext}{\textbullet},
+  leftmargin=1.4em,
+  itemsep=2pt,
+  topsep=4pt
+}
+
+% ---------- document ----------
+\begin{document}
+
+% ============================================================
+%  TITLE PAGE
+% ============================================================
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+\vspace*{3cm}
+
+{\Huge\bfseries\color{darktext} NeevFinance}\\[0.4em]
+{\Large\color{mutedtext} SME Financial Health Platform}\\[2em]
+
+\begin{tcolorbox}[
+  colback=phase1bg, colframe=phase1, boxrule=1pt, arc=6pt,
+  width=0.75\textwidth, halign=center
+]
+{\large\bfseries\color{phase1} 30-Day Build Planner}\\[4pt]
+{\normalsize\color{darktext} Daily Tasks + Claude Prompts}
+\end{tcolorbox}
+
+\vspace{2em}
+
+\begin{tabular}{ll}
+\textbf{Total days:} & 30 working days \\[4pt]
+\textbf{Phases:} & 5 (Data, Cash Flow, Loan, Filing Monitor, Polish) \\[4pt]
+\textbf{Claude prompts:} & 30 (one per day) \\[4pt]
+\textbf{Frontend:} & Built by you --- prompts reflect this \\[4pt]
+\textbf{Stack:} & Next.js 14, FastAPI, PostgreSQL, Neo4j, Qdrant, Redis \\[4pt]
+\textbf{ML:} & LSTM, XGBoost+SHAP, Isolation Forest, Sentence Transformers \\
+\end{tabular}
+
+\vspace{3em}
+
+\begin{tcolorbox}[
+  colback=lightgray, colframe=lightgray, boxrule=0pt, arc=4pt,
+  width=\textwidth
+]
+\small\color{mutedtext}
+\textbf{How to use this planner:}
+Each day has a task list and a ready-to-paste Claude prompt.
+The prompts explicitly tell Claude that \textbf{you handle all frontend UI/UX}.
+Claude will only give you backend logic, ML code, and API code.
+For UI help, share screenshots of your design and ask Claude to guide
+you on which parts of your own code to change.
+\end{tcolorbox}
+
+\vfill
+{\small\color{mutedtext} NeevFinance Project --- 2025}
+\end{center}
+\end{titlepage}
+
+% ============================================================
+%  TABLE OF CONTENTS
+% ============================================================
+\tableofcontents
+\newpage
+
+% ============================================================
+%  PHASE OVERVIEW
+% ============================================================
+\section*{Phase Overview}
+\addcontentsline{toc}{section}{Phase Overview}
+
+\begin{tabularx}{\textwidth}{p{2.2cm} p{2.8cm} X p{2.5cm}}
+\toprule
+\textbf{Phase} & \textbf{Name} & \textbf{What you build} & \textbf{Days} \\
+\midrule
+Phase 1 & Data Foundation &
+PostgreSQL schema, Tally XML parser, GST JSON parser, bank CSV parser, entity resolution, Celery pipeline &
+Days 1--6 \\[4pt]
+Phase 2 & Cash Flow ML &
+Feature engineering, Prophet baseline, LSTM model, forecast API, scenario planner &
+Days 7--12 \\[4pt]
+Phase 3 & Loan Engine &
+Synthetic training data, XGBoost + SHAP, loan eligibility API, O(1) what-if delta engine &
+Days 13--18 \\[4pt]
+Phase 4 & Filing Monitor &
+Neo4j + Qdrant setup, BSE scraper, PDF pipeline, SpaCy NER, Isolation Forest, tone drift, graph anomalies, WebSocket feed &
+Days 19--26 \\[4pt]
+Phase 5 & Demo \& Polish &
+DHFL retroactive demo, dashboard integration, Railway deploy, demo hardening &
+Days 27--30 \\
+\bottomrule
+\end{tabularx}
+
+\vspace{1em}
+
+\begin{tcolorbox}[colback=phase1bg, colframe=phase1, boxrule=0.8pt, arc=4pt,
+  left=10pt, right=10pt, top=6pt, bottom=6pt]
+\small\color{darktext}
+\textbf{Core architectural insight from the proposal:} Cash flow data \emph{is} credit data.
+The same Tally and GST transaction history that powers the forecasting engine also powers the
+loan eligibility analyser. This eliminates redundant data entry and enables features neither
+product could deliver alone. One data pipeline, three deeply integrated answers.
+\end{tcolorbox}
+
+\newpage
+
+% ============================================================
+%  PHASE 1 --- DATA FOUNDATION
+% ============================================================
+\section{Phase 1 --- Data Foundation (Days 1--6)}
+
+\begin{phasebox}{phase1}{phase1bg}{%
+  PostgreSQL schema $\cdot$ Tally/GST/bank parsers $\cdot$ Entity resolution $\cdot$ Celery pipeline $\cdot$ Auth%
+}
+Everything else in NeevFinance is downstream of Phase 1. No ML model, no API endpoint, and
+no frontend feature can work until the data ingestion pipeline is solid and the schema is locked.
+Do not rush this phase --- a messy schema here means painful refactoring in Phase 3 and 4.
+\end{phasebox}
+
+\vspace{0.5em}
+
+% ----- DAY 1 -----
+\begin{daycard}{phase1}{phase1bg}{1}{Project scaffolding \& auth}
+
+\small\color{mutedtext}Next.js + FastAPI skeleton, NextAuth setup, Docker Compose\par\vspace{6pt}
+
+\tagbe\taginfra
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Init Next.js 14 project with TypeScript and Tailwind
+  \item Init FastAPI project with Pydantic v2 and folder structure
+  \item Set up Docker Compose with PostgreSQL 15, Redis containers
+  \item Implement NextAuth.js with JWT --- register/login pages (backend logic only, you design UI)
+  \item Define base PostgreSQL schema: \texttt{businesses}, \texttt{users} tables
+  \item Write health-check endpoints and connect frontend to API
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance, a financial intelligence platform for Indian SMEs.
+Today is Day 1 of a 30-day build.
+
+My stack: Next.js 14 (TypeScript), FastAPI (Python 3.11),
+PostgreSQL 15, Redis, Docker Compose.
+
+I will handle ALL frontend UI/UX design myself. For any frontend
+task, only give me the logic/data-fetching code -- no styling, no
+layout, no component structure unless I ask.
+
+Task today: Scaffold both projects and set up NextAuth.js with JWT.
+
+Help me:
+1. The correct Docker Compose setup for Next.js + FastAPI +
+   PostgreSQL + Redis to run together in dev
+2. FastAPI folder structure best practices for a project of this scale
+3. NextAuth.js configuration for credential-based auth that calls
+   my FastAPI /auth/login endpoint
+4. The SQL for businesses and users tables
+
+Do NOT suggest any UI components, layouts, or styling.
+That is my responsibility.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 2 -----
+\begin{daycard}{phase1}{phase1bg}{2}{PostgreSQL schema --- full build}
+
+\small\color{mutedtext}All 8 core tables + indexes + Alembic migrations + seed data\par\vspace{6pt}
+
+\tagdb\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Write SQL for: \texttt{transactions}, \texttt{invoices}, \texttt{clients} tables
+  \item Write SQL for: \texttt{cash\_flow\_forecasts}, \texttt{companies\_watched}, \texttt{filings} tables
+  \item Write SQL for: \texttt{anomaly\_scores}, \texttt{entities}, \texttt{filing\_entities} tables
+  \item Set up Alembic for migrations
+  \item Write SQLAlchemy ORM models for all tables
+  \item Seed script with 3 months of sample transaction data
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 2 -- full database schema.
+
+I need the complete PostgreSQL schema for these tables:
+businesses, transactions, invoices, clients,
+cash_flow_forecasts, companies_watched, filings,
+anomaly_scores, entities, filing_entities.
+
+Key columns per table:
+- transactions: id, business_id, date, amount, direction(in/out),
+  category, counterparty_id, source(tally/gst/bank), raw_description
+- invoices: id, business_id, client_id, amount, issue_date,
+  due_date, paid_date, status, days_overdue
+- anomaly_scores: id, company_bse_code, quarter, score_financial,
+  score_tone, score_graph, severity, contributing_features(JSON)
+
+Give me:
+1. Full CREATE TABLE SQL with proper types, constraints, foreign keys
+2. Indexes for the most important query patterns
+3. SQLAlchemy ORM models matching these tables
+4. A Python seed script that inserts ~90 days of realistic sample
+   transactions for one test business
+
+I handle all frontend work -- no UI code needed.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 3 -----
+\begin{daycard}{phase1}{phase1bg}{3}{Tally XML parser}
+
+\small\color{mutedtext}Parse .xml export into normalized transactions schema\par\vspace{6pt}
+
+\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Study Tally XML export format --- understand LEDGER, VOUCHER, STOCKITEM nodes
+  \item Write Python parser: extract all RECEIPT/PAYMENT/JOURNAL vouchers
+  \item Normalize to canonical transaction schema (direction, category, counterparty)
+  \item Extract invoice records from SALESVOUCHER and PURCHASEVOUCHER types
+  \item Build client entity extractor from ledger master data
+  \item FastAPI endpoint: \texttt{POST /api/data/upload} accepting Tally XML multipart
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 3 -- Tally XML parser.
+
+Tally ERP 9 and TallyPrime export data as XML. I need a Python
+parser that:
+1. Accepts a Tally XML file (TALLYMESSAGE -> COMPANY -> LEDGER /
+   VOUCHER nodes)
+2. Extracts all transactions (RECEIPT, PAYMENT, JOURNAL, CONTRA
+   voucher types) into my transactions table schema
+3. Extracts invoice records (SALESVOUCHER, PURCHASEVOUCHER)
+   into my invoices table schema
+4. Extracts client/vendor names from LEDGER master records
+   into my clients table
+
+My transaction schema:
+id, business_id, date, amount, direction(in/out), category,
+counterparty_id, source='tally', raw_description
+
+Important edge cases to handle:
+- Multi-currency entries (convert to INR)
+- Cancelled vouchers (ISOPTIONAL = Yes, skip these)
+- Group ledger hierarchies (Sundry Debtors = clients,
+  Sundry Creditors = vendors)
+- Same client appearing with slightly different names
+
+Give me the complete parser class with error handling.
+No frontend code.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 4 -----
+\begin{daycard}{phase1}{phase1bg}{4}{GST + bank statement parsers}
+
+\small\color{mutedtext}GSTR-1/2 JSON and CSV bank statements with auto-detection\par\vspace{6pt}
+
+\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Parse GSTR-1 JSON: extract b2b, b2cs, cdnr sections into invoices
+  \item Parse GSTR-2A JSON: extract inward supply records
+  \item Build bank statement CSV parser with auto column detection
+  \item Handle 5 major Indian bank formats: SBI, HDFC, ICICI, Axis, Kotak
+  \item Write data validation layer --- flag incomplete or inconsistent uploads
+  \item Merge all three sources into unified transactions table with deduplication
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 4 -- GST JSON and bank CSV parsers.
+
+Task 1 - GST parser:
+Parse GSTR-1 (outward) and GSTR-2A (inward) JSON files from the
+GST portal.
+- GSTR-1 sections: b2b (B2B invoices), b2cs (B2C small),
+  cdnr (credit/debit notes)
+- Extract: invoice number, party GSTIN, taxable value, tax amount,
+  filing period
+
+Task 2 - Bank CSV parser:
+Auto-detect columns: date, description/narration, debit, credit,
+balance.
+- Handle date formats: DD/MM/YYYY, DD-Mon-YYYY, MM/DD/YY
+- Handle debit/credit in one column (negative=debit) vs two columns
+- Detect transaction direction from columns
+
+Task 3 - Deduplication:
+When all three sources are merged, same transaction may appear in
+all three. Write a deduplication function:
+date window +-2 days + amount match + counterparty similarity.
+
+No frontend work from you. I do all UI.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 5 -----
+\begin{daycard}{phase1}{phase1bg}{5}{Entity resolution layer}
+
+\small\color{mutedtext}Merge same client appearing differently across all data sources\par\vspace{6pt}
+
+\tagbe\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Build two-pass entity resolution: exact GSTIN match first
+  \item Second pass: RapidFuzz string similarity (threshold 0.85)
+  \item Third pass: sentence embedding cosine similarity for person names
+  \item Build \texttt{entity\_aliases} table and canonical ID assignment
+  \item Compute initial client metrics: \texttt{total\_revenue\_share}, \texttt{avg\_payment\_delay\_days}
+  \item Test with sample data showing same client appearing 6 different ways
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 5 -- entity resolution.
+
+Problem: same client appears across data sources with different names:
+"Tata Consultancy Services Ltd" vs "TCS" vs
+"TATA CONSULTANCY SERVICES LIMITED" vs "TCS Ltd."
+
+Two-pass pipeline:
+Pass 1: Exact match on GSTIN (authoritative)
+Pass 2: RapidFuzz token_sort_ratio, threshold 0.85, company names
+Pass 3: sentence-transformers all-MiniLM-L6-v2 + cosine similarity
+        for person names
+
+After resolving, assign canonical_id and store aliases in
+entities table.
+
+Also write:
+- SQL query to compute total_revenue_share per client
+  (% of total business revenue)
+- SQL query to compute avg_payment_delay_days per client
+  (avg of paid_date - due_date where paid)
+
+Give me complete Python code. I handle all frontend.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 6 -----
+\begin{daycard}{phase1}{phase1bg}{6}{Celery + file upload pipeline}
+
+\small\color{mutedtext}Async processing, upload endpoint, data review API\par\vspace{6pt}
+
+\tagbe\taginfra
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Set up Celery with Redis broker and result backend
+  \item Write Celery task: \texttt{process\_tally\_upload(file\_path, business\_id)}
+  \item Write Celery task: \texttt{process\_gst\_upload(file\_path, business\_id)}
+  \item Write Celery task: \texttt{process\_bank\_upload(file\_path, business\_id)}
+  \item FastAPI: \texttt{POST /api/data/upload} routes to correct Celery task
+  \item FastAPI: \texttt{GET /api/data/status/\{task\_id\}} --- polling endpoint for upload progress
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 6 -- async file upload pipeline
+with Celery.
+
+I need:
+1. Celery configuration with Redis as broker and result backend
+2. Three Celery tasks:
+   - process_tally_upload(file_path, business_id)
+   - process_gst_upload(file_path, business_id)
+   - process_bank_upload(file_path, business_id)
+   Each task: PENDING -> PROCESSING -> DONE / FAILED status
+3. FastAPI endpoint: POST /api/data/upload
+   - Accept multipart/form-data with file + file_type
+   - Save to /tmp/, trigger Celery task, return task_id
+4. FastAPI endpoint: GET /api/data/status/{task_id}
+   - Return: task state, progress %, error message if failed
+
+My frontend will poll /status every 2 seconds and show progress
+-- but I design that UI myself. Just give me the correct response
+schema for the status endpoint.
+\end{promptbox}
+
+\end{daycard}
+
+\newpage
+
+% ============================================================
+%  PHASE 2 --- CASH FLOW ML
+% ============================================================
+\section{Phase 2 --- Cash Flow ML (Days 7--12)}
+
+\begin{phasebox}{phase2}{phase2bg}{%
+  Feature engineering $\cdot$ LSTM $\cdot$ Prophet baseline $\cdot$ Forecast API $\cdot$ Scenario planner%
+}
+The cash flow forecasting engine is the heart of NeevFinance. It uses an LSTM for users with
+6+ months of data and falls back to Prophet for new users. The scenario planner is what makes
+the demo compelling --- a live slider that shows how a client delay affects your cash in real time.
+\end{phasebox}
+
+\vspace{0.5em}
+
+% ----- DAY 7 -----
+\begin{daycard}{phase2}{phase2bg}{7}{Cash flow feature engineering}
+
+\small\color{mutedtext}Daily aggregates, seasonal features, client payment metrics\par\vspace{6pt}
+
+\tagml\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Write SQL/Python pipeline to compute daily cash in/out aggregates from transactions
+  \item Engineer seasonal features: day\_of\_week, month, is\_gst\_filing\_day, is\_salary\_week
+  \item Compute client payment history features: avg\_delay, reliability\_score per client
+  \item Compute recurring expense signals: identify monthly fixed payments
+  \item Build feature DataFrame ready for LSTM training
+  \item Write unit tests for feature pipeline with sample data
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 7 -- feature engineering for
+cash flow forecasting.
+
+From transactions table (date, amount, direction in/out, category,
+counterparty_id), produce a daily time series ready for LSTM.
+
+Features to engineer:
+1. Daily aggregates: total_cash_in, total_cash_out, net_cash_flow,
+   running_balance
+2. Calendar features: day_of_week (0-6), day_of_month, month,
+   is_month_end (+-3 days), is_quarter_end
+3. GST filing dates (20th of every month = GSTR filing due) binary
+4. Salary week signal (25th-31st -- common salary period)
+5. Per-client rolling 30/60/90 day payment reliability score,
+   avg days late
+6. Recurring expense detector: expenses every 30+-3 days above
+   Rs 10,000 = fixed cost flag
+
+Output: pandas DataFrame with date index, all features,
+target = next_day_balance
+
+Also write the train/val/test split logic (last 30 days = test,
+previous 30 = val, rest = train).
+
+I handle all visualization myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 8 -----
+\begin{daycard}{phase2}{phase2bg}{8}{Prophet baseline model}
+
+\small\color{mutedtext}Forecasting for cold-start users with less than 6 months of data\par\vspace{6pt}
+
+\tagml\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Set up Prophet for daily cash flow forecasting
+  \item Add custom seasonalities: weekly, monthly, GST-filing effects
+  \item Add regressors: known future invoice due dates as covariates
+  \item Generate 10th/50th/90th percentile forecast intervals
+  \item Evaluate on held-out 30-day window, compute MAE
+  \item Serialize model and write FastAPI endpoint stub
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 8 -- Prophet baseline model.
+
+Prophet is the fallback for users with under 6 months of data.
+
+I need:
+1. Prophet configured for daily cash balance forecasting
+2. Custom seasonalities:
+   - Weekly (period=7, fourier_order=3)
+   - Monthly billing cycles (period=30.5, fourier_order=5)
+   - GST filing effect (spike around 20th of each month)
+3. Add regressors: future invoice due dates as extra_regressors
+4. Uncertainty: return yhat_lower (p10) and yhat_upper (p90)
+5. Evaluation: MAPE and MAE on last-30-days holdout,
+   as a percentage accuracy metric
+6. serialize_model(model, business_id) -> saves pkl to disk
+
+Output format: DataFrame with columns: ds, yhat, yhat_lower,
+yhat_upper
+
+I build all chart rendering myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 9 -----
+\begin{daycard}{phase2}{phase2bg}{9}{LSTM forecasting model}
+
+\small\color{mutedtext}PyTorch LSTM for users with 6+ months of transaction history\par\vspace{6pt}
+
+\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Build PyTorch LSTM model for sequence-to-sequence cash flow forecasting
+  \item Write DataLoader with sliding window: 60-day input to 90-day output
+  \item Train loop with early stopping (patience=10) and learning rate scheduler
+  \item Generate uncertainty bands via MC Dropout (30 forward passes)
+  \item Evaluate on test set: MAE, compare to Prophet baseline
+  \item Save model checkpoint and write inference function
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 9 -- LSTM model (PyTorch).
+
+Architecture:
+- Input: 60 days of features
+- Output: 90-day forward prediction of daily cash balance
+- Model: 2-layer LSTM (hidden_size=128, dropout=0.2) -> Linear head
+- Loss: Huber loss
+- Uncertainty: MC Dropout -- 30 forward passes with dropout enabled
+
+Training:
+- Sliding window: 60-day inputs, 90-day targets
+- Batch size 32, Adam lr=1e-3, ReduceLROnPlateau
+- Early stopping patience=10 on validation MAE
+- Min 6 months historical data required
+
+Inference output:
+forecast_df with: date, predicted_balance, p10_balance, p90_balance
+
+Weekly Celery retraining task:
+retrain_lstm(business_id) -> loads latest transactions ->
+retrains -> saves checkpoint
+
+I build all visualization (area chart with confidence bands) myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 10 -----
+\begin{daycard}{phase2}{phase2bg}{10}{Forecast API + caching}
+
+\small\color{mutedtext}GET /api/forecast endpoint with Redis caching and danger zones\par\vspace{6pt}
+
+\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Build \texttt{GET /api/forecast/\{business\_id\}?horizon\_days=90} endpoint
+  \item Model router: select Prophet or LSTM based on user data history length
+  \item Cache forecast results in Redis with 6-hour TTL
+  \item Build danger zone computation: periods where p10 < operating threshold
+  \item \texttt{GET /api/clients/\{business\_id\}/risk} --- reliability + concentration scores
+  \item Write OpenAPI docs for both endpoints
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 10 -- Forecast API endpoints.
+
+Endpoint 1: GET /api/forecast/{business_id}
+- Query param: horizon_days (default 90, max 180)
+- Model router: <6 months data -> Prophet, >=6 months -> LSTM
+- Cache in Redis: key forecast:{business_id}:{horizon}, TTL=6h
+- Compute danger_zones: where p10_balance < operating_threshold
+  (default: 1 month of average expenses)
+- Response: { forecast: [{date, predicted_balance, p10, p90}],
+  danger_zones: [{start_date, end_date, min_balance, severity}],
+  model_used: 'prophet'|'lstm', accuracy_pct: float }
+
+Endpoint 2: GET /api/clients/{business_id}/risk
+- Each client: { client_id, name, revenue_share_pct,
+  avg_payment_delay_days, reliability_score,
+  concentration_risk_level: 'low'|'medium'|'high'|'critical' }
+- Concentration thresholds: <15%=low, 15-30%=medium,
+  30-50%=high, >50%=critical
+- Reliability score: 100 - (avg_delay_days * 2), clamped 0-100
+
+I build all frontend UI myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 11 -----
+\begin{daycard}{phase2}{phase2bg}{11}{Scenario planner engine}
+
+\small\color{mutedtext}What-if: client delays payment by N days, live forecast update\par\vspace{6pt}
+
+\tagbe\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Build \texttt{GET /api/forecast/scenario} endpoint
+  \item Parameters: business\_id, client\_id, delay\_days (and optional amount override)
+  \item Modify forecast input: shift affected invoices by delay\_days
+  \item Re-run inference and return updated forecast + updated danger zones
+  \item Ensure sub-500ms response time
+  \item Test with 5 scenario combinations
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 11 -- Scenario planner.
+
+Endpoint: GET /api/forecast/scenario
+Params: business_id, client_id, delay_days, amount_override(opt)
+
+Logic:
+1. Load cached base forecast for this business
+2. Identify all future invoices from this client_id
+3. Shift expected-payment dates by +delay_days
+4. Re-run forecast inference on modified input
+5. Return scenario forecast + base forecast for comparison
+6. Recompute danger zones for the scenario
+
+Performance: base forecast is Redis-cached. Only re-run the
+inference head for sub-500ms response.
+
+Response:
+{
+  base_forecast: [{date, predicted_balance, p10, p90}],
+  scenario_forecast: [{date, predicted_balance, p10, p90}],
+  scenario_summary: {
+    additional_shortfall_amount: float,
+    first_danger_date: date | null,
+    recommended_action: string
+  }
+}
+
+I build the scenario planner UI (sliders, dual-line chart) myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 12 -----
+\begin{daycard}{phase2}{phase2bg}{12}{Cash flow module --- integration test}
+
+\small\color{mutedtext}End-to-end: upload to forecast to scenario, performance profiling\par\vspace{6pt}
+
+\tagbe\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Write integration test: upload Tally file $\to$ process $\to$ forecast $\to$ scenario
+  \item Verify all API endpoints return correct schemas
+  \item Test edge cases: business with 1 month data, business with no invoices
+  \item Profile endpoint response times --- all under 1s except initial model training
+  \item Document all endpoints in OpenAPI/Swagger
+  \item Prepare sample data fixtures for demo
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 12 -- integration testing for
+the cash flow module.
+
+Write a pytest integration test suite:
+1. Upload Tally XML -> verify parsing -> check transactions in DB
+2. GET /api/forecast/{id} -> verify response schema + danger zones
+3. GET /api/forecast/scenario -> verify scenario alters forecast
+4. GET /api/clients/{id}/risk -> verify scores and concentration
+
+Also:
+- pytest fixture: sets up a test business with 90 days of data
+- Assertions: check response time < 1000ms
+- Test cold-start path: 45 days of data -> must use Prophet
+
+I will separately test UI flows.
+\end{promptbox}
+
+\end{daycard}
+
+\newpage
+
+% ============================================================
+%  PHASE 3 --- LOAN ENGINE
+% ============================================================
+\section{Phase 3 --- Loan Eligibility Engine (Days 13--18)}
+
+\begin{phasebox}{phase3}{phase3bg}{%
+  Synthetic data $\cdot$ XGBoost $\cdot$ SHAP explainability $\cdot$ What-if delta $\cdot$ Contextual CTA%
+}
+The loan eligibility engine solves the information asymmetry problem: Indian SME owners get
+rejected with no explanation. SHAP values make the model's reasoning transparent. The
+what-if simulator lets owners explore ``what do I need to change?'' in real time.
+\end{phasebox}
+
+\vspace{0.5em}
+
+% ----- DAY 13 -----
+\begin{daycard}{phase3}{phase3bg}{13}{Synthetic training data generation}
+
+\small\color{mutedtext}Build labeled dataset from RBI/NBFC lending guidelines\par\vspace{6pt}
+
+\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Research and extract feature thresholds from RBI MSME lending guidelines
+  \item Define approval rules for 4 lender types: PSU bank, private bank, NBFC, MFI
+  \item Write Python data generator: sample financial profiles + apply rules
+  \item Generate 50,000 synthetic samples with realistic feature distributions
+  \item Add noise and edge cases (borderline approvals, unusual combinations)
+  \item Split into train/val/test and save as parquet
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 13 -- synthetic training data.
+
+Features: cibil_score (300-900), debt_to_income_ratio (0-1),
+business_vintage_years (0-20), client_concentration_pct (0-100),
+revenue_stability (CV, lower=better),
+cash_flow_coverage (monthly in / obligations),
+gst_compliance_score (0-100),
+monthly_revenue_inr (lakhs), outstanding_loans_inr (lakhs)
+
+Approval rules per lender:
+- PSU Bank: CIBIL >700, DTI <0.4, vintage >3yr
+- Private Bank: CIBIL >650, DTI <0.5
+- NBFC: CIBIL >550, weight on cash flow coverage
+- MFI: minimal CIBIL, weight on revenue consistency + GST
+
+Generate 50,000 samples with numpy, correlated distributions
+(higher vintage tends to have better CIBIL). Add 5% label noise.
+
+Output: parquet with features + 4 binary columns:
+psu_approved, private_approved, nbfc_approved, mfi_approved
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 14 -----
+\begin{daycard}{phase3}{phase3bg}{14}{XGBoost training + SHAP explainability}
+
+\small\color{mutedtext}Train 4 classifiers, compute SHAP, validate probability calibration\par\vspace{6pt}
+
+\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Train 4 separate XGBoost binary classifiers (one per lender type)
+  \item Hyperparameter tune with Optuna (50 trials, CV AUC metric)
+  \item Fit SHAP TreeExplainer for each model
+  \item Validate probability calibration with isotonic regression
+  \item Compute global feature importance (save as JSON for frontend)
+  \item Save models + explainers to disk, write load function
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 14 -- XGBoost + SHAP.
+
+Using my 50,000-sample synthetic dataset from Day 13:
+
+1. Train 4 XGBoost classifiers with Optuna:
+   - Search: n_estimators (100-500), max_depth (3-8),
+     learning_rate (0.01-0.3), subsample (0.6-1.0)
+   - 5-fold CV, optimize ROC-AUC, 50 trials per model
+
+2. Calibrate with CalibratedClassifierCV (isotonic)
+
+3. Fit SHAP TreeExplainer for each:
+   - Compute shap_values on test set
+   - Global importance: mean |SHAP| as dict -> save as JSON
+   - Pre-compute base_value (expected_value) per model
+
+4. Save as pickle: {lender_type}_model.pkl
+
+SHAP format per prediction:
+{ feature_name: shap_value } dict + base_value float
+
+I build the waterfall chart visualization myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 15 -----
+\begin{daycard}{phase3}{phase3bg}{15}{Loan eligibility API}
+
+\small\color{mutedtext}POST /api/loan/eligibility with full SHAP attribution output\par\vspace{6pt}
+
+\tagbe\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Extract loan features from business's parsed financial data
+  \item Build feature extractor: transactions + invoices $\to$ feature dict
+  \item \texttt{POST /api/loan/eligibility} endpoint --- 4 classifiers + SHAP
+  \item Return: approval probabilities, SHAP attributions, top 3 improvement actions
+  \item Build action generator: SHAP attributions $\to$ ranked specific advice
+  \item Test with 10 sample business profiles
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 15 -- Loan Eligibility API.
+
+Feature extraction from business_id:
+- cibil_score: estimated from payment delays -> 300-900 range
+- debt_to_income_ratio: monthly loan payments / avg monthly revenue
+- business_vintage_years: (today - first_transaction).days / 365
+- client_concentration_pct: revenue share of largest client
+- revenue_stability: CV of last 12 months monthly revenue
+- cash_flow_coverage: avg monthly cash_in / total obligations
+- gst_compliance_score: (months_filed_on_time / total_months) * 100
+- monthly_revenue_inr: last 3 months avg revenue
+
+Endpoint: POST /api/loan/eligibility
+Body: { business_id: str }
+Response:
+{
+  lender_scores: {psu: {probability, verdict}, private: {...},
+                  nbfc: {...}, mfi: {...}},
+  shap_attributions: [{feature_name, value, shap_value, impact}],
+  top_actions: [{action, current_value, target_value,
+                 projected_improvement_pct}]
+}
+
+For top_actions: natural language for worst 3 SHAP features,
+e.g. "Reduce client concentration from 65% to below 40% to
+improve NBFC approval by ~12 percentage points"
+
+I build the waterfall chart and UI myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 16 -----
+\begin{daycard}{phase3}{phase3bg}{16}{What-if delta engine}
+
+\small\color{mutedtext}O(1) SHAP delta for sub-100ms slider response\par\vspace{6pt}
+
+\tagbe\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Implement SHAP additivity-based delta computation
+  \item \texttt{POST /api/loan/whatif} --- accepts base profile + one changed feature
+  \item Pre-compute full SHAP decomposition on first eligibility call and cache it
+  \item Compute score delta from SHAP delta (no full model re-inference)
+  \item Benchmark: verify <100ms response time
+  \item Handle multi-feature changes for advanced simulator
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 16 -- O(1) what-if delta engine.
+
+SHAP additivity: final_prediction = base_value + sum(shap_values)
+When one feature changes, new_score ~= old_score
+  - old_shap[changed_feature] + new_shap[changed_feature]
+
+Implementation:
+1. Cache full SHAP decomposition in Redis after initial call
+2. On whatif request: re-run TreeExplainer on modified sample
+   (single sample inference ~5ms, not retraining)
+3. Return updated probabilities + delta
+
+Endpoint: POST /api/loan/whatif
+Body: { business_id, changed_feature, new_value }
+Response:
+{
+  updated_probabilities: {psu, private, nbfc, mfi},
+  delta: {psu: float, ...}
+}
+
+Target: <100ms total (Redis read + SHAP inference + response)
+Show me the implementation + benchmarking code.
+I build the slider UI myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 17 -----
+\begin{daycard}{phase3}{phase3bg}{17}{Contextual loan CTA integration}
+
+\small\color{mutedtext}Wire cash flow danger zone to loan eligibility prompt\par\vspace{6pt}
+
+\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Add \texttt{loan\_eligibility\_cta} field to forecast API response
+  \item Trigger CTA when: danger zone within 60 days AND business has enough data
+  \item CTA payload: projected\_shortfall\_amount, shortfall\_date, recommended\_lender\_type
+  \item \texttt{GET /api/loan/prefill/\{business\_id\}} --- return pre-filled form data
+  \item Write API test for the contextual trigger logic
+  \item Document the CTA integration contract for frontend
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 17 -- contextual loan CTA.
+
+1. Modify GET /api/forecast/{business_id} response to include:
+   loan_cta: {
+     show: bool,
+     message: "A cash shortfall of Rs 2.3L is projected in 38
+               days. See your loan options.",
+     projected_shortfall_inr: float,
+     shortfall_date: date,
+     recommended_lender: 'psu'|'private'|'nbfc'|'mfi',
+     days_until_shortfall: int
+   } | null
+   Show CTA when: danger_zone within 60 days AND vintage > 6mo
+   Infer lender: CIBIL>700->psu, >650->private, >550->nbfc, else mfi
+
+2. GET /api/loan/prefill/{business_id}
+   Returns all 9 loan features pre-computed from business data.
+   Response: { features: {...}, data_freshness_days, missing_fields }
+
+I design the form UI myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 18 -----
+\begin{daycard}{phase3}{phase3bg}{18}{Loan module --- integration test + demo data}
+
+\small\color{mutedtext}Full loan flow test + demo profile producing NBFC 71\% to 81\%\par\vspace{6pt}
+
+\tagbe\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Write pytest integration tests for full loan eligibility flow
+  \item Test: business data $\to$ feature extraction $\to$ 4 classifier scores $\to$ SHAP
+  \item Test what-if: change client concentration $\to$ verify score delta direction
+  \item Create demo business profile: NBFC 71\% $\to$ adjusting concentration $\to$ 81\%
+  \item Test contextual CTA trigger: create forecast with danger zone $\to$ CTA appears
+  \item Performance test: eligibility under 200ms, what-if under 100ms
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 18 -- loan module integration tests.
+
+Test suite:
+1. Feature extraction from DB -> correct feature values
+2. 4 classifier responses (good profile -> high approval)
+3. SHAP attributions sum to predicted probability (verify additivity)
+4. what-if delta: reducing client_concentration by 20pp should
+   increase NBFC score by ~5-15pp
+5. CTA trigger: danger zone at day 35 -> CTA shows with shortfall
+
+Demo fixtures:
+- Business profile that produces exactly: PSU=28%, NBFC=71%
+- Client concentration adjustment: NBFC from 71% to 81%
+  (exact demo sequence from proposal)
+
+Performance assertions:
+- POST /api/loan/eligibility < 200ms
+- POST /api/loan/whatif < 100ms
+\end{promptbox}
+
+\end{daycard}
+
+\newpage
+
+% ============================================================
+%  PHASE 4 --- REGULATORY FILING MONITOR
+% ============================================================
+\section{Phase 4 --- Regulatory Filing Monitor (Days 19--26)}
+
+\begin{phasebox}{phase4}{phase4bg}{%
+  Neo4j $\cdot$ Qdrant $\cdot$ BSE scraper $\cdot$ NLP pipeline $\cdot$ Isolation Forest $\cdot$ Tone drift $\cdot$ Graph anomalies%
+}
+This is the most technically complex phase. It ingests thousands of dense PDF filings from
+public regulatory portals and extracts actionable early warning signals. The DHFL demo ---
+showing that the signals were visible 11 months before the public collapse --- is the centrepiece
+of the interview presentation.
+\end{phasebox}
+
+\vspace{0.5em}
+
+% ----- DAY 19 -----
+\begin{daycard}{phase4}{phase4bg}{19}{Neo4j + Qdrant infrastructure setup}
+
+\small\color{mutedtext}Graph DB schema and vector store for filing text embeddings\par\vspace{6pt}
+
+\tagdb\taginfra
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Add Neo4j 5 Community Edition to Docker Compose
+  \item Add Qdrant to Docker Compose
+  \item Define Neo4j node types: Company, Person, AuditorFirm, SubsidiaryCompany
+  \item Define Neo4j edge types: IS\_DIRECTOR\_OF, AUDITS, PLEDGED\_SHARES\_OF, IS\_RELATED\_PARTY\_OF
+  \item Write Python Neo4j driver wrapper (official neo4j driver)
+  \item Write Qdrant collection setup: filings\_embeddings (384-dim, cosine distance)
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 19 -- Neo4j and Qdrant setup.
+
+Neo4j 5 Community Edition:
+- Node labels: Company (bse_code, name, cin),
+  Person (pan, name, designation),
+  AuditorFirm (name, icai_reg),
+  SubsidiaryCompany (bse_code, name, parent_cin)
+- Relationships:
+  IS_DIRECTOR_OF(Company, Person): start_date, end_date, din
+  AUDITS(AuditorFirm, Company): year, opinion_type
+  PLEDGED_SHARES_OF(Person, Company): pct_pledged, date
+  IS_RELATED_PARTY_OF(Company, Company): txn_type, amount, year
+
+Write:
+1. Docker Compose services for Neo4j + Qdrant
+2. Python Neo4j driver class: connect(), create_company(),
+   create_person(), create_relationship()
+3. Cypher queries: get_company_directors(bse_code),
+   get_pledge_history(bse_code), get_related_parties(bse_code)
+
+Qdrant collection: filings_text, dimension=384, distance=Cosine
+Client wrapper: upsert_embedding(), search_similar(),
+get_quarterly_embeddings()
+
+I handle all graph visualization myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 20 -----
+\begin{daycard}{phase4}{phase4bg}{20}{BSE filing scraper}
+
+\small\color{mutedtext}Scrape, deduplicate, and store 2 years of filings for 50 companies\par\vspace{6pt}
+
+\tagbe\taginfra
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Write Celery task: \texttt{scrape\_bse\_filings(company\_code)}
+  \item Parse BSE XML/JSON response: extract filing\_type, date, PDF URL, subject
+  \item Download PDFs with polite rate limiting (3--8 second random delays)
+  \item Deduplication: \texttt{hash(filing\_date + subject + company\_code)} as unique key
+  \item Scheduled Celery beat task: every 30 minutes for all watched companies
+  \item Seed DHFL, Yes Bank, and Jet Airways with 2017--2019 filings for demo
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 20 -- BSE filing scraper.
+
+BSE announcements URL:
+https://www.bseindia.com/xml-data/corpfiling/AttachHis/{ScripCode}.xml
+
+Build:
+1. Python async scraper (httpx + asyncio):
+   - Fetch announcements for given BSE scrip code
+   - Parse XML: NewsID, NewsDate, NewsHeadline, AttachmentName
+   - Download PDFs with random 3-8 second delays
+   - Save to /data/filings/{bse_code}/{year}/{filing_id}.pdf
+
+2. Deduplication: check if filing_id exists in filings table
+   before downloading
+
+3. Celery task: scrape_company_filings(bse_code, lookback_days=30)
+   -> returns count of new filings found
+
+4. Celery beat: run for all companies_watched, every 30 minutes
+
+5. Historical seed: DHFL (532720), Yes Bank (532648),
+   Jet Airways (532617) -- all filings 2017-2019
+
+Handle rate limiting with exponential backoff. Respect robots.txt.
+No UI code needed.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 21 -----
+\begin{daycard}{phase4}{phase4bg}{21}{PDF extraction pipeline}
+
+\small\color{mutedtext}pdfplumber for text PDFs, Tesseract for scanned image PDFs\par\vspace{6pt}
+
+\tagbe\tagml
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Build binary classifier: is this PDF text-layer or scanned image?
+  \item Text PDF extractor: pdfplumber with multi-column layout handling
+  \item Image PDF extractor: Tesseract OCR with deskew + binarize preprocessing
+  \item Confidence scorer: flag low-confidence OCR extractions
+  \item Celery task: \texttt{extract\_filing\_text(filing\_id)} updates \texttt{filings.raw\_text}
+  \item Test on 20 real BSE filings of different types
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 21 -- PDF extraction pipeline.
+
+1. Classifier: is_scanned_pdf(file_path) -> bool
+   - pdfplumber extracts >100 chars/page avg -> text PDF
+   - Else -> scanned
+
+2. Text PDF extractor: extract_text_pdf(file_path) -> str
+   - pdfplumber, sort text blocks by x then y for multi-column
+   - Remove repeated headers/footers
+
+3. Scanned PDF extractor: extract_ocr_pdf(file_path) -> (str, float)
+   - pdf2image to convert pages to images
+   - Deskew + Otsu binarization
+   - Tesseract with lang='eng+hin'
+   - Return (text, confidence_score 0-1)
+
+4. Celery task: process_filing_pdf(filing_id)
+   -> extraction -> update filings: raw_text, extraction_status,
+   extractor_used, ocr_confidence
+   -> flag low confidence (<0.7) for review
+
+No frontend code. I handle confidence display in UI myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 22 -----
+\begin{daycard}{phase4}{phase4bg}{22}{SpaCy NER + ratio extraction}
+
+\small\color{mutedtext}Fine-tuned NER on Indian financial text, 20 key ratio extractors\par\vspace{6pt}
+
+\tagml\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Fine-tune SpaCy NER pipeline on annotated Indian financial text
+  \item Custom entity types: REGULATORY\_TERM, AUDIT\_OPINION, PROMOTER\_ACTION
+  \item Ratio extractor: regex + NLP patterns for 20 key financial ratios
+  \item Extract: promoter pledge \%, D/E, interest coverage, DSO from filings
+  \item Write entities to \texttt{filing\_entities} table with context snippets
+  \item Build Celery task: \texttt{run\_nlp\_pipeline(filing\_id)}
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 22 -- SpaCy NER and ratio
+extraction from BSE filings.
+
+Base model: en_core_web_sm, fine-tuned for financial domain.
+Custom entity types:
+- AUDIT_OPINION: "qualified opinion", "unmodified opinion",
+  "adverse opinion", "disclaimer of opinion"
+- REGULATORY_TERM: SEBI, RBI, NCLT, CCI, ED, CBI as bodies
+- PROMOTER_ACTION: "pledged", "encumbered", "transferred",
+  "acquired" applied to shares
+
+Give me:
+1. spaCy training data format (JSON) with 20 example annotations
+   from real BSE filing text
+
+2. Ratio extraction regex patterns for:
+   - Promoter pledge %
+   - Debt-to-equity ratio
+   - Interest coverage ratio
+   - Days sales outstanding
+
+3. Celery task: run_nlp_pipeline(filing_id)
+   -> SpaCy -> entities -> ratios -> filing_entities table
+   + anomaly_scores table (ratio values for this quarter)
+
+I build all filing display UI myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 23 -----
+\begin{daycard}{phase4}{phase4bg}{23}{Isolation Forest anomaly scorer}
+
+\small\color{mutedtext}Company-specific financial ratio anomaly detection (20 features)\par\vspace{6pt}
+
+\tagml\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Train Isolation Forest per company on their historical ratio time series
+  \item 20 input features: pledge \%, D/E, interest coverage, DSO, auditor change flag, etc.
+  \item Set contamination=0.05, min 8 quarters of data required
+  \item Compute anomaly score per quarter $\to$ save to \texttt{anomaly\_scores} table
+  \item Write Celery task: \texttt{update\_anomaly\_scores(company\_bse\_code)}
+  \item Test retroactively on DHFL: verify 2018 Q3 shows elevated score
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 23 -- Isolation Forest per company.
+
+Key insight: scoring is COMPANY-RELATIVE, not cross-sectional.
+Each company gets its own model trained on its own history.
+
+20 features per quarter:
+promoter_pledge_pct, promoter_holding_pct, change_in_pledge_pct,
+debt_to_equity, change_in_dte, interest_coverage_ratio,
+revenue_growth_yoy, revenue_growth_vs_industry_median,
+days_sales_outstanding, dso_change, auditor_changed (binary),
+audit_opinion_qualified (binary), first_time_qualification (binary),
+related_party_txn_pct_revenue, rpt_change,
+cash_from_operations_to_ebitda, promoter_new_directorships_count,
+subsidiary_count_change
+
+Model: IsolationForest(contamination=0.05, n_estimators=200)
+- Fit on all quarters for this company
+- Min 8 quarters; if fewer, use cross-sectional pooled model
+- score_samples() -> convert to 0-1 scale
+
+Celery task: compute_anomaly_scores(bse_code) -> update all quarters
+
+Test: load DHFL (532720) ratios 2016-2019 -> verify 2018-Q3 and
+2018-Q4 have the top 3 anomaly scores in their history.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 24 -----
+\begin{daycard}{phase4}{phase4bg}{24}{Tone drift detector}
+
+\small\color{mutedtext}Sentence transformer embeddings on MD\&A text, z-score flagging\par\vspace{6pt}
+
+\tagml\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Extract MD\&A / Management Commentary sections from annual report filings
+  \item Embed each quarter's text with all-MiniLM-L6-v2 (384-dim)
+  \item Store embeddings in Qdrant collection
+  \item Compute cosine distance between consecutive quarter embeddings per company
+  \item Rolling z-score: flag quarters >2 SD above company's own mean distance
+  \item Celery task: \texttt{compute\_tone\_drift(bse\_code)} updates \texttt{score\_tone}
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 24 -- Tone drift detection.
+
+The model detects when management language shifts significantly
+from a company's own established baseline.
+
+Steps:
+1. Extract MD&A text from raw_text using heading detection
+   ("Management Discussion", "MD&A", "Directors' Report")
+
+2. Embed with sentence-transformers all-MiniLM-L6-v2:
+   - Chunk into 512-token segments if too long
+   - Mean-pool chunk embeddings -> single 384-dim vector
+   - Upsert into Qdrant: payload={bse_code, year, quarter}
+
+3. Tone drift score per quarter:
+   - cosine_distance = 1 - cosine_similarity(q_t, q_{t-1})
+   - Rolling mean/std over company history
+   - z_score = (distance - rolling_mean) / rolling_std
+   - tone_drift_score = min(z_score / 3.0, 1.0) clamped [0,1]
+
+4. Celery task: compute_tone_drift(bse_code) ->
+   update anomaly_scores.score_tone for each quarter
+
+5. Test on Yes Bank: verify 2018-Q4 or 2019-Q1 shows elevation
+
+No UI from you. I build tone visualization myself.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 25 -----
+\begin{daycard}{phase4}{phase4bg}{25}{Knowledge graph anomaly detector}
+
+\small\color{mutedtext}Neo4j GDS: PageRank, WCC for circular shareholding, Louvain\par\vspace{6pt}
+
+\tagml\tagdb
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Run Neo4j GDS PageRank on promoter-company graph
+  \item Run Weakly Connected Components to find circular shareholding clusters
+  \item Run Louvain community detection for rapid new corporate structure creation
+  \item Compute graph anomaly score: combine PageRank + circular structures + new companies
+  \item Celery task: \texttt{compute\_graph\_anomaly(bse\_code)} updates \texttt{score\_graph}
+  \item Build \texttt{GET /api/graph/\{company\_code\}/neighbors} endpoint
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 25 -- Neo4j GDS graph anomalies.
+
+Algorithm 1 - PageRank centrality:
+CALL gds.pageRank.stream('promoter-company-graph',
+{maxIterations:20, dampingFactor:0.85})
+Flag promoters in top 5% PageRank as "highly connected"
+
+Algorithm 2 - Weakly Connected Components:
+Project graph: Company->Company (IS_RELATED_PARTY_OF) + paths
+through shared promoters.
+Flag any component where a Company has a path back to itself
+(circular shareholding).
+
+Algorithm 3 - Louvain community detection:
+Run quarterly. If a promoter's community changes AND they've added
+>2 new director roles in 90 days -> flag (rapid structure creation).
+
+Graph score formula:
+score_graph = (0.4 * pagerank_percentile)
+            + (0.4 * is_circular_shareholder)
+            + (0.2 * rapid_structure_creation)
+
+Endpoint: GET /api/graph/{company_code}/neighbors
+  ?depth=2&entity_types=Person,Company
+Returns: nodes and edges for D3 force graph (I build that myself).
+
+Give me Cypher queries + Python code for GDS algorithms.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 26 -----
+\begin{daycard}{phase4}{phase4bg}{26}{Watchlist API + WebSocket notifications}
+
+\small\color{mutedtext}Real-time filing feed, anomaly timeline, pledge tracker, AI summaries\par\vspace{6pt}
+
+\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item \texttt{GET /api/watchlist/\{business\_id\}} --- all watched companies with combined anomaly scores
+  \item \texttt{GET /api/filings/\{company\_code\}/feed} --- paginated feed with AI-generated one-line summaries
+  \item \texttt{GET /api/anomaly/\{company\_code\}/timeline} --- quarterly anomaly score history (3 components)
+  \item \texttt{GET /api/pledge/\{company\_code\}/history} --- promoter pledge \% time series
+  \item WebSocket \texttt{/ws/filings/\{business\_id\}} --- push notification on new filing
+  \item AI summary: call Claude API to generate one-line summary for each new filing
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 26 -- Watchlist APIs + WebSocket.
+
+GET /api/watchlist/{business_id}
+Response: [{bse_code, company_name, latest_anomaly_score,
+  alert_count_30d, last_filing_date,
+  severity: 'normal'|'watch'|'alert'|'danger'}]
+Severity: >0.7=danger, >0.5=alert, >0.3=watch
+
+GET /api/filings/{company_code}/feed?page=1&type_filter=all
+Response: [{filing_id, filing_type, filing_date, subject,
+  ai_summary, severity_badge, source_url}]
+For ai_summary: call Claude claude-sonnet-4-20250514 with:
+"Summarize this BSE filing in one sentence for a small business
+ owner who is a supplier to this company: {first_500_chars}"
+
+GET /api/anomaly/{company_code}/timeline?quarters=12
+Response: [{quarter, score_financial, score_tone, score_graph,
+  severity, contributing_features}]
+
+GET /api/pledge/{company_code}/history?from_date=2017-01-01
+Response: [{date, pledge_pct, total_promoter_holding_pct}]
+
+WebSocket /ws/filings/{business_id}:
+Push on new filing: {event, bse_code, company_name,
+  filing_type, ai_summary, severity}
+
+I build D3 charts, filing feed, and pledge chart myself.
+\end{promptbox}
+
+\end{daycard}
+
+\newpage
+
+% ============================================================
+%  PHASE 5 --- DEMO & POLISH
+% ============================================================
+\section{Phase 5 --- Demo \& Polish (Days 27--30)}
+
+\begin{phasebox}{phase5}{phase5bg}{%
+  DHFL retroactive analysis $\cdot$ Dashboard integration $\cdot$ Railway deploy $\cdot$ Demo hardening%
+}
+The final phase makes everything interview-ready. The DHFL retroactive analysis is the most
+compelling element of the demo --- a concrete, provable example that the ML pipeline would have
+saved a supplier from catastrophic exposure. Do not skip the demo dry-run on Day 30.
+\end{phasebox}
+
+\vspace{0.5em}
+
+% ----- DAY 27 -----
+\begin{daycard}{phase5}{phase5bg}{27}{DHFL retroactive demo analysis}
+
+\small\color{mutedtext}Prove the warning signals were visible 11 months before collapse\par\vspace{6pt}
+
+\tagml\tagbe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Load all DHFL (BSE 532720) filings from 2016--2019
+  \item Run full NLP + anomaly pipeline retroactively
+  \item Generate anomaly timeline showing 2018 Q3 spike
+  \item Verify: pledge \% jump 31\%$\to$64\%, qualified opinion, tone drift all visible
+  \item Prepare Yes Bank demo: similar retroactive analysis for 2018--2019
+  \item Create demo-ready data fixtures that can be reset between demo runs
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 27 -- DHFL retroactive demo.
+
+This is the climax of the demo: showing NeevFinance would have
+warned SME suppliers 11 months before DHFL collapsed.
+
+1. Script to run complete pipeline on DHFL filings (2016-2019):
+   PDF extraction -> NLP -> ratio extraction ->
+   Isolation Forest -> tone drift -> graph anomaly
+
+2. Verification queries (provably true from public data):
+   - DHFL pledge Q2 2018: ~31%, Q3 2018: ~64%
+   - First auditor qualification: 2018 annual report
+   SELECT quarter, score_financial, score_tone
+   FROM anomaly_scores WHERE bse_code='532720'
+   ORDER BY score_financial DESC LIMIT 5;
+   -> Q3/Q4 2018 should be in top 5
+
+3. Demo fixture: test SME business whose largest client is DHFL
+   (55% revenue concentration). Watchlist shows 2018 signals.
+
+4. Same for Yes Bank (532648) -- 2018 Q4 elevated scores
+
+5. reset_demo() function: clear and reseed demo data cleanly
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 28 -----
+\begin{daycard}{phase5}{phase5bg}{28}{Dashboard integration + API wiring}
+
+\small\color{mutedtext}Connect all modules, cross-module links, unified dashboard endpoint\par\vspace{6pt}
+
+\tagbe\tagfe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item \texttt{GET /api/dashboard/\{business\_id\}} --- aggregated overview data endpoint
+  \item Ensure cash flow module links to loan module (CTA works end-to-end)
+  \item Ensure watchlist client monitoring links to cash flow client risk table
+  \item Build alert system: aggregate severity across all three modules
+  \item Write the ``connected data pipeline'' test: one Tally upload affects all modules
+  \item Finalise all OpenAPI docs --- clean up inconsistencies
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 28 -- dashboard integration.
+
+GET /api/dashboard/{business_id}
+Returns unified overview:
+{
+  cash_summary: {
+    current_balance_inr: float,
+    next_danger_zone_days: int | null,
+    forecast_accuracy_pct: float,
+    loan_cta: {show, shortfall_amount, days_until} | null
+  },
+  loan_summary: {
+    best_approval_probability: float,
+    best_lender_type: str,
+    top_blocking_factor: str
+  },
+  watchlist_summary: {
+    total_watched: int,
+    high_alert_count: int,
+    latest_alert: {company_name, alert_type, severity} | null
+  },
+  client_risk_summary: {
+    high_concentration_clients: int,
+    clients_with_watchlist_overlap: [
+      {client_name, bse_code, severity}
+    ]
+  }
+}
+
+The watchlist_overlap field is the key cross-module link.
+I design the dashboard layout myself.
+Give me the endpoint + SQL to compute each field efficiently.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 29 -----
+\begin{daycard}{phase5}{phase5bg}{29}{Production deployment on Railway}
+
+\small\color{mutedtext}Docker, Railway config, managed DBs, env vars, health monitoring\par\vspace{6pt}
+
+\taginfra
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Dockerize all services: FastAPI, Celery worker, Celery beat, Next.js
+  \item Set up production PostgreSQL (Railway managed DB)
+  \item Set up production Neo4j (AuraDB free tier or Railway self-hosted)
+  \item Set up production Redis (Railway Redis)
+  \item Environment variable management: Railway secrets
+  \item Set up basic health monitoring: \texttt{/api/health} endpoint
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 29 -- production deploy on Railway.
+
+Services: FastAPI, Celery worker, Celery beat, Next.js,
+PostgreSQL, Neo4j, Redis, Qdrant.
+
+Help me:
+1. Dockerfile for FastAPI (Python 3.11, gunicorn + uvicorn workers)
+2. Dockerfile for Celery worker and beat (same base, different CMD)
+3. railway.json / railway.toml config for Railway deployment
+4. Environment variables to set in Railway secrets (all services)
+5. Alembic migration strategy: run once on deploy, not on every
+   container start
+6. Health check endpoint:
+   GET /api/health -> {status, db: bool, redis: bool,
+                       neo4j: bool, celery_workers: int}
+
+For Neo4j: advise on AuraDB free tier (1GB) vs self-hosted
+for 50 companies x 2 years of filings.
+
+I configure Next.js deployment myself once I have the env var list.
+\end{promptbox}
+
+\end{daycard}
+
+% ----- DAY 30 -----
+\begin{daycard}{phase5}{phase5bg}{30}{Demo hardening + interview prep}
+
+\small\color{mutedtext}Full demo run, error states, onboarding flow, interview talking points\par\vspace{6pt}
+
+\tagbe\tagfe
+
+\subsection*{Tasks}
+\begin{tasklist}
+  \item Run full demo script end-to-end: upload $\to$ forecast $\to$ scenario $\to$ loan $\to$ DHFL watchlist
+  \item Fix all broken states found during demo run
+  \item Write loading state response schemas for frontend skeleton screens
+  \item Ensure all error responses have user-friendly messages
+  \item Prepare interview talking points for 5 key technical questions
+  \item Record demo video (highly recommended)
+\end{tasklist}
+
+\begin{promptbox}
+I am building NeevFinance. Day 30 -- final check + interview prep.
+
+1. Demo sequence curl commands to test each step:
+   - Upload Tally XML -> check parsing
+   - GET forecast -> verify danger zones appear
+   - GET scenario (Client A, 45 days late) -> forecast updates
+   - POST loan eligibility -> PSU=28%, NBFC=71%
+   - POST loan whatif (reduce concentration) -> NBFC climbs to ~81%
+   - GET watchlist (DHFL) -> 2018 Q3 anomaly spike visible
+   - GET filings feed (DHFL) -> AI summaries generated
+
+2. Error handling checklist -- clean API error messages for:
+   - Business has no data uploaded yet
+   - Forecast model not yet trained (not enough data)
+   - Company not found in watchlist
+   - File upload parse failure
+
+3. Interview question prep (3-5 sentences each):
+   - Why SHAP additivity enables O(1) what-if inference
+   - Why Isolation Forest rather than supervised anomaly detection
+   - How you handle the LSTM cold-start problem
+   - What made entity resolution across Indian financial text hard
+   - Why one unified data pipeline for three features matters
+
+4. Any final performance bottlenecks to check before demo.
+
+I handle all final UI polish and visual cleanup myself.
+\end{promptbox}
+
+\end{daycard}
+
+\newpage
+
+% ============================================================
+%  APPENDIX A --- TECHNOLOGY STACK
+% ============================================================
+\section*{Appendix A --- Technology Stack}
+\addcontentsline{toc}{section}{Appendix A --- Technology Stack}
+
+\begin{tabularx}{\textwidth}{p{3.2cm} p{4.2cm} X}
+\toprule
+\textbf{Component} & \textbf{Technology} & \textbf{Purpose} \\
+\midrule
+Frontend framework & Next.js 14 (React + TypeScript) & SSR, file-based routing, API routes \\
+UI component library & shadcn/ui + Tailwind CSS & Design system (you customise) \\
+Data visualisation & D3.js, Recharts, Framer Motion & Custom charts, force graphs, transitions \\
+Real-time updates & SWR + native WebSocket & Live filing feed, what-if simulator \\
+API framework & FastAPI (Python 3.11) & Async endpoints, OpenAPI docs \\
+Primary database & PostgreSQL 15 & Transactional data, time-series records \\
+Graph database & Neo4j 5 Community Edition & Corporate relationship graph \\
+Vector store & Qdrant & Filing text embeddings, tone drift \\
+Task queue & Celery + Redis & Async jobs, scheduled scraping \\
+ML --- time series & PyTorch (LSTM), Prophet & Cash flow forecasting \\
+ML --- tabular & XGBoost + SHAP & Loan eligibility + explainability \\
+ML --- NLP & SpaCy, Hugging Face, sentence-transformers & NER, embeddings, tone modelling \\
+ML --- anomaly & scikit-learn (Isolation Forest), Neo4j GDS & Ratio and graph anomaly detection \\
+PDF processing & pdfplumber, Tesseract OCR & Filing text extraction \\
+Infrastructure & Docker Compose (dev), Railway (prod) & Containerised deployment \\
+Auth & NextAuth.js with JWT & Business owner authentication \\
+\bottomrule
+\end{tabularx}
+
+\vspace{1.5em}
+
+% ============================================================
+%  APPENDIX B --- FRONTEND OWNERSHIP GUIDE
+% ============================================================
+\section*{Appendix B --- Frontend Ownership Guide}
+\addcontentsline{toc}{section}{Appendix B --- Frontend Ownership Guide}
+
+All frontend work is yours. When you need UI/UX help from Claude, use this approach:
+
+\begin{tcolorbox}[colback=phase1bg, colframe=phase1, boxrule=0.8pt, arc=4pt,
+  left=10pt, right=10pt, top=8pt, bottom=8pt]
+\small
+\textbf{Prompt template for UI/UX help from Claude:}
+
+\texttt{I am building the [page name] page for NeevFinance. Here is a screenshot of my current UI. I want to achieve [describe the desired visual effect or UX pattern]. Which specific parts of my code should I change to get this, and what should I change them to? Do not rewrite the whole component --- just tell me the targeted edits.}
+\end{tcolorbox}
+
+\vspace{1em}
+
+\textbf{Pages you will build:}
+
+\begin{tabularx}{\textwidth}{p{3.2cm} X}
+\toprule
+\textbf{Page} & \textbf{Description} \\
+\midrule
+\texttt{/} & Landing page with demo walkthrough, 3-feature value proposition, CTA \\
+\texttt{/dashboard} & Overview: cash balance gauge, 30-day forecast mini-chart, alert count, top 3 at-risk clients \\
+\texttt{/cashflow} & 90-day forecast area chart, client risk radar table, scenario planner sidebar \\
+\texttt{/loan} & Pre-filled eligibility form, approval gauges per lender, SHAP waterfall chart, what-if simulator \\
+\texttt{/watchlist} & Company search, real-time filing feed, anomaly timeline swimlane chart \\
+\texttt{/company/:code} & Anomaly history, pledge tracker, tone drift, D3 knowledge graph explorer \\
+\texttt{/settings} & Data sources, re-upload Tally/GST, alert thresholds, watched companies \\
+\bottomrule
+\end{tabularx}
+
+\vspace{1.5em}
+
+% ============================================================
+%  APPENDIX C --- KEY INTERVIEW TALKING POINTS
+% ============================================================
+\section*{Appendix C --- Key Interview Talking Points}
+\addcontentsline{toc}{section}{Appendix C --- Key Interview Talking Points}
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=6pt]
+
+\item \textbf{SHAP additivity for O(1) what-if inference}\\
+SHAP values are additive: \texttt{prediction = base\_value + sum(shap\_values)}. When one feature changes, you only need to recompute that feature's SHAP contribution. The pre-computed decomposition is cached in Redis, and the delta is approximated from a single fast inference pass (5ms), not a full model re-run. This is why the what-if simulator responds in under 100ms.
+
+\item \textbf{Why Isolation Forest rather than a supervised anomaly model}\\
+There are no ground-truth labels for ``anomalous quarter'' in corporate financial data. Collapses are rare and labelling them requires hindsight. Isolation Forest learns normality from each company's own history (contamination = 0.05) and flags statistical deviations --- this is company-relative, not cross-sectional, which eliminates false positives from genuinely aggressive business models.
+
+\item \textbf{Handling the LSTM cold-start problem}\\
+New users have fewer than 6 months of data. The solution is a two-model system: Prophet (a simpler, interpretable model) handles cold-start users and displays wider confidence intervals with an explicit accuracy warning. As the LSTM accumulates 180+ training samples, it automatically takes over. Users see the forecast improve over time, which is itself a product engagement mechanic.
+
+\item \textbf{Entity resolution across noisy Indian financial text}\\
+The same promoter appears as ``Rajesh Kumar Sharma'', ``R.K.\ Sharma'', and ``Rajesh Sharma'' across 10 years of PDFs. A two-pass approach is used: exact CIN/PAN match first, then RapidFuzz token-sort ratio for company names, then sentence embedding cosine similarity for person names. The entity\_aliases table is human-correctable via an admin UI for edge cases.
+
+\item \textbf{Why one unified data pipeline for three features}\\
+The cash flow data is credit data. The same Tally transaction history that trains the LSTM also computes the loan eligibility features. The same client concentration metric that flags a cash risk also informs the SHAP explanation on the loan page. No redundant data entry and cross-module features (e.g.\ a watchlist alert on a client who is also your highest-concentration revenue source) are only possible because of the shared entity resolution layer.
+
+\end{enumerate}
+
+\vspace{2em}
+\begin{center}
+\small\color{mutedtext}--- End of NeevFinance 30-Day Build Planner ---
+\end{center}
+
+\end{document}
+
+
+
+
+
+
+

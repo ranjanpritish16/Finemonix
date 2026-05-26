@@ -1,345 +1,302 @@
+"use client";
+
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+type SourceStatus = {
+  type: "tally" | "gst" | "bank";
+  label: string;
+  status: "connected" | "not_connected";
+  records: number;
+  last_sync: string | null;
+};
+
+type IntegrationsSummary = {
+  business_id: number;
+  quality_score: number;
+  connected_sources: SourceStatus[];
+  supported_uploads: Array<{ type: "tally" | "gst" | "bank"; label: string; accept: string }>;
+};
+
+type UploadStatus = {
+  task_id: string;
+  state: string;
+  percent: number;
+  status: string;
+  error: string | null;
+  result: unknown;
+};
+
+const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const businessId = 1;
+
 export default function IntegrationsPage() {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [summary, setSummary] = useState<IntegrationsSummary | null>(null);
+  const [selectedType, setSelectedType] = useState<"tally" | "gst" | "bank">("tally");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const selectedUpload = useMemo(
+    () => summary?.supported_uploads.find((upload) => upload.type === selectedType),
+    [selectedType, summary],
+  );
+
+  async function loadSummary() {
+    try {
+      const res = await fetch(`${backendUrl}/api/data/integrations/${businessId}`, { cache: "no-store" });
+      if (!res.ok) throw new Error("Could not load integrations");
+      setSummary((await res.json()) as IntegrationsSummary);
+    } catch {
+      setError("Integration data is unavailable. Start the backend and try again.");
+    }
+  }
+
+  useEffect(() => {
+    loadSummary();
+  }, []);
+
+  useEffect(() => {
+    if (!uploadStatus?.task_id) return;
+    if (["SUCCESS", "FAILURE"].includes(uploadStatus.state)) return;
+
+    const timer = window.setInterval(async () => {
+      try {
+        const res = await fetch(`${backendUrl}/api/data/status/${uploadStatus.task_id}`, { cache: "no-store" });
+        if (!res.ok) return;
+        const nextStatus = (await res.json()) as UploadStatus;
+        setUploadStatus(nextStatus);
+        if (nextStatus.state === "SUCCESS") {
+          setUploading(false);
+          loadSummary();
+        }
+        if (nextStatus.state === "FAILURE") {
+          setUploading(false);
+          setError(nextStatus.error || "Upload processing failed.");
+        }
+      } catch {
+        setError("Could not refresh upload status.");
+      }
+    }, 2000);
+
+    return () => window.clearInterval(timer);
+  }, [uploadStatus?.task_id, uploadStatus?.state]);
+
+  async function uploadFile() {
+    if (!selectedFile) {
+      setError("Choose a file before uploading.");
+      return;
+    }
+
+    setError(null);
+    setUploading(true);
+    setUploadStatus(null);
+
+    const formData = new FormData();
+    formData.append("business_id", String(businessId));
+    formData.append("file_type", selectedType);
+    formData.append("file", selectedFile);
+
+    try {
+      const res = await fetch(`${backendUrl}/api/data/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const payload = await res.json().catch(() => null);
+        throw new Error(payload?.detail || "Upload failed");
+      }
+
+      const payload = (await res.json()) as { task_id: string };
+      setUploadStatus({
+        task_id: payload.task_id,
+        state: "PENDING",
+        percent: 0,
+        status: "Queued in background",
+        error: null,
+        result: null,
+      });
+    } catch (err) {
+      setUploading(false);
+      setError(err instanceof Error ? err.message : "Upload failed.");
+    }
+  }
+
+  const sources = summary?.connected_sources || [];
+
   return (
-    <div style={{ fontFamily: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif" }}>
-      <div style={{ display: "flex", padding: "24px", flexDirection: "row", gap: "16px" }}>
-        <div style={{ width: "200px", height: "100px" }}></div>
-        <div style={{ width: "70%", padding: "16px" }}>
+    <div style={{ fontFamily: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif", padding: "24px", display: "flex", flexDirection: "column", gap: "18px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <h1 style={{ margin: "0 0 6px", fontSize: "26px", fontWeight: 700, color: "#111827", lineHeight: 1.3 }}>
+            Data <span style={{ color: "#16a34a" }}>Hub</span>
+          </h1>
+          <p style={{ margin: 0, fontSize: "13px", color: "#6b7280", lineHeight: 1.5, maxWidth: "680px" }}>
+            Upload Tally XML, GST JSON, and bank CSV files into the backend processing pipeline.
+          </p>
+        </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              <h1 style={{ margin: "0 0 6px", fontSize: "26px", fontWeight: 700, color: "#111827", lineHeight: 1.3, letterSpacing: "-0.01em" }}>Data <span style={{ color: "#16a34a" }}>Hub</span></h1>
-              <p style={{ margin: 0, fontSize: "13px", fontWeight: 400, color: "#6b7280", lineHeight: 1.5 }}>Centralize your business intelligence by integrating bank statements, ERP records, and accounting software.</p>
-            </div>
-
-            <button style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              backgroundColor: "#00c48c",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              padding: "10px 16px",
-              fontSize: "13px",
-              fontWeight: 500,
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}>
-              ✦ AI Processing Active
-            </button>
-          </div>
-
+        <div style={{ backgroundColor: "#e8f9f4", color: "#047857", border: "1px solid #b2edd8", borderRadius: "8px", padding: "10px 16px", fontSize: "13px", fontWeight: 600 }}>
+          Data quality {summary?.quality_score ?? 0}%
         </div>
       </div>
-      <div style={{ display: "flex", padding: "24px", flexDirection: "row", gap: "16px" }}>
-        <div style={{ width: "250px", height: "100px" }}></div>
-        <div style={{ display: "flex", padding: "12px", flexDirection: "column", gap: "16px" }}>
-          <div style={{ padding: "16px", backgroundColor: "white", borderRadius: "20px" }}>
-            <div style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "24px",
-              gap: "16px",
-              textAlign: "center",
-            }}>
 
-              {/* Cloud upload icon */}
-              <div style={{
-                width: "60px", height: "60px",
-                borderRadius: "50%",
-                backgroundColor: "#e8f4fd",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5aabf7" strokeWidth="1.8">
-                  <polyline points="16 16 12 12 8 16" />
-                  <line x1="12" y1="12" x2="12" y2="21" />
-                  <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-                </svg>
-              </div>
-
-              {/* Title + description */}
-              <div>
-                <h3 style={{ margin: "0 0 6px", fontSize: "14px", fontWeight: 600, color: "#111827", letterSpacing: "-0.01em" }}>
-                  Upload Financial Files
-                </h3>
-                <p style={{ margin: 0, fontSize: "12px", fontWeight: 400, color: "#6b7280", maxWidth: "380px", lineHeight: 1.5 }}>
-                  Drag and drop Tally XML, GST JSON, Bank CSV, or PDF files here. We'll automatically extract and categorize the data.
-                </p>
-              </div>
-
-              {/* Buttons */}
-              <div style={{ display: "flex", gap: "12px" }}>
-                <button style={{
-                  display: "flex", alignItems: "center", gap: "7px",
-                  backgroundColor: "#1e2a4a", color: "#fff",
-                  border: "none", borderRadius: "8px",
-                  padding: "10px 20px", fontSize: "13px", fontWeight: 500, cursor: "pointer",
-                }}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  Browse Files
-                </button>
-
-                <button style={{
-                  display: "flex", alignItems: "center", gap: "7px",
-                  backgroundColor: "#e8f9f4", color: "#00c48c",
-                  border: "1px solid #b2edd8", borderRadius: "8px",
-                  padding: "10px 20px", fontSize: "13px", fontWeight: 500, cursor: "pointer",
-                }}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="3" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
-                  </svg>
-                  Direct API
-                </button>
-              </div>
-
-              {/* Supported sources */}
-              <div style={{ display: "flex", gap: "20px", marginTop: "4px" }}>
-                {["Tally Prime", "GST Portal", "Bank Feeds"].map(label => (
-                  <span key={label} style={{
-                    display: "flex", alignItems: "center", gap: "5px",
-                    fontSize: "11px", fontWeight: 500, color: "#9ca3af", letterSpacing: "0.03em",
-                  }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    {label}
-                  </span>
-                ))}
-              </div>
-
-            </div>
-          </div>
-          <div style={{ height: "300px" }}>
-            {/* Recent Activity Card */}
-            <div style={{
-              backgroundColor: "#e3eef7",
-              borderRadius: "12px",
-              padding: "20px",
-              marginTop: "16px",
-            }}>
-
-              {/* Header */}
-              <p style={{ margin: "0 0 16px", fontSize: "11px", fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase" }}>
-                Recent Activity
-              </p>
-
-              {[
-                {
-                  type: "XML",
-                  typeColor: "#00c48c",
-                  typeBg: "#e6faf3",
-                  name: "Tally_Export_Q3.xml",
-                  meta: "4.2 MB • Processing Ledger Entries",
-                  status: "progress",
-                },
-                {
-                  type: "PDF",
-                  typeColor: "#6b7280",
-                  typeBg: "#f3f4f6",
-                  name: "HDFC_Current_Oct23.pdf",
-                  meta: "1.1 MB • Completed 2 mins ago",
-                  status: "done",
-                },
-              ].map((file, i) => (
-                <div key={i} style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "12px",
-                  borderRadius: "8px",
-                  backgroundColor: "#f9fafb",
-                  marginBottom: i === 0 ? "8px" : "0",
-                }}>
-
-                  <div style={{
-                    width: "40px", height: "40px",
-                    borderRadius: "8px",
-                    backgroundColor: file.typeBg,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "10px", fontWeight: 700,
-                    color: file.typeColor,
-                    flexShrink: 0,
-                  }}>
-                    {file.type}
-                  </div>
-
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: "0 0 3px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>
-                      {file.name}
-                    </p>
-                    <p style={{ margin: 0, fontSize: "12px", fontWeight: 400, color: "#9ca3af" }}>
-                      {file.meta}
-                    </p>
-                  </div>
-
-                  {file.status === "progress" ? (
-                    <div style={{ width: "80px", height: "4px", backgroundColor: "#e5e7eb", borderRadius: "2px", flexShrink: 0 }}>
-                      <div style={{ width: "55%", height: "100%", backgroundColor: "#1e2a4a", borderRadius: "2px" }} />
-                    </div>
-                  ) : (
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style={{ flexShrink: "0" }}>
-                      <circle cx="12" cy="12" r="10" fill="#e6faf3" />
-                      <polyline points="8 12 11 15 16 9" stroke="#00c48c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
-
-                </div>
-              ))}
-
-            </div>
-          </div>
+      {error && (
+        <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", borderRadius: "8px", padding: "12px 14px", fontSize: "13px" }}>
+          {error}
         </div>
-        <div style={{}}>
-          {/* Right Column — Connected Sources Card */}
-          <div style={{
-            backgroundColor: "#d6e8f5",
-            borderRadius: "12px",
-            padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}>
+      )}
+
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.3fr) minmax(320px, 0.7fr)", gap: "16px" }}>
+        <div style={{ padding: "24px", backgroundColor: "white", borderRadius: "12px", border: "1px solid #e5e7eb" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", textAlign: "center", minHeight: "300px" }}>
+            <div style={{ width: "60px", height: "60px", borderRadius: "50%", backgroundColor: "#e8f4fd", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5aabf7" strokeWidth="1.8">
+                <polyline points="16 16 12 12 8 16" />
+                <line x1="12" y1="12" x2="12" y2="21" />
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+              </svg>
+            </div>
 
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#111827", letterSpacing: "-0.01em" }}>
-                  Connected Sources
-                </p>
-                <span style={{ fontSize: "12px", fontWeight: 400, color: "#6b7280", cursor: "pointer" }}>Manage All</span>
-              </div>
+              <h3 style={{ margin: "0 0 6px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>Upload Financial Files</h3>
+              <p style={{ margin: 0, fontSize: "12px", color: "#6b7280", maxWidth: "420px", lineHeight: 1.5 }}>
+                Files are sent to FastAPI and processed by Celery. Keep the worker running to complete parsing.
+              </p>
+            </div>
 
-              {[
-                {
-                  icon: "🏦",
-                  iconBg: "#e8f0fe",
-                  name: "HDFC Bank • • 4902",
-                  meta: "Last sync: 15 mins ago",
-                  status: "LIVE SYNC",
-                  statusColor: "#00c48c",
-                  statusBg: "#e6faf3",
-                },
-                {
-                  icon: "📚",
-                  iconBg: "#fff0e6",
-                  name: "Zoho Books Integration",
-                  meta: "Last sync: Today, 08:30 AM",
-                  status: "LIVE SYNC",
-                  statusColor: "#00c48c",
-                  statusBg: "#e6faf3",
-                },
-                {
-                  icon: "💳",
-                  iconBg: "#f3f4f6",
-                  name: "Razorpay X",
-                  meta: "Token expired 2 days ago",
-                  status: "RE-AUTH REQUIRED",
-                  statusColor: "#ef4444",
-                  statusBg: "#fef2f2",
-                },
-              ].map((source, i, arr) => (
-                <div key={i} style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "12px",
-                  borderRadius: "8px",
-                  backgroundColor: "#fff",
-                  marginBottom: i < arr.length - 1 ? "8px" : "0",
-                }}>
-
-                  <div style={{
-                    width: "38px", height: "38px",
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center" }}>
+              {(["tally", "gst", "bank"] as const).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => {
+                    setSelectedType(type);
+                    setSelectedFile(null);
+                    if (inputRef.current) inputRef.current.value = "";
+                  }}
+                  style={{
+                    border: selectedType === type ? "1px solid #00c48c" : "1px solid #d1d5db",
+                    background: selectedType === type ? "#e8f9f4" : "#fff",
+                    color: selectedType === type ? "#047857" : "#374151",
                     borderRadius: "8px",
-                    backgroundColor: source.iconBg,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "18px",
-                    flexShrink: 0,
-                  }}>
-                    {source.icon}
-                  </div>
-
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: "0 0 3px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>
-                      {source.name}
-                    </p>
-                    <p style={{ margin: 0, fontSize: "11px", fontWeight: 400, color: "#9ca3af" }}>
-                      {source.meta}
-                    </p>
-                  </div>
-
-                  <span style={{
-                    fontSize: "10px",
+                    padding: "8px 12px",
+                    fontSize: "12px",
                     fontWeight: 600,
-                    color: source.statusColor,
-                    backgroundColor: source.statusBg,
-                    padding: "3px 8px",
-                    borderRadius: "20px",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                    letterSpacing: "0.04em",
-                  }}>
-                    {source.status}
-                  </span>
-
-                </div>
+                    cursor: "pointer",
+                  }}
+                >
+                  {type.toUpperCase()}
+                </button>
               ))}
             </div>
 
-            {/* Bottom — Add Accounting Software */}
-            <div style={{
-              marginTop: "16px",
-              backgroundColor: "#1e2a4a",
-              borderRadius: "12px",
-              padding: "20px",
-              position: "relative",
-              overflow: "hidden",
-            }}>
+            <input
+              ref={inputRef}
+              type="file"
+              accept={selectedUpload?.accept}
+              onChange={(event) => setSelectedFile(event.target.files?.[0] || null)}
+              style={{ display: "none" }}
+            />
 
-              <div style={{
-                position: "absolute", right: "-20px", top: "-20px",
-                width: "100px", height: "100px",
-                borderRadius: "50%",
-                backgroundColor: "rgba(255,255,255,0.04)",
-              }} />
-              <div style={{
-                position: "absolute", right: "20px", bottom: "-30px",
-                width: "80px", height: "80px",
-                borderRadius: "50%",
-                backgroundColor: "rgba(255,255,255,0.04)",
-              }} />
-
-              <p style={{ margin: "0 0 6px", fontSize: "14px", fontWeight: 600, color: "#fff", letterSpacing: "-0.01em" }}>
-                Add Accounting Software
-              </p>
-              <p style={{ margin: "0 0 16px", fontSize: "12px", fontWeight: 400, color: "#94a3b8", lineHeight: 1.5 }}>
-                Directly sync with Tally Cloud, QuickBooks, or Zoho for real-time risk monitoring.
-              </p>
-
-              <button style={{
-                backgroundColor: "#00c48c",
-                color: "#fff",
-                border: "none",
-                borderRadius: "8px",
-                padding: "8px 16px",
-                fontSize: "13px",
-                fontWeight: 500,
-                cursor: "pointer",
-              }}>
-                Configure API
+            <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                style={{ backgroundColor: "#1e2a4a", color: "#fff", border: "none", borderRadius: "8px", padding: "10px 20px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+              >
+                Browse {selectedUpload?.label || "File"}
               </button>
 
+              <button
+                type="button"
+                onClick={uploadFile}
+                disabled={uploading || !selectedFile}
+                style={{
+                  backgroundColor: uploading || !selectedFile ? "#d1d5db" : "#00c48c",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "10px 20px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: uploading || !selectedFile ? "not-allowed" : "pointer",
+                }}
+              >
+                {uploading ? "Processing..." : "Upload"}
+              </button>
             </div>
 
+            {selectedFile && <p style={{ margin: 0, fontSize: "12px", color: "#6b7280" }}>{selectedFile.name}</p>}
+
+            {uploadStatus && (
+              <div style={{ width: "100%", maxWidth: "420px", textAlign: "left" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "#6b7280", marginBottom: "6px" }}>
+                  <span>{uploadStatus.status}</span>
+                  <span>{uploadStatus.percent}%</span>
+                </div>
+                <div style={{ height: "6px", backgroundColor: "#e5e7eb", borderRadius: "999px", overflow: "hidden" }}>
+                  <div style={{ width: `${uploadStatus.percent}%`, height: "100%", backgroundColor: uploadStatus.state === "FAILURE" ? "#ef4444" : "#1e2a4a" }} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div style={{ backgroundColor: "#d6e8f5", borderRadius: "12px", padding: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#111827" }}>Connected Sources</p>
+            <span style={{ fontSize: "12px", color: "#6b7280" }}>{sources.filter((source) => source.status === "connected").length}/3 live</span>
+          </div>
+
+          {sources.length === 0 ? (
+            <div style={{ color: "#6b7280", fontSize: "13px" }}>Loading sources...</div>
+          ) : (
+            sources.map((source) => (
+              <SourceRow key={source.type} source={source} />
+            ))
+          )}
+
+          <div style={{ marginTop: "auto", backgroundColor: "#1e2a4a", borderRadius: "12px", padding: "20px" }}>
+            <p style={{ margin: "0 0 6px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>API Status</p>
+            <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#94a3b8", lineHeight: 1.5 }}>
+              Upload endpoint: `/api/data/upload`. Status polling: `/api/data/status/:taskId`.
+            </p>
+            <button
+              type="button"
+              onClick={loadSummary}
+              style={{ backgroundColor: "#00c48c", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 16px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+            >
+              Refresh
+            </button>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function SourceRow({ source }: { source: SourceStatus }) {
+  const connected = source.status === "connected";
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", borderRadius: "8px", backgroundColor: "#fff" }}>
+      <div style={{ width: "38px", height: "38px", borderRadius: "8px", backgroundColor: connected ? "#e6faf3" : "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 800, color: connected ? "#047857" : "#6b7280", flexShrink: 0 }}>
+        {source.type.toUpperCase()}
+      </div>
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ margin: "0 0 3px", fontSize: "13px", fontWeight: 600, color: "#111827" }}>{source.label}</p>
+        <p style={{ margin: 0, fontSize: "11px", color: "#9ca3af" }}>
+          {source.records} records{source.last_sync ? `, last sync ${source.last_sync}` : ""}
+        </p>
+      </div>
+
+      <span style={{ fontSize: "10px", fontWeight: 700, color: connected ? "#00c48c" : "#6b7280", backgroundColor: connected ? "#e6faf3" : "#f3f4f6", padding: "3px 8px", borderRadius: "20px", whiteSpace: "nowrap" }}>
+        {connected ? "CONNECTED" : "NO DATA"}
+      </span>
     </div>
   );
 }

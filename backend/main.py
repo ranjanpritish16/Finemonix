@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routers import (
+    auth,
     data,
     forecast,
     loan,
@@ -17,9 +18,16 @@ from backend.routers import (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: run DB checks, warm up models, etc.
+    # Startup: automatically create tables in database
+    from backend.database import engine
+    from backend.database import Base
+    from sqlalchemy import text
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+        await conn.execute(text("ALTER TABLE entities ADD COLUMN IF NOT EXISTS gstin VARCHAR(15)"))
     yield
     # Shutdown: close connections
+
 
 
 app = FastAPI(
@@ -31,13 +39,19 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],   # Next.js dev origin
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # All routers mounted under /api
+app.include_router(auth.router,      prefix="/api")
 app.include_router(health.router,    prefix="/api")
 app.include_router(data.router,      prefix="/api")
 app.include_router(forecast.router,  prefix="/api")
