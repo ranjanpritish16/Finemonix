@@ -104,10 +104,29 @@ class Invoice(Base):
     paid_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     status: Mapped[str] = mapped_column(String(20), default="pending")  # 'pending', 'paid', 'overdue', 'partial'
     days_overdue: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    source: Mapped[str] = mapped_column(String(10), default="manual")
 
     # Relationships
     business: Mapped[Business] = relationship("Business", back_populates="invoices")
     client: Mapped[Optional[Client]] = relationship("Client", back_populates="invoices")
+
+
+class DataImportJob(Base):
+    __tablename__ = "data_import_jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    business_id: Mapped[int] = mapped_column(Integer, ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    task_id: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    file_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="queued")
+    percent: Mapped[int] = mapped_column(Integer, default=0)
+    message: Mapped[str] = mapped_column(String(255), default="Queued in background")
+    records_added: Mapped[int] = mapped_column(Integer, default=0)
+    error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    result: Mapped[Dict[str, Any]] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class CashFlowForecast(Base):

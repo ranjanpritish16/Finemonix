@@ -1,11 +1,12 @@
 import asyncio
 import os
 import logging
+from datetime import datetime
 from celery import shared_task
 from sqlalchemy.future import select
 
 from backend.database import async_session_maker
-from backend.models import Business, Client, Transaction, Invoice
+from backend.models import Business, Client, DataImportJob, Transaction, Invoice
 from backend.services.tally_parser import TallyParser
 from backend.services.gst_parser import GSTParser
 from backend.services.bank_parser import BankParser
@@ -48,6 +49,53 @@ async def _mark_source_connected(session, business_id: int, source: str):
     session.add(business)
 
 
+async def _update_import_job(
+    session,
+    task_id: str,
+    status: str,
+    percent: int,
+    message: str,
+    records_added: int = 0,
+    error_message: str | None = None,
+    result: dict | None = None,
+):
+    stmt = select(DataImportJob).where(DataImportJob.task_id == task_id)
+    res = await session.execute(stmt)
+    job = res.scalars().first()
+    if not job:
+        return
+
+    job.status = status
+    job.percent = percent
+    job.message = message
+    job.records_added = records_added
+    job.error_message = error_message
+    if result is not None:
+        job.result = result
+    if status in {"success", "failed"}:
+        job.completed_at = datetime.utcnow()
+    session.add(job)
+    await session.flush()
+
+
+async def _store_task_failure(task_id: str, error_message: str):
+    async with async_session_maker() as session:
+        try:
+            await _update_import_job(
+                session,
+                task_id,
+                "failed",
+                100,
+                "Processing failed",
+                error_message=error_message,
+                result={"error": error_message},
+            )
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            logger.exception("Failed to persist import job failure")
+
+
 @shared_task(bind=True)
 def process_tally_upload(self, file_path: str, business_id: int):
     """
@@ -56,14 +104,12 @@ def process_tally_upload(self, file_path: str, business_id: int):
     self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading file"})
     
     if not os.path.exists(file_path):
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": "File not found"})
         raise FileNotFoundError(file_path)
 
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             xml_content = f.read()
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": f"Failed to read file: {e}"})
         raise
 
     self.update_state(state="PROGRESS", meta={"percent": 30, "status": "Parsing Tally XML"})
@@ -72,6 +118,13 @@ def process_tally_upload(self, file_path: str, business_id: int):
         async with async_session_maker() as session:
             try:
                 await _ensure_business(session, business_id)
+                await _update_import_job(
+                    session,
+                    self.request.id,
+                    "processing",
+                    10,
+                    "Reading file",
+                )
 
                 # Parse
                 parser = TallyParser(xml_content)
@@ -172,6 +225,7 @@ def process_tally_upload(self, file_path: str, business_id: int):
                         issue_date=pinv["issue_date"],
                         due_date=pinv["due_date"],
                         status=pinv["status"],
+                        source="tally",
                     )
                     session.add(new_inv)
 
@@ -180,6 +234,22 @@ def process_tally_upload(self, file_path: str, business_id: int):
                 self.update_state(state="PROGRESS", meta={"percent": 90, "status": "Updating metrics"})
                 await pipeline.update_client_metrics(business_id)
                 await _mark_source_connected(session, business_id, "tally")
+                result = {
+                    "percent": 100,
+                    "status": "Success",
+                    "added_transactions": len(txs_deduped),
+                    "added_invoices": len(parsed_invoices),
+                    "added_records": len(txs_deduped) + len(parsed_invoices),
+                }
+                await _update_import_job(
+                    session,
+                    self.request.id,
+                    "success",
+                    100,
+                    "Processing completed successfully",
+                    records_added=result["added_records"],
+                    result=result,
+                )
 
                 await session.commit()
                 
@@ -187,21 +257,22 @@ def process_tally_upload(self, file_path: str, business_id: int):
                 if os.path.exists(file_path):
                     os.remove(file_path)
 
-                return {"percent": 100, "status": "Success", "added_transactions": len(txs_deduped)}
+                return result
             
             except Exception as inner_e:
                 await session.rollback()
                 logger.error(f"Error in process_tally_upload run: {inner_e}")
+                await _store_task_failure(self.request.id, str(inner_e))
                 raise inner_e
 
     try:
         res = asyncio.run(run())
         return res
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": str(e)})
         # Cleanup file on error
         if os.path.exists(file_path):
             os.remove(file_path)
+        asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise
 
 
@@ -213,14 +284,12 @@ def process_gst_upload(self, file_path: str, business_id: int):
     self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading file"})
     
     if not os.path.exists(file_path):
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": "File not found"})
         raise FileNotFoundError(file_path)
 
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             json_content = f.read()
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": f"Failed to read file: {e}"})
         raise
 
     # Guess GSTR type from file path or content
@@ -234,6 +303,13 @@ def process_gst_upload(self, file_path: str, business_id: int):
         async with async_session_maker() as session:
             try:
                 await _ensure_business(session, business_id)
+                await _update_import_job(
+                    session,
+                    self.request.id,
+                    "processing",
+                    10,
+                    "Reading file",
+                )
 
                 parser = GSTParser(json_content)
                 parsed_invoices, parsed_clients = parser.parse(file_type=file_type)
@@ -273,6 +349,7 @@ def process_gst_upload(self, file_path: str, business_id: int):
                 self.update_state(state="PROGRESS", meta={"percent": 75, "status": "Saving invoices"})
 
                 # Insert invoices
+                added_invoices = 0
                 for pinv in parsed_invoices:
                     cp_id = None
                     cp_name = pinv.get("counterparty_name")
@@ -297,14 +374,31 @@ def process_gst_upload(self, file_path: str, business_id: int):
                             issue_date=pinv["issue_date"],
                             due_date=pinv["due_date"],
                             status=pinv["status"],
+                            source="gst",
                         )
                         session.add(new_inv)
+                        added_invoices += 1
 
                 await session.flush()
 
                 self.update_state(state="PROGRESS", meta={"percent": 90, "status": "Updating metrics"})
                 await pipeline.update_client_metrics(business_id)
                 await _mark_source_connected(session, business_id, "gst")
+                result = {
+                    "percent": 100,
+                    "status": "Success",
+                    "added_invoices": added_invoices,
+                    "added_records": added_invoices,
+                }
+                await _update_import_job(
+                    session,
+                    self.request.id,
+                    "success",
+                    100,
+                    "Processing completed successfully",
+                    records_added=added_invoices,
+                    result=result,
+                )
 
                 await session.commit()
                 
@@ -312,20 +406,21 @@ def process_gst_upload(self, file_path: str, business_id: int):
                 if os.path.exists(file_path):
                     os.remove(file_path)
 
-                return {"percent": 100, "status": "Success", "added_invoices": len(parsed_invoices)}
+                return result
             
             except Exception as inner_e:
                 await session.rollback()
                 logger.error(f"Error in process_gst_upload run: {inner_e}")
+                await _store_task_failure(self.request.id, str(inner_e))
                 raise inner_e
 
     try:
         res = asyncio.run(run())
         return res
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": str(e)})
         if os.path.exists(file_path):
             os.remove(file_path)
+        asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise
 
 
@@ -337,14 +432,12 @@ def process_bank_upload(self, file_path: str, business_id: int):
     self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading file"})
     
     if not os.path.exists(file_path):
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": "File not found"})
         raise FileNotFoundError(file_path)
 
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             csv_content = f.read()
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": f"Failed to read file: {e}"})
         raise
 
     self.update_state(state="PROGRESS", meta={"percent": 30, "status": "Parsing Bank CSV"})
@@ -353,6 +446,13 @@ def process_bank_upload(self, file_path: str, business_id: int):
         async with async_session_maker() as session:
             try:
                 await _ensure_business(session, business_id)
+                await _update_import_job(
+                    session,
+                    self.request.id,
+                    "processing",
+                    10,
+                    "Reading file",
+                )
 
                 parser = BankParser(csv_content)
                 parsed_txs = parser.parse()
@@ -405,6 +505,21 @@ def process_bank_upload(self, file_path: str, business_id: int):
                 pipeline = EntityResolutionPipeline(session)
                 await pipeline.update_client_metrics(business_id)
                 await _mark_source_connected(session, business_id, "bank")
+                result = {
+                    "percent": 100,
+                    "status": "Success",
+                    "added_transactions": len(txs_deduped),
+                    "added_records": len(txs_deduped),
+                }
+                await _update_import_job(
+                    session,
+                    self.request.id,
+                    "success",
+                    100,
+                    "Processing completed successfully",
+                    records_added=len(txs_deduped),
+                    result=result,
+                )
 
                 await session.commit()
                 
@@ -412,18 +527,19 @@ def process_bank_upload(self, file_path: str, business_id: int):
                 if os.path.exists(file_path):
                     os.remove(file_path)
 
-                return {"percent": 100, "status": "Success", "added_transactions": len(txs_deduped)}
+                return result
             
             except Exception as inner_e:
                 await session.rollback()
                 logger.error(f"Error in process_bank_upload run: {inner_e}")
+                await _store_task_failure(self.request.id, str(inner_e))
                 raise inner_e
 
     try:
         res = asyncio.run(run())
         return res
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"percent": 100, "error": str(e)})
         if os.path.exists(file_path):
             os.remove(file_path)
+        asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise

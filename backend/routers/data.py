@@ -1,11 +1,13 @@
 import os
 import shutil
+from datetime import datetime
+from uuid import uuid4
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
 from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.database import get_db
-from backend.models import Business, Transaction
+from backend.models import Business, DataImportJob, Invoice, Transaction
 
 try:
     from celery.result import AsyncResult
@@ -34,6 +36,7 @@ async def upload_data(
     business_id: int = Form(...),
     file_type: str = Form(...),
     file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Endpoint to upload Tally XML, GST JSON, or Bank statement CSV files.
@@ -44,6 +47,21 @@ async def upload_data(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid file_type. Must be 'tally', 'gst', or 'bank'.",
+        )
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="A file is required.",
+        )
+    allowed_extensions = {
+        "tally": (".xml",),
+        "gst": (".json",),
+        "bank": (".csv",),
+    }
+    if not file.filename.lower().endswith(allowed_extensions[file_type_cleaned]):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file extension for {file_type_cleaned}.",
         )
     if celery_app is None:
         raise HTTPException(
@@ -64,17 +82,26 @@ async def upload_data(
             detail=f"Failed to save file: {e}",
         )
 
+    task_id = str(uuid4())
+    job = DataImportJob(
+        business_id=business_id,
+        task_id=task_id,
+        file_type=file_type_cleaned,
+        filename=file.filename,
+        status="queued",
+        percent=0,
+        message="Queued in background",
+    )
+    db.add(job)
+    await db.commit()
+
     # Queue Celery task
-    task_id = None
     if file_type_cleaned == "tally":
-        task = process_tally_upload.delay(temp_file_path, business_id)
-        task_id = task.id
+        process_tally_upload.apply_async(args=[temp_file_path, business_id], task_id=task_id)
     elif file_type_cleaned == "gst":
-        task = process_gst_upload.delay(temp_file_path, business_id)
-        task_id = task.id
+        process_gst_upload.apply_async(args=[temp_file_path, business_id], task_id=task_id)
     elif file_type_cleaned == "bank":
-        task = process_bank_upload.delay(temp_file_path, business_id)
-        task_id = task.id
+        process_bank_upload.apply_async(args=[temp_file_path, business_id], task_id=task_id)
 
     return {
         "message": "File uploaded successfully, processing started",
@@ -84,7 +111,10 @@ async def upload_data(
 
 
 @router.get("/status/{task_id}")
-async def get_upload_status(task_id: str):
+async def get_upload_status(
+    task_id: str,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Returns the execution state and progress metadata of a Celery upload processing task.
     """
@@ -94,6 +124,11 @@ async def get_upload_status(task_id: str):
             detail="Upload status is unavailable because Celery is not installed in this environment.",
         )
 
+    job_result = await db.execute(
+        select(DataImportJob).where(DataImportJob.task_id == task_id)
+    )
+    job = job_result.scalars().first()
+
     res = AsyncResult(task_id, app=celery_app)
 
     try:
@@ -101,6 +136,15 @@ async def get_upload_status(task_id: str):
         info = res.info
         result_value = res.result
     except Exception as exc:
+        if job:
+            return {
+                "task_id": task_id,
+                "state": job.status.upper(),
+                "percent": job.percent,
+                "status": job.message,
+                "error": job.error_message,
+                "result": job.result or None,
+            }
         return {
             "task_id": task_id,
             "state": "FAILURE",
@@ -137,6 +181,24 @@ async def get_upload_status(task_id: str):
     else:
         status_msg = state
 
+    if job:
+        job.status = state.lower()
+        job.percent = percent
+        job.message = status_msg
+        job.error_message = error_msg
+        if state in {"SUCCESS", "FAILURE"} and job.completed_at is None:
+            job.completed_at = datetime.utcnow()
+        if isinstance(result, dict):
+            job.result = result
+            job.records_added = int(
+                result.get("added_records")
+                or result.get("added_transactions")
+                or result.get("added_invoices")
+                or 0
+            )
+        db.add(job)
+        await db.commit()
+
     return {
         "task_id": task_id,
         "state": state,
@@ -166,8 +228,26 @@ async def get_integrations_summary(
         source: int(count) for source, count in source_counts_result.all()
     }
 
+    gst_invoice_count_result = await db.execute(
+        select(func.count()).select_from(Invoice).where(
+            Invoice.business_id == business_id,
+            Invoice.source == "gst",
+        )
+    )
+    gst_invoice_count = int(gst_invoice_count_result.scalar() or 0)
+
+    connected_sources = business.data_sources_connected if business else []
+    if gst_invoice_count == 0 and "gst" in connected_sources:
+        # Dev fallback for invoices inserted before the invoice.source column existed.
+        legacy_gst_invoice_count_result = await db.execute(
+            select(func.count()).select_from(Invoice).where(Invoice.business_id == business_id)
+        )
+        gst_invoice_count = int(legacy_gst_invoice_count_result.scalar() or 0)
+
+    source_counts["gst"] = max(source_counts.get("gst", 0), gst_invoice_count)
+
     latest_by_source = {}
-    for source in ["tally", "gst", "bank"]:
+    for source in ["tally", "bank"]:
         latest_result = await db.execute(
             select(Transaction)
             .where(
@@ -180,7 +260,22 @@ async def get_integrations_summary(
         latest = latest_result.scalars().first()
         latest_by_source[source] = latest.date.isoformat() if latest else None
 
-    connected_sources = business.data_sources_connected if business else []
+    latest_gst_invoice_result = await db.execute(
+        select(Invoice)
+        .where(Invoice.business_id == business_id)
+        .order_by(desc(Invoice.issue_date), desc(Invoice.id))
+        .limit(1)
+    )
+    latest_gst_invoice = latest_gst_invoice_result.scalars().first()
+    latest_by_source["gst"] = latest_gst_invoice.issue_date.isoformat() if latest_gst_invoice else None
+
+    jobs_result = await db.execute(
+        select(DataImportJob)
+        .where(DataImportJob.business_id == business_id)
+        .order_by(desc(DataImportJob.created_at), desc(DataImportJob.id))
+        .limit(5)
+    )
+    recent_jobs = jobs_result.scalars().all()
 
     return {
         "business_id": business_id,
@@ -198,6 +293,21 @@ async def get_integrations_summary(
                 "last_sync": latest_by_source.get(source),
             }
             for source in ["tally", "gst", "bank"]
+        ],
+        "recent_activity": [
+            {
+                "task_id": job.task_id,
+                "file_type": job.file_type,
+                "filename": job.filename,
+                "status": job.status,
+                "percent": job.percent,
+                "message": job.message,
+                "records_added": job.records_added,
+                "error": job.error_message,
+                "created_at": job.created_at.isoformat(),
+                "completed_at": job.completed_at.isoformat() if job.completed_at else None,
+            }
+            for job in recent_jobs
         ],
         "supported_uploads": [
             {"type": "tally", "label": "Tally XML", "accept": ".xml"},

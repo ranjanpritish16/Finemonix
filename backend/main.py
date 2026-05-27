@@ -25,6 +25,7 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         await conn.execute(text("ALTER TABLE entities ADD COLUMN IF NOT EXISTS gstin VARCHAR(15)"))
+        await conn.execute(text("ALTER TABLE invoices ADD COLUMN IF NOT EXISTS source VARCHAR(10) DEFAULT 'manual'"))
     yield
     # Shutdown: close connections
 

@@ -1,0 +1,31 @@
+<ENVELOPE>
+  <HEADER>
+    <TALLYREQUEST>Import Data</TALLYREQUEST>
+  </HEADER>
+  <BODY>
+    <IMPORTDATA>
+      <REQUESTDESC>
+        <REPORTNAME>All Vouchers</REPORTNAME>
+      </REQUESTDESC>
+      <REQUESTDATA>
+        <TALLYMESSAGE xmlns:UDF="TallyUDF">
+          <VOUCHER VCHTYPE="Sales" ACTION="Create">
+            <DATE>20260527</DATE>
+            <VOUCHERNUMBER>INV-1001</VOUCHERNUMBER>
+            <PARTYLEDGERNAME>Sales Account</PARTYLEDGERNAME>
+            <ALLLEDGERENTRIES.LIST>
+              <LEDGERNAME>Customer ABC</LEDGERNAME>
+              <AMOUNT>-25000.00</AMOUNT>
+            </ALLLEDGERENTRIES.LIST>
+            <INVENTORYENTRIES.LIST>
+              <STOCKITEMNAME>Computer Monitor</STOCKITEMNAME>
+              <RATE>25000.00</RATE>
+              <BILLEDQTY>1 Nos</BILLEDQTY>
+              <AMOUNT>25000.00</AMOUNT>
+            </INVENTORYENTRIES.LIST>
+          </VOUCHER>
+        </TALLYMESSAGE>
+      </REQUESTDATA>
+    </IMPORTDATA>
+  </BODY>
+</ENVELOPE>
