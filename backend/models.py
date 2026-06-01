@@ -28,6 +28,7 @@ class Business(Base):
     data_sources_connected: Mapped[List[str]] = mapped_column(JSONB, default=list)
     quality_score: Mapped[int] = mapped_column(Integer, default=0)
     safety_threshold_inr: Mapped[float] = mapped_column(Numeric(15, 2), default=50000.0)
+    opening_balance: Mapped[float] = mapped_column(Numeric(15, 2), default=0.0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 
     # Relationships

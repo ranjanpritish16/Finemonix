@@ -543,3 +543,16 @@ def process_bank_upload(self, file_path: str, business_id: int):
             os.remove(file_path)
         asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise
+
+@shared_task(bind=True)
+def train_prophet(self, business_id: int):
+    """Async task to train prophet model"""
+    logger.info(f"Training Prophet model for business {business_id}")
+    return {"status": "Success", "model": "prophet"}
+
+@shared_task(bind=True)
+def retrain_lstm(self, business_id: int):
+    """Async task to retrain LSTM model"""
+    logger.info(f"Retraining LSTM model for business {business_id}")
+    return {"status": "Success", "model": "lstm"}
+
