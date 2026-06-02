@@ -674,6 +674,354 @@ http://localhost:8000/redoc
 
 ---
 
+## How Features Work Together: Complete Example Flow
+
+Here's how the features integrate to deliver complete financial intelligence:
+
+### Scenario: Onboarding a New Business and Generating Forecast
+
+**Step 1: User Registration**
+```bash
+POST /api/auth/register
+{
+  "email": "founder@abcenterprises.com",
+  "password": "secure_pass",
+  "full_name": "Amit Patel",
+  "business_name": "ABC Enterprises"
+}
+```
+✅ User account created + Business record initialized
+
+**Step 2: Upload Tally Export**
+```bash
+# Get last year's Tally export
+POST /api/data/upload
+Content-Type: multipart/form-data
+
+business_id=1&file_type=tally&file=Tally_Export_2025.xml
+```
+✅ File saved to temp storage
+✅ Celery background task queued
+✅ Returns task_id for progress tracking
+
+**Step 3: Async Processing (happens in background)**
+- Tally XML parsed → Extracts 15,000 transactions
+- Transactions deduplicated → Reduces to 12,000 unique transactions
+- Clients identified → 450 unique clients extracted
+- Entity resolution → Fuzzy matched to canonical entities (ABC Corp, ABC Enterprises Ltd → ABC Enterprises)
+- Data stored in PostgreSQL
+
+**Step 4: Check Progress**
+```bash
+GET /api/data/upload-status/task-abc-123
+
+{
+  "status": "processing",
+  "percent": 75,
+  "message": "Running entity resolution...",
+  "records_added": 9800
+}
+```
+
+**Step 5: Upload GST and Bank Data**
+```bash
+# Upload GST invoices
+POST /api/data/upload
+business_id=1&file_type=gst&file=GST_Invoices_2025.json
+
+# Upload bank statement
+POST /api/data/upload
+business_id=1&file_type=bank&file=Bank_Statement_2025.csv
+```
+✅ Data automatically deduplicated against existing Tally records
+
+**Step 6: Generate Cash Flow Forecast**
+```bash
+POST /api/forecast/cashflow
+{
+  "business_id": 1,
+  "days_ahead": 90,
+  "operating_threshold": 100000  # Red flag if balance falls below 1L
+}
+```
+
+Backend Processing:
+1. Retrieves all transactions from last 90 days
+2. Builds features (running balance, daily net flow, etc.)
+3. Runs LSTM model with MC Dropout → Get p10, p50, p90 predictions
+4. Runs Prophet model → Get seasonal forecast
+5. Ensemble blend both predictions (60% LSTM + 40% Prophet)
+6. Identifies danger zones where p10 < threshold
+7. Caches result in Redis
+
+**Response**:
+```json
+{
+  "forecast": [
+    {
+      "forecast_date": "2026-06-15",
+      "predicted_balance": 250000.00,
+      "p10_balance": 180000.00,
+      "p90_balance": 320000.00,
+      "model_version": "1.0"
+    }
+  ],
+  "danger_zones": [
+    {
+      "start_date": "2026-07-10",
+      "end_date": "2026-07-15",
+      "min_balance": 75000.00,
+      "shortfall": 25000.00,
+      "severity": "high"
+    }
+  ],
+  "generated_at": "2026-06-02T10:30:00Z"
+}
+```
+
+**Step 7: View Dashboard**
+```bash
+GET /api/dashboard/1
+
+{
+  "business": {"id": 1, "name": "ABC Enterprises", "quality_score": 92},
+  "current_balance": 450000.50,
+  "month_revenue": 1200000.00,
+  "month_expenses": 800000.00,
+  "outstanding_invoices": {
+    "pending": 250000.00,
+    "overdue": 50000.00
+  }
+}
+```
+
+**Step 8: Check Loan Eligibility (What-If Analysis)**
+```bash
+POST /api/loan/eligibility
+{
+  "business_id": 1,
+  "delay_days": 30,
+  "amount_override": null
+}
+```
+
+**Response**:
+```json
+{
+  "eligible": true,
+  "probability": 0.87,
+  "factors": {
+    "positive": [
+      {"factor": "Revenue Stability", "impact": 0.45}
+    ],
+    "negative": [
+      {"factor": "Payment Delays", "impact": -0.15}
+    ]
+  }
+}
+```
+
+---
+
+## Detailed API Endpoints Reference
+
+### Authentication Endpoints
+
+#### Register User
+```bash
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "secure_password_123",
+  "full_name": "John Doe",
+  "business_name": "My Business"
+}
+
+Response (201 Created):
+{
+  "id": 1,
+  "email": "user@example.com",
+  "full_name": "John Doe",
+  "business_id": 1
+}
+```
+
+#### Login User
+```bash
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "secure_password_123"
+}
+
+Response (200 OK):
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+```
+
+### Data Management Endpoints
+
+#### Upload Financial Data
+```bash
+POST /api/data/upload
+Content-Type: multipart/form-data
+
+business_id: 1
+file_type: tally|gst|bank
+file: <binary file>
+
+Response (202 Accepted):
+{
+  "task_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "queued"
+}
+```
+
+#### Get Upload Progress
+```bash
+GET /api/data/upload-status/{task_id}
+
+Response (200 OK):
+{
+  "status": "processing",
+  "percent": 65,
+  "message": "Processing 1500 transactions...",
+  "records_added": 1050
+}
+```
+
+### Forecasting Endpoints
+
+#### Generate Cash Flow Forecast
+```bash
+POST /api/forecast/cashflow
+Content-Type: application/json
+
+{
+  "business_id": 1,
+  "days_ahead": 90,
+  "operating_threshold": 100000.00
+}
+
+Response (200 OK):
+{
+  "forecast": [
+    {
+      "forecast_date": "2026-06-03",
+      "predicted_balance": 450000.50,
+      "p10_balance": 380000.00,
+      "p90_balance": 520000.00
+    }
+  ],
+  "danger_zones": [...]
+}
+```
+
+### Dashboard Endpoints
+
+#### Get Dashboard Summary
+```bash
+GET /api/dashboard/{business_id}
+
+Response (200 OK):
+{
+  "business": {
+    "id": 1,
+    "name": "ABC Enterprises",
+    "quality_score": 92
+  },
+  "current_balance": 450000.50,
+  "month_revenue": 1200000.00,
+  "month_expenses": 800000.00,
+  "outstanding_invoices": {
+    "pending": 250000.00,
+    "overdue": 50000.00
+  }
+}
+```
+
+### Loan Analysis Endpoints
+
+#### Check Loan Eligibility
+```bash
+POST /api/loan/eligibility
+Content-Type: application/json
+
+{
+  "business_id": 1,
+  "delay_days": 0,
+  "amount_override": null
+}
+
+Response (200 OK):
+{
+  "eligible": true,
+  "probability": 0.87,
+  "recommended_amount": 500000.00
+}
+```
+
+### Watchlist Endpoints
+
+#### Add Company to Watchlist
+```bash
+POST /api/watchlist/add
+Content-Type: application/json
+
+{
+  "business_id": 1,
+  "company_name": "Reliance Industries",
+  "bse_code": "RIL"
+}
+
+Response (201 Created):
+{
+  "id": 1,
+  "company_name": "Reliance Industries",
+  "bse_code": "RIL"
+}
+```
+
+#### Get Watchlist
+```bash
+GET /api/watchlist/companies?business_id=1
+
+Response (200 OK):
+{
+  "companies": [
+    {
+      "id": 1,
+      "company_name": "Reliance Industries",
+      "bse_code": "RIL"
+    }
+  ]
+}
+```
+
+### Health Check Endpoint
+
+#### API Health Status
+```bash
+GET /api/health
+
+Response (200 OK):
+{
+  "status": "healthy",
+  "version": "1.0",
+  "database": "connected",
+  "redis": "connected",
+  "timestamp": "2026-06-02T10:30:00Z"
+}
+```
+
+---
+
 ## Development Workflow
 
 ### Database Migrations with Alembic
@@ -996,6 +1344,242 @@ When contributing to Finemonix:
 4. Commit: `git commit -am "Description of changes"`
 5. Push: `git push origin feature/your-feature`
 6. Create a Pull Request
+
+---
+
+## Data Models & Database Schema
+
+### Core Data Models
+
+**Business**
+```python
+{
+  "id": int,
+  "name": str,
+  "gstin": str (optional),        # GST registration number
+  "pan": str (optional),          # PAN number
+  "business_type": str,           # e.g., "Manufacturing", "Trade"
+  "onboarding_date": date,
+  "data_sources_connected": List[str],  # ["tally", "gst", "bank"]
+  "quality_score": int,           # 0-100 based on data quality
+  "safety_threshold_inr": float,  # Cash balance threshold for alerts
+  "opening_balance": float        # Starting cash balance
+}
+```
+
+**User**
+```python
+{
+  "id": int,
+  "email": str (unique),
+  "hashed_password": str,         # bcrypt hashed
+  "full_name": str,
+  "business_id": int (FK),
+  "created_at": datetime
+}
+```
+
+**Client (Entity)**
+```python
+{
+  "id": int,
+  "business_id": int (FK),
+  "canonical_name": str,          # Deduplicated name
+  "gstin": str (optional),        # GST number
+  "is_listed_company": bool,
+  "bse_code": str (optional),
+  "total_revenue_share": float,   # % of total revenue
+  "avg_payment_delay_days": int,  # Average payment delay
+  "aliases": List[str],           # Alternative names found in data
+  "created_at": datetime
+}
+```
+
+**Transaction**
+```python
+{
+  "id": int,
+  "business_id": int (FK),
+  "date": date,
+  "amount": float,
+  "direction": str,               # "in" or "out"
+  "category": str (optional),     # "Sales", "Expense", etc.
+  "counterparty_id": int (FK),    # Client involved
+  "source": str,                  # "tally", "gst", or "bank"
+  "raw_description": str,
+  "created_at": datetime
+}
+```
+
+**Invoice**
+```python
+{
+  "id": int,
+  "business_id": int (FK),
+  "client_id": int (FK),
+  "amount": float,
+  "issue_date": date,
+  "due_date": date,
+  "paid_date": date (optional),
+  "status": str,                  # "pending", "paid", "overdue", "partial"
+  "days_overdue": int (optional),
+  "source": str                   # "manual" or import source
+}
+```
+
+**CashFlowForecast**
+```python
+{
+  "id": int,
+  "business_id": int (FK),
+  "generated_at": datetime,
+  "forecast_date": date,
+  "predicted_balance": float,     # Point estimate
+  "p10_balance": float,           # Pessimistic (10th percentile)
+  "p90_balance": float,           # Optimistic (90th percentile)
+  "model_version": str,           # e.g., "1.0"
+  "model_used": str               # "lstm", "prophet", or "hybrid"
+}
+```
+
+**DataImportJob**
+```python
+{
+  "id": int,
+  "business_id": int (FK),
+  "task_id": str (unique),        # Celery task ID
+  "file_type": str,               # "tally", "gst", or "bank"
+  "filename": str,
+  "status": str,                  # "queued", "processing", "completed", "failed"
+  "percent": int (0-100),
+  "message": str,
+  "records_added": int,
+  "error_message": str (optional),
+  "result": dict (JSON),
+  "created_at": datetime,
+  "completed_at": datetime (optional)
+}
+```
+
+---
+
+## Key Implementation Details
+
+### 1. Tally Parser - Multi-Currency Handling
+
+The Tally parser automatically detects and converts foreign currencies to INR:
+
+```python
+# Supported currencies with hardcoded exchange rates
+USD → 83.0 INR
+EUR → 90.0 INR
+GBP → 105.0 INR
+```
+
+Example: `"$ 100"` in Tally → Converts to `₹ 8300`
+
+### 2. Entity Resolution Algorithm
+
+Three-pass entity matching strategy:
+
+**Pass 1: GSTIN Authority** (Most reliable)
+- If GSTIN matches → Entity found
+- Add as new alias if name is different
+
+**Pass 2: Fuzzy String Matching** (RapidFuzz)
+- Compare new name against all existing aliases
+- Threshold: 85% token sort ratio
+- Handles typos and spacing variations
+
+**Pass 3: Semantic Similarity** (Sentence Transformers)
+- Uses "all-MiniLM-L6-v2" embedding model
+- Cosine similarity threshold: 0.85
+- Handles contextual name variations
+
+**Example**:
+```
+"ABC Enterprises" vs "ABC Enterprises Pvt Ltd"
+→ Token sort ratio: 87% → MATCH
+```
+
+### 3. LSTM Forecasting Architecture
+
+```
+Input Layer (N features)
+    ↓
+LSTM Layer 1 (128 units, Dropout=0.3)
+    ↓
+LSTM Layer 2 (128 units, Dropout=0.3)
+    ↓
+Dense Layer (90 outputs - one per day)
+    ↓
+Output: [day1_forecast, day2_forecast, ..., day90_forecast]
+```
+
+**MC Dropout Uncertainty**: Run inference 30-50 times with dropout enabled:
+- p10 = 10th percentile of predictions
+- p50 = 50th percentile (median)
+- p90 = 90th percentile
+
+### 4. Prophet Model Components
+
+```
+Time Series = Trend + Seasonality + Holiday Effects + Regressors
+
+Seasonality:
+  - Weekly (period=7, fourier=3)
+  - Monthly (period=30.5, fourier=5)
+
+Regressors:
+  - is_gst_filing_day: 1 if day ±2 of 20th
+  - future_invoices: Expected revenue
+```
+
+### 5. Dashboard Calculations
+
+**Current Balance** (Real-time):
+```sql
+SUM(CASE 
+  WHEN direction='in' THEN amount 
+  ELSE -amount 
+END)
+```
+
+**Monthly Metrics**:
+```sql
+-- Current month starts from 1st
+Month_Revenue = SUM(amount) WHERE direction='in' AND date >= month_start
+Month_Expense = SUM(amount) WHERE direction='out' AND date >= month_start
+```
+
+**Outstanding Invoices**:
+```sql
+Pending = SUM(amount) WHERE status='pending'
+Overdue = SUM(amount) WHERE status='overdue'
+```
+
+---
+
+## Feature Implementation Status
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| User Authentication | ✅ Complete | JWT-based with bcrypt hashing |
+| Tally Parser | ✅ Complete | Multi-currency, complex voucher handling |
+| GST Parser | ✅ Complete | JSON parsing, GSTIN extraction |
+| Bank Parser | ✅ Complete | CSV parsing, statement reconciliation |
+| Entity Resolution | ✅ Complete | GSTIN + Fuzzy + Embeddings |
+| Transaction Deduplication | ✅ Complete | Date, amount, counterparty matching |
+| LSTM Forecasting | ✅ Complete | MC Dropout with uncertainty quantification |
+| Prophet Forecasting | ✅ Complete | Seasonal decomposition |
+| Danger Zone Detection | ✅ Complete | Contiguous period identification |
+| Dashboard | ✅ Complete | Real-time metrics |
+| Invoice Tracking | ✅ Complete | Status tracking, overdue calculation |
+| Loan Eligibility | ⚠️ Framework | Model training pipeline ready |
+| Watchlist | ✅ Complete | Company monitoring setup |
+| Neo4j Integration | ⚠️ Ready | Framework prepared, can be extended |
+| Qdrant Vector Search | ⚠️ Ready | Infrastructure in place |
+| Regulatory Monitoring | 📋 Planned | BSE scraping, NLP analysis |
 
 ---
 
