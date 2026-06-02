@@ -23,6 +23,8 @@ from backend.ml.features import (
     TARGET_COL,
     build_cashflow_features,
 )
+from backend.ml.loan_cta import compute_loan_cta
+from backend.ml.loan_features import extract_loan_features
 from backend.ml.lstm_model import (
     load_lstm_model,
     predict_lstm_mc_dropout,
@@ -290,7 +292,25 @@ async def get_forecast(
 
     danger_zones = _compute_danger_zones(forecast_df, threshold)
 
-    # ── 6. Serialise ──────────────────────────────────────────────────────────
+
+    # ── 6. Contextual loan CTA ────────────────────────────────────────────────
+    loan_cta = None
+    try:
+        loan_features, loan_meta = await db.run_sync(
+            lambda s: extract_loan_features(s, business_id)
+        )
+        vintage_years = loan_meta.get("vintage_years", 0.0)
+        cibil_score   = loan_features.get("cibil_score", 650.0)
+        loan_cta = compute_loan_cta(
+            danger_zones=danger_zones,
+            vintage_years=vintage_years,
+            cibil_score=cibil_score,
+            operating_threshold=threshold,
+        )
+    except Exception as e:
+        logger.warning("Could not compute loan CTA: %s", e)
+
+    # ── 7. Serialise ──────────────────────────────────────────────────────────
     forecast_list = [
         {
             "date": str(row["date"]),
@@ -308,10 +328,12 @@ async def get_forecast(
         "accuracy_pct": accuracy_pct,
         "days_of_data": days_of_data,
         "warning": warning,
+        "loan_cta": loan_cta,
     }
 
     await redis.set(cache_key, json.dumps(response), ex=6 * 3600)
     return response
+
 
 
 @router.post("/scenario")
