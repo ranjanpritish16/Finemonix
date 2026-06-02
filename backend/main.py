@@ -51,6 +51,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"message": "Finemonix backend running"}
+
 # All routers mounted under /api
 app.include_router(auth.router,      prefix="/api")
 app.include_router(health.router,    prefix="/api")

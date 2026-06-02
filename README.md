@@ -609,7 +609,15 @@ celery -A tasks.celery_app worker --loglevel=info
 # ready to accept tasks
 ```
 
-**Optional**: If you want to monitor Celery tasks, open another terminal:
+**Optional - Purge Task Queue** (use before starting worker if queue has stale tasks):
+
+```bash
+cd backend
+celery -A tasks.celery_app purge -f
+# Confirms and purges all pending tasks
+```
+
+**Optional - Monitor Celery Tasks**, open another terminal:
 
 ```bash
 # Terminal 4: Monitor Celery tasks
@@ -1255,6 +1263,57 @@ uvicorn backend.main:app --host 0.0.0.0 --port 8001 --reload
 ```bash
 # Reinstall dependencies (in backend)
 pip install --upgrade --force-reinstall -r requirements.txt
+```
+
+### Celery Worker Issues
+
+#### Purge All Queued Tasks
+
+If you need to clear all pending Celery tasks from the queue (useful for development or debugging):
+
+```bash
+# From backend directory
+cd backend
+celery -A tasks.celery_app purge -f
+
+# Or from workspace root
+celery -A backend.tasks.celery_app purge -f
+
+# Expected output:
+# WARNING: This will remove all tasks from the queue!
+# Type 'yes' to confirm...
+# yes
+# Queue purged successfully
+```
+
+#### Start Celery Worker
+
+```bash
+# From backend directory
+cd backend
+celery -A tasks.celery_app worker --loglevel=info
+
+# Or from workspace root
+celery -A backend.tasks.celery_app worker --loglevel=info
+
+# Expected output:
+# - Starting Celery worker...
+# - Connected to redis://localhost:6379
+# - Ready to accept tasks
+```
+
+#### Monitor Celery Tasks
+
+```bash
+# Option 1: Real-time task events
+cd backend
+celery -A tasks.celery_app events
+
+# Option 2: Celery Flower (Web UI - recommended)
+cd backend
+celery -A tasks.celery_app flower
+
+# Access Flower dashboard at: http://localhost:5555
 ```
 
 ### Clear Everything and Start Fresh
