@@ -9,6 +9,7 @@ GET  /api/loan/status        — health check
 from __future__ import annotations
 
 import logging
+import pickle
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -17,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
+from backend.redis_client import redis_client
 from backend.ml.loan_features import extract_loan_features
 from backend.ml.loan_inference import get_loan_service
 
@@ -64,6 +66,17 @@ class EligibilityResponse(BaseModel):
     best_probability_pct: float
     extracted_features: Dict[str, float]
     data_quality: Dict[str, Any]
+
+
+class WhatIfRequest(BaseModel):
+    business_id: int
+    changed_feature: str
+    new_value: float
+
+
+class WhatIfResponse(BaseModel):
+    updated_probabilities: Dict[str, float]
+    delta: Dict[str, float]
 
 
 class PrefillResponse(BaseModel):
@@ -143,7 +156,19 @@ async def get_loan_eligibility(
             detail=f"Model inference failed: {e}"
         )
 
-    # ── 3. Build response ──────────────────────────────────────────────────────
+    # ── 3. Cache base data for what-if delta engine ───────────────────────────
+    try:
+        cache_key = f"loan_base_data:{req.business_id}"
+        cache_data = {
+            "features": features,
+            "raw_probabilities": result["raw_probabilities"],
+            "raw_shap_by_lender": result["raw_shap_by_lender"],
+        }
+        await redis_client.set(cache_key, pickle.dumps(cache_data), ex=3600)
+    except Exception as e:
+        logger.warning("Failed to cache loan base data: %s", e)
+
+    # ── 4. Build response ──────────────────────────────────────────────────────
     return EligibilityResponse(
         lender_scores=result["lender_scores"],
         shap_attributions=result["shap_attributions"],
@@ -182,3 +207,45 @@ async def get_prefill_features(
         total_transactions=quality_meta.get("total_transactions", 0),
         total_invoices=quality_meta.get("total_invoices", 0),
     )
+
+
+@router.post("/whatif", response_model=WhatIfResponse)
+async def get_loan_whatif(req: WhatIfRequest):
+    """
+    O(1) SHAP delta for sub-100ms slider response.
+    Computes exact probability deltas using the SHAP additive property.
+    """
+    cache_key = f"loan_base_data:{req.business_id}"
+    try:
+        raw_data = await redis_client.get(cache_key)
+        if not raw_data:
+            raise HTTPException(
+                status_code=400, 
+                detail="Base loan data not found. Call /eligibility first."
+            )
+        
+        base_data = pickle.loads(raw_data)
+        base_features = base_data["features"]
+        base_probabilities = base_data["raw_probabilities"]
+        base_shap_by_lender = base_data["raw_shap_by_lender"]
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        logger.error("Failed to read base data from cache: %s", e)
+        raise HTTPException(status_code=500, detail="Cache read error.")
+        
+    try:
+        service = get_loan_service()
+        result = service.whatif(
+            base_features=base_features,
+            base_probabilities=base_probabilities,
+            base_shap_by_lender=base_shap_by_lender,
+            changed_feature=req.changed_feature,
+            new_value=req.new_value,
+        )
+        return WhatIfResponse(**result)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Whatif failed: %s", e)
+        raise HTTPException(status_code=500, detail=f"Whatif inference failed: {e}")

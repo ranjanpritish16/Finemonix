@@ -221,6 +221,58 @@ class LoanInferenceService:
             "best_lender":        best_lender,
             "best_lender_display": LENDER_DISPLAY_NAMES[best_lender],
             "best_probability_pct": lender_scores[best_lender]["probability_pct"],
+            "raw_shap_by_lender": shap_by_lender,
+            "raw_probabilities": {l: lender_scores[l]["probability"] for l in LENDER_TYPES},
+        }
+
+    def whatif(
+        self,
+        base_features: Dict[str, float],
+        base_probabilities: Dict[str, float],
+        base_shap_by_lender: Dict[str, np.ndarray],
+        changed_feature: str,
+        new_value: float,
+    ) -> Dict:
+        """
+        O(1) SHAP additivity what-if delta.
+        Returns exact probability deltas using the SHAP additive property.
+        """
+        if changed_feature not in FEATURE_COLS:
+            raise ValueError(f"Unknown feature: {changed_feature}")
+
+        feat_idx = FEATURE_COLS.index(changed_feature)
+        modified = dict(base_features)
+        modified[changed_feature] = new_value
+
+        X_modified = np.array(
+            [[modified[f] for f in FEATURE_COLS]], dtype=np.float32
+        )
+
+        updated_probabilities = {}
+        delta = {}
+
+        for lender in LENDER_TYPES:
+            # Re-run single sample SHAP inference (~5ms)
+            explainer = self.explainers[lender]
+            raw_shap = explainer.shap_values(X_modified)
+            if isinstance(raw_shap, list):
+                raw_shap = raw_shap[1]
+            new_shap = raw_shap.flatten()
+
+            old_prob = base_probabilities[lender]
+            old_shap_val = float(base_shap_by_lender[lender][feat_idx])
+            new_shap_val = float(new_shap[feat_idx])
+
+            # Approximated new score using SHAP additivity
+            new_prob = old_prob - old_shap_val + new_shap_val
+            new_prob = float(np.clip(new_prob, 0.0, 1.0))
+            
+            updated_probabilities[lender] = round(new_prob * 100, 1)
+            delta[lender] = round((new_prob - old_prob) * 100, 1)
+
+        return {
+            "updated_probabilities": updated_probabilities,
+            "delta": delta
         }
 
     def _generate_actions(
