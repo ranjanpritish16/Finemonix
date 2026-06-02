@@ -3,2564 +3,2564 @@
   "opening_balance": 70132.0,
   "total_days": 365,
   "date_range": {
-    "from": "2025-05-31",
-    "to": "2026-05-31"
+    "from": "2025-06-01",
+    "to": "2026-06-01"
   },
   "daily_records": [
     {
-      "date": "2025-05-31",
-      "inflow": 4590.65,
-      "outflow": 3954.62,
-      "net": 636.03,
-      "running_balance": 70768.03
-    },
-    {
       "date": "2025-06-01",
-      "inflow": 5709.54,
-      "outflow": 4191.67,
-      "net": 1517.87,
-      "running_balance": 72285.9
+      "inflow": 5980.84,
+      "outflow": 6983.58,
+      "net": -1002.74,
+      "running_balance": 69129.26
     },
     {
       "date": "2025-06-02",
-      "inflow": 7099.83,
-      "outflow": 4785.22,
-      "net": 2314.61,
-      "running_balance": 74600.51
+      "inflow": 6351.56,
+      "outflow": 7407.88,
+      "net": -1056.32,
+      "running_balance": 68072.94
     },
     {
       "date": "2025-06-03",
-      "inflow": 4768.63,
-      "outflow": 8320.84,
-      "net": -3552.21,
-      "running_balance": 71048.3
+      "inflow": 5253.65,
+      "outflow": 7234.3,
+      "net": -1980.65,
+      "running_balance": 66092.29
     },
     {
       "date": "2025-06-04",
-      "inflow": 4559.42,
-      "outflow": 4319.85,
-      "net": 239.57,
-      "running_balance": 71287.87
+      "inflow": 8345.82,
+      "outflow": 6471.8,
+      "net": 1874.02,
+      "running_balance": 67966.31
     },
     {
       "date": "2025-06-05",
-      "inflow": 9382.31,
-      "outflow": 7009.1,
-      "net": 2373.21,
-      "running_balance": 73661.08
+      "inflow": 8935.32,
+      "outflow": 7089.99,
+      "net": 1845.33,
+      "running_balance": 69811.64
     },
     {
       "date": "2025-06-06",
-      "inflow": 9565.9,
-      "outflow": 6974.17,
-      "net": 2591.73,
-      "running_balance": 76252.81
+      "inflow": 4981.07,
+      "outflow": 5965.97,
+      "net": -984.9,
+      "running_balance": 68826.74
     },
     {
       "date": "2025-06-07",
-      "inflow": 5987.92,
-      "outflow": 4079.9,
-      "net": 1908.02,
-      "running_balance": 78160.83
+      "inflow": 5138.99,
+      "outflow": 4857.2,
+      "net": 281.79,
+      "running_balance": 69108.53
     },
     {
       "date": "2025-06-08",
-      "inflow": 6924.23,
-      "outflow": 4195.85,
-      "net": 2728.38,
-      "running_balance": 80889.21
+      "inflow": 8157.29,
+      "outflow": 5826.82,
+      "net": 2330.47,
+      "running_balance": 71439.0
     },
     {
       "date": "2025-06-09",
-      "inflow": 9342.72,
-      "outflow": 8079.63,
-      "net": 1263.09,
-      "running_balance": 82152.3
+      "inflow": 5324.86,
+      "outflow": 4328.86,
+      "net": 996.0,
+      "running_balance": 72435.0
     },
     {
       "date": "2025-06-10",
-      "inflow": 8877.2,
-      "outflow": 5010.94,
-      "net": 3866.26,
-      "running_balance": 86018.56
+      "inflow": 7634.06,
+      "outflow": 5554.38,
+      "net": 2079.68,
+      "running_balance": 74514.68
     },
     {
       "date": "2025-06-11",
-      "inflow": 5217.29,
-      "outflow": 4139.62,
-      "net": 1077.67,
-      "running_balance": 87096.23
+      "inflow": 7528.53,
+      "outflow": 5152.32,
+      "net": 2376.21,
+      "running_balance": 76890.89
     },
     {
       "date": "2025-06-12",
-      "inflow": 5579.36,
-      "outflow": 3721.01,
-      "net": 1858.35,
-      "running_balance": 88954.58
+      "inflow": 7235.24,
+      "outflow": 5379.48,
+      "net": 1855.76,
+      "running_balance": 78746.65
     },
     {
       "date": "2025-06-13",
-      "inflow": 4403.99,
-      "outflow": 7436.57,
-      "net": -3032.58,
-      "running_balance": 85922.0
+      "inflow": 7876.96,
+      "outflow": 7744.51,
+      "net": 132.45,
+      "running_balance": 78879.1
     },
     {
       "date": "2025-06-14",
-      "inflow": 4851.97,
-      "outflow": 5585.3,
-      "net": -733.33,
-      "running_balance": 85188.67
+      "inflow": 7059.13,
+      "outflow": 6842.93,
+      "net": 216.2,
+      "running_balance": 79095.3
     },
     {
       "date": "2025-06-15",
-      "inflow": 4346.73,
-      "outflow": 7188.14,
-      "net": -2841.41,
-      "running_balance": 82347.26
+      "inflow": 8358.07,
+      "outflow": 6645.11,
+      "net": 1712.96,
+      "running_balance": 80808.26
     },
     {
       "date": "2025-06-16",
-      "inflow": 6141.52,
-      "outflow": 7582.23,
-      "net": -1440.71,
-      "running_balance": 80906.55
+      "inflow": 7680.47,
+      "outflow": 7837.94,
+      "net": -157.47,
+      "running_balance": 80650.79
     },
     {
       "date": "2025-06-17",
-      "inflow": 8829.48,
-      "outflow": 6148.47,
-      "net": 2681.01,
-      "running_balance": 83587.56
+      "inflow": 8532.34,
+      "outflow": 5769.05,
+      "net": 2763.29,
+      "running_balance": 83414.08
     },
     {
       "date": "2025-06-18",
-      "inflow": 4479.29,
-      "outflow": 5753.17,
-      "net": -1273.88,
-      "running_balance": 82313.68
+      "inflow": 4754.29,
+      "outflow": 5725.35,
+      "net": -971.06,
+      "running_balance": 82443.02
     },
     {
       "date": "2025-06-19",
-      "inflow": 4423.6,
-      "outflow": 5596.44,
-      "net": -1172.84,
-      "running_balance": 81140.84
+      "inflow": 4434.11,
+      "outflow": 4406.96,
+      "net": 27.15,
+      "running_balance": 82470.17
     },
     {
       "date": "2025-06-20",
-      "inflow": 6703.11,
-      "outflow": 6752.96,
-      "net": -49.85,
-      "running_balance": 81090.99
+      "inflow": 5613.4,
+      "outflow": 4537.84,
+      "net": 1075.56,
+      "running_balance": 83545.73
     },
     {
       "date": "2025-06-21",
-      "inflow": 5163.15,
-      "outflow": 4599.62,
-      "net": 563.53,
-      "running_balance": 81654.52
+      "inflow": 5112.61,
+      "outflow": 5998.85,
+      "net": -886.24,
+      "running_balance": 82659.49
     },
     {
       "date": "2025-06-22",
-      "inflow": 9371.32,
-      "outflow": 6762.8,
-      "net": 2608.52,
-      "running_balance": 84263.04
+      "inflow": 8823.04,
+      "outflow": 5382.05,
+      "net": 3440.99,
+      "running_balance": 86100.48
     },
     {
       "date": "2025-06-23",
-      "inflow": 4641.15,
-      "outflow": 6519.76,
-      "net": -1878.61,
-      "running_balance": 82384.43
+      "inflow": 4705.3,
+      "outflow": 3632.98,
+      "net": 1072.32,
+      "running_balance": 87172.8
     },
     {
       "date": "2025-06-24",
-      "inflow": 9772.42,
-      "outflow": 7710.82,
-      "net": 2061.6,
-      "running_balance": 84446.03
+      "inflow": 7737.07,
+      "outflow": 5586.97,
+      "net": 2150.1,
+      "running_balance": 89322.9
     },
     {
       "date": "2025-06-25",
-      "inflow": 5882.22,
-      "outflow": 7520.32,
-      "net": -1638.1,
-      "running_balance": 82807.93
+      "inflow": 8842.57,
+      "outflow": 6154.1,
+      "net": 2688.47,
+      "running_balance": 92011.37
     },
     {
       "date": "2025-06-26",
-      "inflow": 5324.44,
-      "outflow": 7558.04,
-      "net": -2233.6,
-      "running_balance": 80574.33
+      "inflow": 7058.71,
+      "outflow": 4307.0,
+      "net": 2751.71,
+      "running_balance": 94763.08
     },
     {
       "date": "2025-06-27",
-      "inflow": 9343.81,
-      "outflow": 7220.37,
-      "net": 2123.44,
-      "running_balance": 82697.77
+      "inflow": 5083.13,
+      "outflow": 6837.04,
+      "net": -1753.91,
+      "running_balance": 93009.17
     },
     {
       "date": "2025-06-28",
-      "inflow": 4836.5,
-      "outflow": 6501.69,
-      "net": -1665.19,
-      "running_balance": 81032.58
+      "inflow": 7894.15,
+      "outflow": 7211.61,
+      "net": 682.54,
+      "running_balance": 93691.71
     },
     {
       "date": "2025-06-29",
-      "inflow": 5250.23,
-      "outflow": 4699.34,
-      "net": 550.89,
-      "running_balance": 81583.47
+      "inflow": 8259.79,
+      "outflow": 3767.64,
+      "net": 4492.15,
+      "running_balance": 98183.86
     },
     {
       "date": "2025-06-30",
-      "inflow": 6186.39,
-      "outflow": 5963.98,
-      "net": 222.41,
-      "running_balance": 81805.88
+      "inflow": 7608.17,
+      "outflow": 7741.92,
+      "net": -133.75,
+      "running_balance": 98050.11
     },
     {
       "date": "2025-07-01",
-      "inflow": 5983.84,
-      "outflow": 6531.81,
-      "net": -547.97,
-      "running_balance": 81257.91
+      "inflow": 8522.7,
+      "outflow": 6892.99,
+      "net": 1629.71,
+      "running_balance": 99679.82
     },
     {
       "date": "2025-07-02",
-      "inflow": 6520.22,
-      "outflow": 6309.7,
-      "net": 210.52,
-      "running_balance": 81468.43
+      "inflow": 5863.21,
+      "outflow": 5953.13,
+      "net": -89.92,
+      "running_balance": 99589.9
     },
     {
       "date": "2025-07-03",
-      "inflow": 7860.09,
-      "outflow": 7152.65,
-      "net": 707.44,
-      "running_balance": 82175.87
+      "inflow": 5676.65,
+      "outflow": 7255.62,
+      "net": -1578.97,
+      "running_balance": 98010.93
     },
     {
       "date": "2025-07-04",
-      "inflow": 5316.62,
-      "outflow": 7987.27,
-      "net": -2670.65,
-      "running_balance": 79505.22
+      "inflow": 9598.83,
+      "outflow": 5825.44,
+      "net": 3773.39,
+      "running_balance": 101784.32
     },
     {
       "date": "2025-07-05",
-      "inflow": 5014.21,
-      "outflow": 4648.57,
-      "net": 365.64,
-      "running_balance": 79870.86
+      "inflow": 6056.8,
+      "outflow": 5272.44,
+      "net": 784.36,
+      "running_balance": 102568.68
     },
     {
       "date": "2025-07-06",
-      "inflow": 6470.5,
-      "outflow": 6016.57,
-      "net": 453.93,
-      "running_balance": 80324.79
+      "inflow": 8189.82,
+      "outflow": 5564.03,
+      "net": 2625.79,
+      "running_balance": 105194.47
     },
     {
       "date": "2025-07-07",
-      "inflow": 9472.91,
-      "outflow": 3679.4,
-      "net": 5793.51,
-      "running_balance": 86118.3
+      "inflow": 8822.36,
+      "outflow": 5712.33,
+      "net": 3110.03,
+      "running_balance": 108304.5
     },
     {
       "date": "2025-07-08",
-      "inflow": 9675.37,
-      "outflow": 3925.51,
-      "net": 5749.86,
-      "running_balance": 91868.16
+      "inflow": 5235.25,
+      "outflow": 3863.18,
+      "net": 1372.07,
+      "running_balance": 109676.57
     },
     {
       "date": "2025-07-09",
-      "inflow": 8247.38,
-      "outflow": 4253.98,
-      "net": 3993.4,
-      "running_balance": 95861.56
+      "inflow": 6592.29,
+      "outflow": 5753.62,
+      "net": 838.67,
+      "running_balance": 110515.24
     },
     {
       "date": "2025-07-10",
-      "inflow": 6476.8,
-      "outflow": 7047.62,
-      "net": -570.82,
-      "running_balance": 95290.74
+      "inflow": 8126.69,
+      "outflow": 5676.84,
+      "net": 2449.85,
+      "running_balance": 112965.09
     },
     {
       "date": "2025-07-11",
-      "inflow": 7068.6,
-      "outflow": 6361.55,
-      "net": 707.05,
-      "running_balance": 95997.79
+      "inflow": 8415.35,
+      "outflow": 4273.49,
+      "net": 4141.86,
+      "running_balance": 117106.95
     },
     {
       "date": "2025-07-12",
-      "inflow": 9145.59,
-      "outflow": 4585.96,
-      "net": 4559.63,
-      "running_balance": 100557.42
+      "inflow": 5703.72,
+      "outflow": 5626.81,
+      "net": 76.91,
+      "running_balance": 117183.86
     },
     {
       "date": "2025-07-13",
-      "inflow": 4855.1,
-      "outflow": 5113.7,
-      "net": -258.6,
-      "running_balance": 100298.82
+      "inflow": 5357.18,
+      "outflow": 5659.09,
+      "net": -301.91,
+      "running_balance": 116881.95
     },
     {
       "date": "2025-07-14",
-      "inflow": 9334.31,
-      "outflow": 6727.37,
-      "net": 2606.94,
-      "running_balance": 102905.76
+      "inflow": 4962.88,
+      "outflow": 3657.27,
+      "net": 1305.61,
+      "running_balance": 118187.56
     },
     {
       "date": "2025-07-15",
-      "inflow": 6655.72,
-      "outflow": 8314.69,
-      "net": -1658.97,
-      "running_balance": 101246.79
+      "inflow": 4782.54,
+      "outflow": 7307.01,
+      "net": -2524.47,
+      "running_balance": 115663.09
     },
     {
       "date": "2025-07-16",
-      "inflow": 9773.6,
-      "outflow": 4687.52,
-      "net": 5086.08,
-      "running_balance": 106332.87
+      "inflow": 7956.77,
+      "outflow": 6429.59,
+      "net": 1527.18,
+      "running_balance": 117190.27
     },
     {
       "date": "2025-07-17",
-      "inflow": 8162.52,
-      "outflow": 6316.97,
-      "net": 1845.55,
-      "running_balance": 108178.42
+      "inflow": 9638.1,
+      "outflow": 5886.41,
+      "net": 3751.69,
+      "running_balance": 120941.96
     },
     {
       "date": "2025-07-18",
-      "inflow": 5526.21,
-      "outflow": 7303.42,
-      "net": -1777.21,
-      "running_balance": 106401.21
+      "inflow": 8886.26,
+      "outflow": 5175.6,
+      "net": 3710.66,
+      "running_balance": 124652.62
     },
     {
       "date": "2025-07-19",
-      "inflow": 9793.34,
-      "outflow": 8071.49,
-      "net": 1721.85,
-      "running_balance": 108123.06
+      "inflow": 5006.69,
+      "outflow": 6832.6,
+      "net": -1825.91,
+      "running_balance": 122826.71
     },
     {
       "date": "2025-07-20",
-      "inflow": 8856.45,
-      "outflow": 8181.5,
-      "net": 674.95,
-      "running_balance": 108798.01
+      "inflow": 5191.08,
+      "outflow": 4244.94,
+      "net": 946.14,
+      "running_balance": 123772.85
     },
     {
       "date": "2025-07-21",
-      "inflow": 7493.21,
-      "outflow": 8207.37,
-      "net": -714.16,
-      "running_balance": 108083.85
+      "inflow": 8293.16,
+      "outflow": 5568.13,
+      "net": 2725.03,
+      "running_balance": 126497.88
     },
     {
       "date": "2025-07-22",
-      "inflow": 6411.48,
-      "outflow": 3836.82,
-      "net": 2574.66,
-      "running_balance": 110658.51
+      "inflow": 4963.65,
+      "outflow": 8086.75,
+      "net": -3123.1,
+      "running_balance": 123374.78
     },
     {
       "date": "2025-07-23",
-      "inflow": 5220.6,
-      "outflow": 3904.98,
-      "net": 1315.62,
-      "running_balance": 111974.13
+      "inflow": 8603.89,
+      "outflow": 7592.69,
+      "net": 1011.2,
+      "running_balance": 124385.98
     },
     {
       "date": "2025-07-24",
-      "inflow": 4260.72,
-      "outflow": 5736.6,
-      "net": -1475.88,
-      "running_balance": 110498.25
+      "inflow": 5756.14,
+      "outflow": 3728.02,
+      "net": 2028.12,
+      "running_balance": 126414.1
     },
     {
       "date": "2025-07-25",
-      "inflow": 6609.19,
-      "outflow": 7026.49,
-      "net": -417.3,
-      "running_balance": 110080.95
+      "inflow": 7076.16,
+      "outflow": 7095.81,
+      "net": -19.65,
+      "running_balance": 126394.45
     },
     {
       "date": "2025-07-26",
-      "inflow": 7669.97,
-      "outflow": 5241.23,
-      "net": 2428.74,
-      "running_balance": 112509.69
+      "inflow": 6024.2,
+      "outflow": 3982.51,
+      "net": 2041.69,
+      "running_balance": 128436.14
     },
     {
       "date": "2025-07-27",
-      "inflow": 4905.67,
-      "outflow": 5219.91,
-      "net": -314.24,
-      "running_balance": 112195.45
+      "inflow": 8687.92,
+      "outflow": 4503.08,
+      "net": 4184.84,
+      "running_balance": 132620.98
     },
     {
       "date": "2025-07-28",
-      "inflow": 6039.22,
-      "outflow": 7705.14,
-      "net": -1665.92,
-      "running_balance": 110529.53
+      "inflow": 8491.83,
+      "outflow": 4412.24,
+      "net": 4079.59,
+      "running_balance": 136700.57
     },
     {
       "date": "2025-07-29",
-      "inflow": 5986.68,
-      "outflow": 6234.59,
-      "net": -247.91,
-      "running_balance": 110281.62
+      "inflow": 7229.73,
+      "outflow": 5401.81,
+      "net": 1827.92,
+      "running_balance": 138528.49
     },
     {
       "date": "2025-07-30",
-      "inflow": 9515.78,
-      "outflow": 6754.27,
-      "net": 2761.51,
-      "running_balance": 113043.13
+      "inflow": 8622.95,
+      "outflow": 6472.14,
+      "net": 2150.81,
+      "running_balance": 140679.3
     },
     {
       "date": "2025-07-31",
-      "inflow": 7259.32,
-      "outflow": 7172.87,
-      "net": 86.45,
-      "running_balance": 113129.58
+      "inflow": 9189.96,
+      "outflow": 6392.04,
+      "net": 2797.92,
+      "running_balance": 143477.22
     },
     {
       "date": "2025-08-01",
-      "inflow": 4999.45,
-      "outflow": 4460.72,
-      "net": 538.73,
-      "running_balance": 113668.31
+      "inflow": 6320.34,
+      "outflow": 4981.91,
+      "net": 1338.43,
+      "running_balance": 144815.65
     },
     {
       "date": "2025-08-02",
-      "inflow": 6521.13,
-      "outflow": 4364.9,
-      "net": 2156.23,
-      "running_balance": 115824.54
+      "inflow": 5181.34,
+      "outflow": 7392.08,
+      "net": -2210.74,
+      "running_balance": 142604.91
     },
     {
       "date": "2025-08-03",
-      "inflow": 5485.71,
-      "outflow": 3627.57,
-      "net": 1858.14,
-      "running_balance": 117682.68
+      "inflow": 8920.67,
+      "outflow": 4557.55,
+      "net": 4363.12,
+      "running_balance": 146968.03
     },
     {
       "date": "2025-08-04",
-      "inflow": 9374.4,
-      "outflow": 4218.12,
-      "net": 5156.28,
-      "running_balance": 122838.96
+      "inflow": 9642.65,
+      "outflow": 5012.75,
+      "net": 4629.9,
+      "running_balance": 151597.93
     },
     {
       "date": "2025-08-05",
-      "inflow": 7148.11,
-      "outflow": 5048.29,
-      "net": 2099.82,
-      "running_balance": 124938.78
+      "inflow": 9505.82,
+      "outflow": 8214.69,
+      "net": 1291.13,
+      "running_balance": 152889.06
     },
     {
       "date": "2025-08-06",
-      "inflow": 8454.58,
-      "outflow": 6568.7,
-      "net": 1885.88,
-      "running_balance": 126824.66
+      "inflow": 6594.96,
+      "outflow": 3777.51,
+      "net": 2817.45,
+      "running_balance": 155706.51
     },
     {
       "date": "2025-08-07",
-      "inflow": 6662.27,
-      "outflow": 7282.6,
-      "net": -620.33,
-      "running_balance": 126204.33
+      "inflow": 9747.55,
+      "outflow": 6677.05,
+      "net": 3070.5,
+      "running_balance": 158777.01
     },
     {
       "date": "2025-08-08",
-      "inflow": 4446.0,
-      "outflow": 7138.95,
-      "net": -2692.95,
-      "running_balance": 123511.38
+      "inflow": 5729.66,
+      "outflow": 4700.59,
+      "net": 1029.07,
+      "running_balance": 159806.08
     },
     {
       "date": "2025-08-09",
-      "inflow": 8655.33,
-      "outflow": 5488.46,
-      "net": 3166.87,
-      "running_balance": 126678.25
+      "inflow": 6879.37,
+      "outflow": 7304.56,
+      "net": -425.19,
+      "running_balance": 159380.89
     },
     {
       "date": "2025-08-10",
-      "inflow": 8248.03,
-      "outflow": 6919.44,
-      "net": 1328.59,
-      "running_balance": 128006.84
+      "inflow": 7945.77,
+      "outflow": 6086.63,
+      "net": 1859.14,
+      "running_balance": 161240.03
     },
     {
       "date": "2025-08-11",
-      "inflow": 8454.44,
-      "outflow": 6701.77,
-      "net": 1752.67,
-      "running_balance": 129759.51
+      "inflow": 7222.46,
+      "outflow": 8259.42,
+      "net": -1036.96,
+      "running_balance": 160203.07
     },
     {
       "date": "2025-08-12",
-      "inflow": 5435.51,
-      "outflow": 7146.71,
-      "net": -1711.2,
-      "running_balance": 128048.31
+      "inflow": 5543.57,
+      "outflow": 7125.48,
+      "net": -1581.91,
+      "running_balance": 158621.16
     },
     {
       "date": "2025-08-13",
-      "inflow": 4227.36,
-      "outflow": 7289.12,
-      "net": -3061.76,
-      "running_balance": 124986.55
+      "inflow": 5332.56,
+      "outflow": 7489.3,
+      "net": -2156.74,
+      "running_balance": 156464.42
     },
     {
       "date": "2025-08-14",
-      "inflow": 8138.64,
-      "outflow": 8281.62,
-      "net": -142.98,
-      "running_balance": 124843.57
+      "inflow": 9142.01,
+      "outflow": 4123.91,
+      "net": 5018.1,
+      "running_balance": 161482.52
     },
     {
       "date": "2025-08-15",
-      "inflow": 6860.12,
-      "outflow": 7209.0,
-      "net": -348.88,
-      "running_balance": 124494.69
+      "inflow": 8799.88,
+      "outflow": 4308.26,
+      "net": 4491.62,
+      "running_balance": 165974.14
     },
     {
       "date": "2025-08-16",
-      "inflow": 6256.59,
-      "outflow": 5167.35,
-      "net": 1089.24,
-      "running_balance": 125583.93
+      "inflow": 6341.82,
+      "outflow": 6118.32,
+      "net": 223.5,
+      "running_balance": 166197.64
     },
     {
       "date": "2025-08-17",
-      "inflow": 7444.13,
-      "outflow": 3897.95,
-      "net": 3546.18,
-      "running_balance": 129130.11
+      "inflow": 5264.66,
+      "outflow": 5540.22,
+      "net": -275.56,
+      "running_balance": 165922.08
     },
     {
       "date": "2025-08-18",
-      "inflow": 9817.42,
-      "outflow": 4944.18,
-      "net": 4873.24,
-      "running_balance": 134003.35
+      "inflow": 4829.79,
+      "outflow": 8016.2,
+      "net": -3186.41,
+      "running_balance": 162735.67
     },
     {
       "date": "2025-08-19",
-      "inflow": 5429.01,
-      "outflow": 7247.94,
-      "net": -1818.93,
-      "running_balance": 132184.42
+      "inflow": 8663.5,
+      "outflow": 4918.62,
+      "net": 3744.88,
+      "running_balance": 166480.55
     },
     {
       "date": "2025-08-20",
-      "inflow": 9386.36,
-      "outflow": 7997.35,
-      "net": 1389.01,
-      "running_balance": 133573.43
+      "inflow": 7873.48,
+      "outflow": 7498.15,
+      "net": 375.33,
+      "running_balance": 166855.88
     },
     {
       "date": "2025-08-21",
-      "inflow": 7511.52,
-      "outflow": 5873.79,
-      "net": 1637.73,
-      "running_balance": 135211.16
+      "inflow": 7850.3,
+      "outflow": 5887.77,
+      "net": 1962.53,
+      "running_balance": 168818.41
     },
     {
       "date": "2025-08-22",
-      "inflow": 6977.0,
-      "outflow": 4707.08,
-      "net": 2269.92,
-      "running_balance": 137481.08
+      "inflow": 5339.31,
+      "outflow": 4597.14,
+      "net": 742.17,
+      "running_balance": 169560.58
     },
     {
       "date": "2025-08-23",
-      "inflow": 5472.92,
-      "outflow": 5390.54,
-      "net": 82.38,
-      "running_balance": 137563.46
+      "inflow": 9691.14,
+      "outflow": 7698.35,
+      "net": 1992.79,
+      "running_balance": 171553.37
     },
     {
       "date": "2025-08-24",
-      "inflow": 5142.97,
-      "outflow": 4547.68,
-      "net": 595.29,
-      "running_balance": 138158.75
+      "inflow": 4988.7,
+      "outflow": 5827.88,
+      "net": -839.18,
+      "running_balance": 170714.19
     },
     {
       "date": "2025-08-25",
-      "inflow": 4496.31,
-      "outflow": 8212.32,
-      "net": -3716.01,
-      "running_balance": 134442.74
+      "inflow": 6123.54,
+      "outflow": 6859.12,
+      "net": -735.58,
+      "running_balance": 169978.61
     },
     {
       "date": "2025-08-26",
-      "inflow": 7679.19,
-      "outflow": 6091.08,
-      "net": 1588.11,
-      "running_balance": 136030.85
+      "inflow": 8746.99,
+      "outflow": 8345.5,
+      "net": 401.49,
+      "running_balance": 170380.1
     },
     {
       "date": "2025-08-27",
-      "inflow": 8841.79,
-      "outflow": 5533.82,
-      "net": 3307.97,
-      "running_balance": 139338.82
+      "inflow": 7540.56,
+      "outflow": 4056.42,
+      "net": 3484.14,
+      "running_balance": 173864.24
     },
     {
       "date": "2025-08-28",
-      "inflow": 6146.21,
-      "outflow": 4811.71,
-      "net": 1334.5,
-      "running_balance": 140673.32
+      "inflow": 8352.42,
+      "outflow": 7722.34,
+      "net": 630.08,
+      "running_balance": 174494.32
     },
     {
       "date": "2025-08-29",
-      "inflow": 6047.18,
-      "outflow": 7707.95,
-      "net": -1660.77,
-      "running_balance": 139012.55
+      "inflow": 8750.63,
+      "outflow": 7551.43,
+      "net": 1199.2,
+      "running_balance": 175693.52
     },
     {
       "date": "2025-08-30",
-      "inflow": 8080.89,
-      "outflow": 5943.73,
-      "net": 2137.16,
-      "running_balance": 141149.71
+      "inflow": 8826.39,
+      "outflow": 5590.53,
+      "net": 3235.86,
+      "running_balance": 178929.38
     },
     {
       "date": "2025-08-31",
-      "inflow": 6629.07,
-      "outflow": 6968.63,
-      "net": -339.56,
-      "running_balance": 140810.15
+      "inflow": 7849.04,
+      "outflow": 7441.64,
+      "net": 407.4,
+      "running_balance": 179336.78
     },
     {
       "date": "2025-09-01",
-      "inflow": 6423.44,
-      "outflow": 6060.47,
-      "net": 362.97,
-      "running_balance": 141173.12
+      "inflow": 4868.56,
+      "outflow": 5832.02,
+      "net": -963.46,
+      "running_balance": 178373.32
     },
     {
       "date": "2025-09-02",
-      "inflow": 6954.18,
-      "outflow": 5717.68,
-      "net": 1236.5,
-      "running_balance": 142409.62
+      "inflow": 4972.23,
+      "outflow": 6637.37,
+      "net": -1665.14,
+      "running_balance": 176708.18
     },
     {
       "date": "2025-09-03",
-      "inflow": 8746.91,
-      "outflow": 4748.33,
-      "net": 3998.58,
-      "running_balance": 146408.2
+      "inflow": 7045.18,
+      "outflow": 4693.55,
+      "net": 2351.63,
+      "running_balance": 179059.81
     },
     {
       "date": "2025-09-04",
-      "inflow": 5819.45,
-      "outflow": 3678.37,
-      "net": 2141.08,
-      "running_balance": 148549.28
+      "inflow": 8112.33,
+      "outflow": 6299.82,
+      "net": 1812.51,
+      "running_balance": 180872.32
     },
     {
       "date": "2025-09-05",
-      "inflow": 8803.99,
-      "outflow": 7102.09,
-      "net": 1701.9,
-      "running_balance": 150251.18
+      "inflow": 4299.32,
+      "outflow": 8049.25,
+      "net": -3749.93,
+      "running_balance": 177122.39
     },
     {
       "date": "2025-09-06",
-      "inflow": 6506.08,
-      "outflow": 7760.28,
-      "net": -1254.2,
-      "running_balance": 148996.98
+      "inflow": 5486.45,
+      "outflow": 7115.54,
+      "net": -1629.09,
+      "running_balance": 175493.3
     },
     {
       "date": "2025-09-07",
-      "inflow": 5428.77,
-      "outflow": 5791.53,
-      "net": -362.76,
-      "running_balance": 148634.22
+      "inflow": 5886.97,
+      "outflow": 3781.49,
+      "net": 2105.48,
+      "running_balance": 177598.78
     },
     {
       "date": "2025-09-08",
-      "inflow": 4543.11,
-      "outflow": 6526.66,
-      "net": -1983.55,
-      "running_balance": 146650.67
+      "inflow": 8720.93,
+      "outflow": 8141.76,
+      "net": 579.17,
+      "running_balance": 178177.95
     },
     {
       "date": "2025-09-09",
-      "inflow": 8697.83,
-      "outflow": 4249.46,
-      "net": 4448.37,
-      "running_balance": 151099.04
+      "inflow": 4662.7,
+      "outflow": 7422.59,
+      "net": -2759.89,
+      "running_balance": 175418.06
     },
     {
       "date": "2025-09-10",
-      "inflow": 5731.55,
-      "outflow": 3991.24,
-      "net": 1740.31,
-      "running_balance": 152839.35
+      "inflow": 9654.29,
+      "outflow": 6553.86,
+      "net": 3100.43,
+      "running_balance": 178518.49
     },
     {
       "date": "2025-09-11",
-      "inflow": 5782.03,
-      "outflow": 3747.81,
-      "net": 2034.22,
-      "running_balance": 154873.57
+      "inflow": 5643.88,
+      "outflow": 7942.18,
+      "net": -2298.3,
+      "running_balance": 176220.19
     },
     {
       "date": "2025-09-12",
-      "inflow": 6354.48,
-      "outflow": 4212.92,
-      "net": 2141.56,
-      "running_balance": 157015.13
+      "inflow": 5670.15,
+      "outflow": 5874.09,
+      "net": -203.94,
+      "running_balance": 176016.25
     },
     {
       "date": "2025-09-13",
-      "inflow": 7853.91,
-      "outflow": 6183.99,
-      "net": 1669.92,
-      "running_balance": 158685.05
+      "inflow": 7428.4,
+      "outflow": 7602.82,
+      "net": -174.42,
+      "running_balance": 175841.83
     },
     {
       "date": "2025-09-14",
-      "inflow": 7173.21,
-      "outflow": 8129.66,
-      "net": -956.45,
-      "running_balance": 157728.6
+      "inflow": 8933.02,
+      "outflow": 6928.07,
+      "net": 2004.95,
+      "running_balance": 177846.78
     },
     {
       "date": "2025-09-15",
-      "inflow": 8803.92,
-      "outflow": 5868.41,
-      "net": 2935.51,
-      "running_balance": 160664.11
+      "inflow": 9187.08,
+      "outflow": 4642.67,
+      "net": 4544.41,
+      "running_balance": 182391.19
     },
     {
       "date": "2025-09-16",
-      "inflow": 9775.7,
-      "outflow": 6655.3,
-      "net": 3120.4,
-      "running_balance": 163784.51
+      "inflow": 4742.89,
+      "outflow": 7750.0,
+      "net": -3007.11,
+      "running_balance": 179384.08
     },
     {
       "date": "2025-09-17",
-      "inflow": 6025.72,
-      "outflow": 4346.41,
-      "net": 1679.31,
-      "running_balance": 165463.82
+      "inflow": 7611.4,
+      "outflow": 4337.73,
+      "net": 3273.67,
+      "running_balance": 182657.75
     },
     {
       "date": "2025-09-18",
-      "inflow": 5317.34,
-      "outflow": 4134.34,
-      "net": 1183.0,
-      "running_balance": 166646.82
+      "inflow": 4425.56,
+      "outflow": 8035.48,
+      "net": -3609.92,
+      "running_balance": 179047.83
     },
     {
       "date": "2025-09-19",
-      "inflow": 4438.65,
-      "outflow": 8261.93,
-      "net": -3823.28,
-      "running_balance": 162823.54
+      "inflow": 7703.74,
+      "outflow": 6055.4,
+      "net": 1648.34,
+      "running_balance": 180696.17
     },
     {
       "date": "2025-09-20",
-      "inflow": 7030.42,
-      "outflow": 5899.78,
-      "net": 1130.64,
-      "running_balance": 163954.18
+      "inflow": 4359.4,
+      "outflow": 7602.11,
+      "net": -3242.71,
+      "running_balance": 177453.46
     },
     {
       "date": "2025-09-21",
-      "inflow": 9418.71,
-      "outflow": 6467.15,
-      "net": 2951.56,
-      "running_balance": 166905.74
+      "inflow": 7316.96,
+      "outflow": 6538.23,
+      "net": 778.73,
+      "running_balance": 178232.19
     },
     {
       "date": "2025-09-22",
-      "inflow": 7150.09,
-      "outflow": 4256.04,
-      "net": 2894.05,
-      "running_balance": 169799.79
+      "inflow": 4818.34,
+      "outflow": 4020.46,
+      "net": 797.88,
+      "running_balance": 179030.07
     },
     {
       "date": "2025-09-23",
-      "inflow": 4375.35,
-      "outflow": 4468.63,
-      "net": -93.28,
-      "running_balance": 169706.51
+      "inflow": 4640.47,
+      "outflow": 6996.63,
+      "net": -2356.16,
+      "running_balance": 176673.91
     },
     {
       "date": "2025-09-24",
-      "inflow": 6569.06,
-      "outflow": 7109.9,
-      "net": -540.84,
-      "running_balance": 169165.67
+      "inflow": 9050.37,
+      "outflow": 4139.1,
+      "net": 4911.27,
+      "running_balance": 181585.18
     },
     {
       "date": "2025-09-25",
-      "inflow": 7645.34,
-      "outflow": 6919.15,
-      "net": 726.19,
-      "running_balance": 169891.86
+      "inflow": 4535.89,
+      "outflow": 6536.41,
+      "net": -2000.52,
+      "running_balance": 179584.66
     },
     {
       "date": "2025-09-26",
-      "inflow": 4848.49,
-      "outflow": 6759.02,
-      "net": -1910.53,
-      "running_balance": 167981.33
+      "inflow": 7401.12,
+      "outflow": 5062.46,
+      "net": 2338.66,
+      "running_balance": 181923.32
     },
     {
       "date": "2025-09-27",
-      "inflow": 4211.64,
-      "outflow": 8272.07,
-      "net": -4060.43,
-      "running_balance": 163920.9
+      "inflow": 6760.02,
+      "outflow": 6080.19,
+      "net": 679.83,
+      "running_balance": 182603.15
     },
     {
       "date": "2025-09-28",
-      "inflow": 6961.0,
-      "outflow": 6059.95,
-      "net": 901.05,
-      "running_balance": 164821.95
+      "inflow": 5499.04,
+      "outflow": 4196.23,
+      "net": 1302.81,
+      "running_balance": 183905.96
     },
     {
       "date": "2025-09-29",
-      "inflow": 8771.78,
-      "outflow": 5655.69,
-      "net": 3116.09,
-      "running_balance": 167938.04
+      "inflow": 8312.05,
+      "outflow": 3650.14,
+      "net": 4661.91,
+      "running_balance": 188567.87
     },
     {
       "date": "2025-09-30",
-      "inflow": 9580.62,
-      "outflow": 6309.28,
-      "net": 3271.34,
-      "running_balance": 171209.38
+      "inflow": 9568.47,
+      "outflow": 3830.99,
+      "net": 5737.48,
+      "running_balance": 194305.35
     },
     {
       "date": "2025-10-01",
-      "inflow": 8329.55,
-      "outflow": 3612.24,
-      "net": 4717.31,
-      "running_balance": 175926.69
+      "inflow": 6793.37,
+      "outflow": 4935.52,
+      "net": 1857.85,
+      "running_balance": 196163.2
     },
     {
       "date": "2025-10-02",
-      "inflow": 7859.18,
-      "outflow": 3912.05,
-      "net": 3947.13,
-      "running_balance": 179873.82
+      "inflow": 5308.15,
+      "outflow": 7722.22,
+      "net": -2414.07,
+      "running_balance": 193749.13
     },
     {
       "date": "2025-10-03",
-      "inflow": 7792.96,
-      "outflow": 5086.78,
-      "net": 2706.18,
-      "running_balance": 182580.0
+      "inflow": 5646.54,
+      "outflow": 5141.13,
+      "net": 505.41,
+      "running_balance": 194254.54
     },
     {
       "date": "2025-10-04",
-      "inflow": 8384.46,
-      "outflow": 7827.83,
-      "net": 556.63,
-      "running_balance": 183136.63
+      "inflow": 9203.11,
+      "outflow": 5787.02,
+      "net": 3416.09,
+      "running_balance": 197670.63
     },
     {
       "date": "2025-10-05",
-      "inflow": 8164.54,
-      "outflow": 6307.11,
-      "net": 1857.43,
-      "running_balance": 184994.06
+      "inflow": 6536.59,
+      "outflow": 8245.75,
+      "net": -1709.16,
+      "running_balance": 195961.47
     },
     {
       "date": "2025-10-06",
-      "inflow": 6080.54,
-      "outflow": 6546.22,
-      "net": -465.68,
-      "running_balance": 184528.38
+      "inflow": 6522.3,
+      "outflow": 3956.02,
+      "net": 2566.28,
+      "running_balance": 198527.75
     },
     {
       "date": "2025-10-07",
-      "inflow": 4353.39,
-      "outflow": 8323.99,
-      "net": -3970.6,
-      "running_balance": 180557.78
+      "inflow": 7171.35,
+      "outflow": 7572.55,
+      "net": -401.2,
+      "running_balance": 198126.55
     },
     {
       "date": "2025-10-08",
-      "inflow": 4824.79,
-      "outflow": 6073.06,
-      "net": -1248.27,
-      "running_balance": 179309.51
+      "inflow": 4588.33,
+      "outflow": 6157.1,
+      "net": -1568.77,
+      "running_balance": 196557.78
     },
     {
       "date": "2025-10-09",
-      "inflow": 6446.8,
-      "outflow": 8210.64,
-      "net": -1763.84,
-      "running_balance": 177545.67
+      "inflow": 9279.23,
+      "outflow": 7505.26,
+      "net": 1773.97,
+      "running_balance": 198331.75
     },
     {
       "date": "2025-10-10",
-      "inflow": 4804.7,
-      "outflow": 4166.03,
-      "net": 638.67,
-      "running_balance": 178184.34
+      "inflow": 8643.77,
+      "outflow": 7458.5,
+      "net": 1185.27,
+      "running_balance": 199517.02
     },
     {
       "date": "2025-10-11",
-      "inflow": 7063.7,
-      "outflow": 7561.4,
-      "net": -497.7,
-      "running_balance": 177686.64
+      "inflow": 4624.93,
+      "outflow": 4112.17,
+      "net": 512.76,
+      "running_balance": 200029.78
     },
     {
       "date": "2025-10-12",
-      "inflow": 4298.5,
-      "outflow": 4000.58,
-      "net": 297.92,
-      "running_balance": 177984.56
+      "inflow": 5474.0,
+      "outflow": 4657.49,
+      "net": 816.51,
+      "running_balance": 200846.29
     },
     {
       "date": "2025-10-13",
-      "inflow": 9217.61,
-      "outflow": 4008.08,
-      "net": 5209.53,
-      "running_balance": 183194.09
+      "inflow": 5772.04,
+      "outflow": 4345.59,
+      "net": 1426.45,
+      "running_balance": 202272.74
     },
     {
       "date": "2025-10-14",
-      "inflow": 9217.51,
-      "outflow": 3761.45,
-      "net": 5456.06,
-      "running_balance": 188650.15
+      "inflow": 6522.29,
+      "outflow": 7402.03,
+      "net": -879.74,
+      "running_balance": 201393.0
     },
     {
       "date": "2025-10-15",
-      "inflow": 8716.73,
-      "outflow": 4827.77,
-      "net": 3888.96,
-      "running_balance": 192539.11
+      "inflow": 8463.02,
+      "outflow": 5528.52,
+      "net": 2934.5,
+      "running_balance": 204327.5
     },
     {
       "date": "2025-10-16",
-      "inflow": 6311.88,
-      "outflow": 8168.58,
-      "net": -1856.7,
-      "running_balance": 190682.41
+      "inflow": 7774.66,
+      "outflow": 5018.51,
+      "net": 2756.15,
+      "running_balance": 207083.65
     },
     {
       "date": "2025-10-17",
-      "inflow": 7344.11,
-      "outflow": 6224.56,
-      "net": 1119.55,
-      "running_balance": 191801.96
+      "inflow": 4442.0,
+      "outflow": 6815.52,
+      "net": -2373.52,
+      "running_balance": 204710.13
     },
     {
       "date": "2025-10-18",
-      "inflow": 8900.14,
-      "outflow": 7397.79,
-      "net": 1502.35,
-      "running_balance": 193304.31
+      "inflow": 7014.75,
+      "outflow": 5669.49,
+      "net": 1345.26,
+      "running_balance": 206055.39
     },
     {
       "date": "2025-10-19",
-      "inflow": 6295.84,
-      "outflow": 7104.36,
-      "net": -808.52,
-      "running_balance": 192495.79
+      "inflow": 8657.0,
+      "outflow": 5271.22,
+      "net": 3385.78,
+      "running_balance": 209441.17
     },
     {
       "date": "2025-10-20",
-      "inflow": 4909.51,
-      "outflow": 5085.61,
-      "net": -176.1,
-      "running_balance": 192319.69
+      "inflow": 5885.04,
+      "outflow": 5033.45,
+      "net": 851.59,
+      "running_balance": 210292.76
     },
     {
       "date": "2025-10-21",
-      "inflow": 8393.1,
-      "outflow": 5912.98,
-      "net": 2480.12,
-      "running_balance": 194799.81
+      "inflow": 6845.83,
+      "outflow": 5489.1,
+      "net": 1356.73,
+      "running_balance": 211649.49
     },
     {
       "date": "2025-10-22",
-      "inflow": 7252.66,
-      "outflow": 8095.59,
-      "net": -842.93,
-      "running_balance": 193956.88
+      "inflow": 7385.88,
+      "outflow": 5644.64,
+      "net": 1741.24,
+      "running_balance": 213390.73
     },
     {
       "date": "2025-10-23",
-      "inflow": 6482.59,
-      "outflow": 7240.72,
-      "net": -758.13,
-      "running_balance": 193198.75
+      "inflow": 9695.61,
+      "outflow": 7282.98,
+      "net": 2412.63,
+      "running_balance": 215803.36
     },
     {
       "date": "2025-10-24",
-      "inflow": 4386.55,
-      "outflow": 6509.17,
-      "net": -2122.62,
-      "running_balance": 191076.13
+      "inflow": 8618.89,
+      "outflow": 5317.07,
+      "net": 3301.82,
+      "running_balance": 219105.18
     },
     {
       "date": "2025-10-25",
-      "inflow": 4448.91,
-      "outflow": 5813.69,
-      "net": -1364.78,
-      "running_balance": 189711.35
+      "inflow": 9031.87,
+      "outflow": 6013.96,
+      "net": 3017.91,
+      "running_balance": 222123.09
     },
     {
       "date": "2025-10-26",
-      "inflow": 6231.39,
-      "outflow": 6405.17,
-      "net": -173.78,
-      "running_balance": 189537.57
+      "inflow": 9211.91,
+      "outflow": 6925.08,
+      "net": 2286.83,
+      "running_balance": 224409.92
     },
     {
       "date": "2025-10-27",
-      "inflow": 5267.29,
-      "outflow": 8075.57,
-      "net": -2808.28,
-      "running_balance": 186729.29
+      "inflow": 8798.13,
+      "outflow": 5567.09,
+      "net": 3231.04,
+      "running_balance": 227640.96
     },
     {
       "date": "2025-10-28",
-      "inflow": 7099.29,
-      "outflow": 6783.1,
-      "net": 316.19,
-      "running_balance": 187045.48
+      "inflow": 8482.95,
+      "outflow": 4462.02,
+      "net": 4020.93,
+      "running_balance": 231661.89
     },
     {
       "date": "2025-10-29",
-      "inflow": 4323.27,
-      "outflow": 6751.08,
-      "net": -2427.81,
-      "running_balance": 184617.67
+      "inflow": 9075.43,
+      "outflow": 5373.98,
+      "net": 3701.45,
+      "running_balance": 235363.34
     },
     {
       "date": "2025-10-30",
-      "inflow": 5628.47,
-      "outflow": 7191.89,
-      "net": -1563.42,
-      "running_balance": 183054.25
+      "inflow": 5031.25,
+      "outflow": 6790.95,
+      "net": -1759.7,
+      "running_balance": 233603.64
     },
     {
       "date": "2025-10-31",
-      "inflow": 6519.51,
-      "outflow": 7661.42,
-      "net": -1141.91,
-      "running_balance": 181912.34
+      "inflow": 5624.19,
+      "outflow": 4405.73,
+      "net": 1218.46,
+      "running_balance": 234822.1
     },
     {
       "date": "2025-11-01",
-      "inflow": 5231.08,
-      "outflow": 5087.6,
-      "net": 143.48,
-      "running_balance": 182055.82
+      "inflow": 5922.08,
+      "outflow": 3758.19,
+      "net": 2163.89,
+      "running_balance": 236985.99
     },
     {
       "date": "2025-11-02",
-      "inflow": 8720.77,
-      "outflow": 3668.87,
-      "net": 5051.9,
-      "running_balance": 187107.72
+      "inflow": 6300.3,
+      "outflow": 7523.0,
+      "net": -1222.7,
+      "running_balance": 235763.29
     },
     {
       "date": "2025-11-03",
-      "inflow": 9274.06,
-      "outflow": 6584.51,
-      "net": 2689.55,
-      "running_balance": 189797.27
+      "inflow": 6690.96,
+      "outflow": 4857.51,
+      "net": 1833.45,
+      "running_balance": 237596.74
     },
     {
       "date": "2025-11-04",
-      "inflow": 8684.65,
-      "outflow": 4340.5,
-      "net": 4344.15,
-      "running_balance": 194141.42
+      "inflow": 5575.79,
+      "outflow": 6124.94,
+      "net": -549.15,
+      "running_balance": 237047.59
     },
     {
       "date": "2025-11-05",
-      "inflow": 9566.38,
-      "outflow": 5602.71,
-      "net": 3963.67,
-      "running_balance": 198105.09
+      "inflow": 6803.15,
+      "outflow": 5241.13,
+      "net": 1562.02,
+      "running_balance": 238609.61
     },
     {
       "date": "2025-11-06",
-      "inflow": 6248.41,
-      "outflow": 7915.42,
-      "net": -1667.01,
-      "running_balance": 196438.08
+      "inflow": 8287.7,
+      "outflow": 7005.29,
+      "net": 1282.41,
+      "running_balance": 239892.02
     },
     {
       "date": "2025-11-07",
-      "inflow": 4726.47,
-      "outflow": 3968.34,
-      "net": 758.13,
-      "running_balance": 197196.21
+      "inflow": 4958.71,
+      "outflow": 5911.8,
+      "net": -953.09,
+      "running_balance": 238938.93
     },
     {
       "date": "2025-11-08",
-      "inflow": 9318.35,
-      "outflow": 7706.56,
-      "net": 1611.79,
-      "running_balance": 198808.0
+      "inflow": 7234.57,
+      "outflow": 3751.29,
+      "net": 3483.28,
+      "running_balance": 242422.21
     },
     {
       "date": "2025-11-09",
-      "inflow": 4484.81,
-      "outflow": 4165.45,
-      "net": 319.36,
-      "running_balance": 199127.36
+      "inflow": 9103.64,
+      "outflow": 7086.9,
+      "net": 2016.74,
+      "running_balance": 244438.95
     },
     {
       "date": "2025-11-10",
-      "inflow": 8380.85,
-      "outflow": 3712.2,
-      "net": 4668.65,
-      "running_balance": 203796.01
+      "inflow": 5893.9,
+      "outflow": 6561.08,
+      "net": -667.18,
+      "running_balance": 243771.77
     },
     {
       "date": "2025-11-11",
-      "inflow": 7220.84,
-      "outflow": 4434.86,
-      "net": 2785.98,
-      "running_balance": 206581.99
+      "inflow": 5944.3,
+      "outflow": 6568.8,
+      "net": -624.5,
+      "running_balance": 243147.27
     },
     {
       "date": "2025-11-12",
-      "inflow": 9269.93,
-      "outflow": 3914.37,
-      "net": 5355.56,
-      "running_balance": 211937.55
+      "inflow": 9161.79,
+      "outflow": 7955.88,
+      "net": 1205.91,
+      "running_balance": 244353.18
     },
     {
       "date": "2025-11-13",
-      "inflow": 7322.2,
-      "outflow": 5424.08,
-      "net": 1898.12,
-      "running_balance": 213835.67
+      "inflow": 7729.84,
+      "outflow": 5262.97,
+      "net": 2466.87,
+      "running_balance": 246820.05
     },
     {
       "date": "2025-11-14",
-      "inflow": 5877.44,
-      "outflow": 6119.13,
-      "net": -241.69,
-      "running_balance": 213593.98
+      "inflow": 4849.23,
+      "outflow": 7772.19,
+      "net": -2922.96,
+      "running_balance": 243897.09
     },
     {
       "date": "2025-11-15",
-      "inflow": 7426.49,
-      "outflow": 6493.2,
-      "net": 933.29,
-      "running_balance": 214527.27
+      "inflow": 6587.65,
+      "outflow": 6981.3,
+      "net": -393.65,
+      "running_balance": 243503.44
     },
     {
       "date": "2025-11-16",
-      "inflow": 5853.45,
-      "outflow": 6176.94,
-      "net": -323.49,
-      "running_balance": 214203.78
+      "inflow": 4900.01,
+      "outflow": 6060.84,
+      "net": -1160.83,
+      "running_balance": 242342.61
     },
     {
       "date": "2025-11-17",
-      "inflow": 4787.28,
-      "outflow": 5770.9,
-      "net": -983.62,
-      "running_balance": 213220.16
+      "inflow": 7065.27,
+      "outflow": 7232.25,
+      "net": -166.98,
+      "running_balance": 242175.63
     },
     {
       "date": "2025-11-18",
-      "inflow": 9706.53,
-      "outflow": 4236.24,
-      "net": 5470.29,
-      "running_balance": 218690.45
+      "inflow": 5239.57,
+      "outflow": 4362.45,
+      "net": 877.12,
+      "running_balance": 243052.75
     },
     {
       "date": "2025-11-19",
-      "inflow": 8619.23,
-      "outflow": 6644.37,
-      "net": 1974.86,
-      "running_balance": 220665.31
+      "inflow": 4581.45,
+      "outflow": 7245.02,
+      "net": -2663.57,
+      "running_balance": 240389.18
     },
     {
       "date": "2025-11-20",
-      "inflow": 9117.78,
-      "outflow": 6551.78,
-      "net": 2566.0,
-      "running_balance": 223231.31
+      "inflow": 9198.4,
+      "outflow": 3853.54,
+      "net": 5344.86,
+      "running_balance": 245734.04
     },
     {
       "date": "2025-11-21",
-      "inflow": 5629.71,
-      "outflow": 4285.29,
-      "net": 1344.42,
-      "running_balance": 224575.73
+      "inflow": 4367.62,
+      "outflow": 7444.46,
+      "net": -3076.84,
+      "running_balance": 242657.2
     },
     {
       "date": "2025-11-22",
-      "inflow": 9010.61,
-      "outflow": 5941.8,
-      "net": 3068.81,
-      "running_balance": 227644.54
+      "inflow": 5009.91,
+      "outflow": 8070.53,
+      "net": -3060.62,
+      "running_balance": 239596.58
     },
     {
       "date": "2025-11-23",
-      "inflow": 9674.65,
-      "outflow": 5059.84,
-      "net": 4614.81,
-      "running_balance": 232259.35
+      "inflow": 6063.73,
+      "outflow": 7020.0,
+      "net": -956.27,
+      "running_balance": 238640.31
     },
     {
       "date": "2025-11-24",
-      "inflow": 8471.45,
-      "outflow": 4311.54,
-      "net": 4159.91,
-      "running_balance": 236419.26
+      "inflow": 4876.79,
+      "outflow": 3622.62,
+      "net": 1254.17,
+      "running_balance": 239894.48
     },
     {
       "date": "2025-11-25",
-      "inflow": 8298.17,
-      "outflow": 6622.85,
-      "net": 1675.32,
-      "running_balance": 238094.58
+      "inflow": 6809.26,
+      "outflow": 4755.05,
+      "net": 2054.21,
+      "running_balance": 241948.69
     },
     {
       "date": "2025-11-26",
-      "inflow": 9081.19,
-      "outflow": 5313.85,
-      "net": 3767.34,
-      "running_balance": 241861.92
+      "inflow": 7294.81,
+      "outflow": 7133.33,
+      "net": 161.48,
+      "running_balance": 242110.17
     },
     {
       "date": "2025-11-27",
-      "inflow": 9337.97,
-      "outflow": 4675.95,
-      "net": 4662.02,
-      "running_balance": 246523.94
+      "inflow": 7709.87,
+      "outflow": 7102.97,
+      "net": 606.9,
+      "running_balance": 242717.07
     },
     {
       "date": "2025-11-28",
-      "inflow": 7436.25,
-      "outflow": 5049.03,
-      "net": 2387.22,
-      "running_balance": 248911.16
+      "inflow": 4741.76,
+      "outflow": 6626.69,
+      "net": -1884.93,
+      "running_balance": 240832.14
     },
     {
       "date": "2025-11-29",
-      "inflow": 9572.41,
-      "outflow": 3706.43,
-      "net": 5865.98,
-      "running_balance": 254777.14
+      "inflow": 8099.2,
+      "outflow": 7406.06,
+      "net": 693.14,
+      "running_balance": 241525.28
     },
     {
       "date": "2025-11-30",
-      "inflow": 9614.59,
-      "outflow": 7494.36,
-      "net": 2120.23,
-      "running_balance": 256897.37
+      "inflow": 6616.97,
+      "outflow": 8259.47,
+      "net": -1642.5,
+      "running_balance": 239882.78
     },
     {
       "date": "2025-12-01",
-      "inflow": 6468.42,
-      "outflow": 7058.13,
-      "net": -589.71,
-      "running_balance": 256307.66
+      "inflow": 9502.99,
+      "outflow": 5699.13,
+      "net": 3803.86,
+      "running_balance": 243686.64
     },
     {
       "date": "2025-12-02",
-      "inflow": 5713.69,
-      "outflow": 3599.74,
-      "net": 2113.95,
-      "running_balance": 258421.61
+      "inflow": 4910.77,
+      "outflow": 7636.96,
+      "net": -2726.19,
+      "running_balance": 240960.45
     },
     {
       "date": "2025-12-03",
-      "inflow": 5007.13,
-      "outflow": 7129.85,
-      "net": -2122.72,
-      "running_balance": 256298.89
+      "inflow": 4628.26,
+      "outflow": 3825.45,
+      "net": 802.81,
+      "running_balance": 241763.26
     },
     {
       "date": "2025-12-04",
-      "inflow": 7314.08,
-      "outflow": 4960.81,
-      "net": 2353.27,
-      "running_balance": 258652.16
+      "inflow": 8946.02,
+      "outflow": 7102.56,
+      "net": 1843.46,
+      "running_balance": 243606.72
     },
     {
       "date": "2025-12-05",
-      "inflow": 6587.64,
-      "outflow": 8207.47,
-      "net": -1619.83,
-      "running_balance": 257032.33
+      "inflow": 5413.87,
+      "outflow": 4297.94,
+      "net": 1115.93,
+      "running_balance": 244722.65
     },
     {
       "date": "2025-12-06",
-      "inflow": 9452.16,
-      "outflow": 8191.14,
-      "net": 1261.02,
-      "running_balance": 258293.35
+      "inflow": 8981.05,
+      "outflow": 7240.38,
+      "net": 1740.67,
+      "running_balance": 246463.32
     },
     {
       "date": "2025-12-07",
-      "inflow": 5498.86,
-      "outflow": 5193.57,
-      "net": 305.29,
-      "running_balance": 258598.64
+      "inflow": 7415.15,
+      "outflow": 7825.47,
+      "net": -410.32,
+      "running_balance": 246053.0
     },
     {
       "date": "2025-12-08",
-      "inflow": 4978.17,
-      "outflow": 4700.45,
-      "net": 277.72,
-      "running_balance": 258876.36
+      "inflow": 4411.02,
+      "outflow": 4118.77,
+      "net": 292.25,
+      "running_balance": 246345.25
     },
     {
       "date": "2025-12-09",
-      "inflow": 7739.69,
-      "outflow": 8018.25,
-      "net": -278.56,
-      "running_balance": 258597.8
+      "inflow": 7319.06,
+      "outflow": 7132.9,
+      "net": 186.16,
+      "running_balance": 246531.41
     },
     {
       "date": "2025-12-10",
-      "inflow": 6267.16,
-      "outflow": 6638.14,
-      "net": -370.98,
-      "running_balance": 258226.82
+      "inflow": 5493.48,
+      "outflow": 5797.55,
+      "net": -304.07,
+      "running_balance": 246227.34
     },
     {
       "date": "2025-12-11",
-      "inflow": 8434.66,
-      "outflow": 5415.8,
-      "net": 3018.86,
-      "running_balance": 261245.68
+      "inflow": 6442.84,
+      "outflow": 5341.71,
+      "net": 1101.13,
+      "running_balance": 247328.47
     },
     {
       "date": "2025-12-12",
-      "inflow": 7744.5,
-      "outflow": 7304.9,
-      "net": 439.6,
-      "running_balance": 261685.28
+      "inflow": 9320.64,
+      "outflow": 6823.11,
+      "net": 2497.53,
+      "running_balance": 249826.0
     },
     {
       "date": "2025-12-13",
-      "inflow": 6839.85,
-      "outflow": 6423.95,
-      "net": 415.9,
-      "running_balance": 262101.18
+      "inflow": 9627.65,
+      "outflow": 6317.77,
+      "net": 3309.88,
+      "running_balance": 253135.88
     },
     {
       "date": "2025-12-14",
-      "inflow": 6879.54,
-      "outflow": 5694.15,
-      "net": 1185.39,
-      "running_balance": 263286.57
+      "inflow": 7729.08,
+      "outflow": 8316.9,
+      "net": -587.82,
+      "running_balance": 252548.06
     },
     {
       "date": "2025-12-15",
-      "inflow": 9804.97,
-      "outflow": 3946.78,
-      "net": 5858.19,
-      "running_balance": 269144.76
+      "inflow": 5485.94,
+      "outflow": 7806.75,
+      "net": -2320.81,
+      "running_balance": 250227.25
     },
     {
       "date": "2025-12-16",
-      "inflow": 4259.83,
-      "outflow": 4476.09,
-      "net": -216.26,
-      "running_balance": 268928.5
+      "inflow": 6416.67,
+      "outflow": 7770.4,
+      "net": -1353.73,
+      "running_balance": 248873.52
     },
     {
       "date": "2025-12-17",
-      "inflow": 9191.91,
-      "outflow": 7690.92,
-      "net": 1500.99,
-      "running_balance": 270429.49
+      "inflow": 4610.44,
+      "outflow": 5986.22,
+      "net": -1375.78,
+      "running_balance": 247497.74
     },
     {
       "date": "2025-12-18",
-      "inflow": 8815.97,
-      "outflow": 6476.25,
-      "net": 2339.72,
-      "running_balance": 272769.21
+      "inflow": 6880.47,
+      "outflow": 8275.34,
+      "net": -1394.87,
+      "running_balance": 246102.87
     },
     {
       "date": "2025-12-19",
-      "inflow": 7751.48,
-      "outflow": 5642.33,
-      "net": 2109.15,
-      "running_balance": 274878.36
+      "inflow": 5202.98,
+      "outflow": 4580.27,
+      "net": 622.71,
+      "running_balance": 246725.58
     },
     {
       "date": "2025-12-20",
-      "inflow": 7042.63,
-      "outflow": 7510.35,
-      "net": -467.72,
-      "running_balance": 274410.64
+      "inflow": 5305.52,
+      "outflow": 7042.32,
+      "net": -1736.8,
+      "running_balance": 244988.78
     },
     {
       "date": "2025-12-21",
-      "inflow": 8338.1,
-      "outflow": 8248.79,
-      "net": 89.31,
-      "running_balance": 274499.95
+      "inflow": 5820.66,
+      "outflow": 5745.17,
+      "net": 75.49,
+      "running_balance": 245064.27
     },
     {
       "date": "2025-12-22",
-      "inflow": 6453.03,
-      "outflow": 5193.7,
-      "net": 1259.33,
-      "running_balance": 275759.28
+      "inflow": 9661.61,
+      "outflow": 7321.28,
+      "net": 2340.33,
+      "running_balance": 247404.6
     },
     {
       "date": "2025-12-23",
-      "inflow": 9774.78,
-      "outflow": 4835.8,
-      "net": 4938.98,
-      "running_balance": 280698.26
+      "inflow": 7729.48,
+      "outflow": 6113.5,
+      "net": 1615.98,
+      "running_balance": 249020.58
     },
     {
       "date": "2025-12-24",
-      "inflow": 5083.23,
-      "outflow": 5913.16,
-      "net": -829.93,
-      "running_balance": 279868.33
+      "inflow": 7181.09,
+      "outflow": 4878.34,
+      "net": 2302.75,
+      "running_balance": 251323.33
     },
     {
       "date": "2025-12-25",
-      "inflow": 5319.48,
-      "outflow": 7777.97,
-      "net": -2458.49,
-      "running_balance": 277409.84
+      "inflow": 7844.39,
+      "outflow": 6387.92,
+      "net": 1456.47,
+      "running_balance": 252779.8
     },
     {
       "date": "2025-12-26",
-      "inflow": 8807.35,
-      "outflow": 6363.28,
-      "net": 2444.07,
-      "running_balance": 279853.91
+      "inflow": 8215.57,
+      "outflow": 4230.19,
+      "net": 3985.38,
+      "running_balance": 256765.18
     },
     {
       "date": "2025-12-27",
-      "inflow": 5672.85,
-      "outflow": 4049.29,
-      "net": 1623.56,
-      "running_balance": 281477.47
+      "inflow": 9493.11,
+      "outflow": 6794.28,
+      "net": 2698.83,
+      "running_balance": 259464.01
     },
     {
       "date": "2025-12-28",
-      "inflow": 7155.61,
-      "outflow": 7331.3,
-      "net": -175.69,
-      "running_balance": 281301.78
+      "inflow": 7271.97,
+      "outflow": 6065.95,
+      "net": 1206.02,
+      "running_balance": 260670.03
     },
     {
       "date": "2025-12-29",
-      "inflow": 8327.39,
-      "outflow": 6785.2,
-      "net": 1542.19,
-      "running_balance": 282843.97
+      "inflow": 4540.47,
+      "outflow": 5927.18,
+      "net": -1386.71,
+      "running_balance": 259283.32
     },
     {
       "date": "2025-12-30",
-      "inflow": 9446.42,
-      "outflow": 5988.6,
-      "net": 3457.82,
-      "running_balance": 286301.79
+      "inflow": 8222.04,
+      "outflow": 5379.54,
+      "net": 2842.5,
+      "running_balance": 262125.82
     },
     {
       "date": "2025-12-31",
-      "inflow": 5749.75,
-      "outflow": 5813.9,
-      "net": -64.15,
-      "running_balance": 286237.64
+      "inflow": 8516.32,
+      "outflow": 7518.42,
+      "net": 997.9,
+      "running_balance": 263123.72
     },
     {
       "date": "2026-01-01",
-      "inflow": 5385.73,
-      "outflow": 7326.39,
-      "net": -1940.66,
-      "running_balance": 284296.98
+      "inflow": 6200.95,
+      "outflow": 7449.02,
+      "net": -1248.07,
+      "running_balance": 261875.65
     },
     {
       "date": "2026-01-02",
-      "inflow": 8394.47,
-      "outflow": 6005.19,
-      "net": 2389.28,
-      "running_balance": 286686.26
+      "inflow": 4346.38,
+      "outflow": 8147.4,
+      "net": -3801.02,
+      "running_balance": 258074.63
     },
     {
       "date": "2026-01-03",
-      "inflow": 8234.53,
-      "outflow": 7138.25,
-      "net": 1096.28,
-      "running_balance": 287782.54
+      "inflow": 8813.51,
+      "outflow": 7004.42,
+      "net": 1809.09,
+      "running_balance": 259883.72
     },
     {
       "date": "2026-01-04",
-      "inflow": 5011.3,
-      "outflow": 4731.48,
-      "net": 279.82,
-      "running_balance": 288062.36
+      "inflow": 6632.18,
+      "outflow": 4761.18,
+      "net": 1871.0,
+      "running_balance": 261754.72
     },
     {
       "date": "2026-01-05",
-      "inflow": 9377.46,
-      "outflow": 5272.85,
-      "net": 4104.61,
-      "running_balance": 292166.97
+      "inflow": 7680.84,
+      "outflow": 7960.22,
+      "net": -279.38,
+      "running_balance": 261475.34
     },
     {
       "date": "2026-01-06",
-      "inflow": 4866.38,
-      "outflow": 3925.15,
-      "net": 941.23,
-      "running_balance": 293108.2
+      "inflow": 7048.58,
+      "outflow": 3917.1,
+      "net": 3131.48,
+      "running_balance": 264606.82
     },
     {
       "date": "2026-01-07",
-      "inflow": 5064.8,
-      "outflow": 7908.79,
-      "net": -2843.99,
-      "running_balance": 290264.21
+      "inflow": 5166.83,
+      "outflow": 5896.63,
+      "net": -729.8,
+      "running_balance": 263877.02
     },
     {
       "date": "2026-01-08",
-      "inflow": 6562.98,
-      "outflow": 4438.95,
-      "net": 2124.03,
-      "running_balance": 292388.24
+      "inflow": 8811.54,
+      "outflow": 4796.0,
+      "net": 4015.54,
+      "running_balance": 267892.56
     },
     {
       "date": "2026-01-09",
-      "inflow": 5069.43,
-      "outflow": 6606.91,
-      "net": -1537.48,
-      "running_balance": 290850.76
+      "inflow": 7045.83,
+      "outflow": 7928.43,
+      "net": -882.6,
+      "running_balance": 267009.96
     },
     {
       "date": "2026-01-10",
-      "inflow": 4511.15,
-      "outflow": 5362.25,
-      "net": -851.1,
-      "running_balance": 289999.66
+      "inflow": 5397.65,
+      "outflow": 5096.75,
+      "net": 300.9,
+      "running_balance": 267310.86
     },
     {
       "date": "2026-01-11",
-      "inflow": 7761.74,
-      "outflow": 7559.14,
-      "net": 202.6,
-      "running_balance": 290202.26
+      "inflow": 6267.78,
+      "outflow": 5963.87,
+      "net": 303.91,
+      "running_balance": 267614.77
     },
     {
       "date": "2026-01-12",
-      "inflow": 9555.43,
-      "outflow": 7157.78,
-      "net": 2397.65,
-      "running_balance": 292599.91
+      "inflow": 6128.73,
+      "outflow": 5101.53,
+      "net": 1027.2,
+      "running_balance": 268641.97
     },
     {
       "date": "2026-01-13",
-      "inflow": 8568.35,
-      "outflow": 4420.31,
-      "net": 4148.04,
-      "running_balance": 296747.95
+      "inflow": 8288.42,
+      "outflow": 5267.44,
+      "net": 3020.98,
+      "running_balance": 271662.95
     },
     {
       "date": "2026-01-14",
-      "inflow": 8111.49,
-      "outflow": 8135.25,
-      "net": -23.76,
-      "running_balance": 296724.19
+      "inflow": 5380.87,
+      "outflow": 5540.93,
+      "net": -160.06,
+      "running_balance": 271502.89
     },
     {
       "date": "2026-01-15",
-      "inflow": 8162.37,
-      "outflow": 4406.02,
-      "net": 3756.35,
-      "running_balance": 300480.54
+      "inflow": 7707.98,
+      "outflow": 4384.25,
+      "net": 3323.73,
+      "running_balance": 274826.62
     },
     {
       "date": "2026-01-16",
-      "inflow": 9565.52,
-      "outflow": 8065.0,
-      "net": 1500.52,
-      "running_balance": 301981.06
+      "inflow": 4253.23,
+      "outflow": 3921.01,
+      "net": 332.22,
+      "running_balance": 275158.84
     },
     {
       "date": "2026-01-17",
-      "inflow": 7828.04,
-      "outflow": 5079.1,
-      "net": 2748.94,
-      "running_balance": 304730.0
+      "inflow": 6371.87,
+      "outflow": 6525.4,
+      "net": -153.53,
+      "running_balance": 275005.31
     },
     {
       "date": "2026-01-18",
-      "inflow": 6451.66,
-      "outflow": 7481.07,
-      "net": -1029.41,
-      "running_balance": 303700.59
+      "inflow": 7948.41,
+      "outflow": 6286.53,
+      "net": 1661.88,
+      "running_balance": 276667.19
     },
     {
       "date": "2026-01-19",
-      "inflow": 4788.72,
-      "outflow": 6587.23,
-      "net": -1798.51,
-      "running_balance": 301902.08
+      "inflow": 6560.39,
+      "outflow": 7845.84,
+      "net": -1285.45,
+      "running_balance": 275381.74
     },
     {
       "date": "2026-01-20",
-      "inflow": 5089.6,
-      "outflow": 5905.33,
-      "net": -815.73,
-      "running_balance": 301086.35
+      "inflow": 7202.86,
+      "outflow": 7306.0,
+      "net": -103.14,
+      "running_balance": 275278.6
     },
     {
       "date": "2026-01-21",
-      "inflow": 9236.33,
-      "outflow": 7735.2,
-      "net": 1501.13,
-      "running_balance": 302587.48
+      "inflow": 9309.0,
+      "outflow": 4529.75,
+      "net": 4779.25,
+      "running_balance": 280057.85
     },
     {
       "date": "2026-01-22",
-      "inflow": 6309.29,
-      "outflow": 4615.87,
-      "net": 1693.42,
-      "running_balance": 304280.9
+      "inflow": 4774.09,
+      "outflow": 8099.07,
+      "net": -3324.98,
+      "running_balance": 276732.87
     },
     {
       "date": "2026-01-23",
-      "inflow": 6428.06,
-      "outflow": 7244.54,
-      "net": -816.48,
-      "running_balance": 303464.42
+      "inflow": 7663.5,
+      "outflow": 5140.03,
+      "net": 2523.47,
+      "running_balance": 279256.34
     },
     {
       "date": "2026-01-24",
-      "inflow": 5544.49,
-      "outflow": 6609.71,
-      "net": -1065.22,
-      "running_balance": 302399.2
+      "inflow": 9224.8,
+      "outflow": 4181.45,
+      "net": 5043.35,
+      "running_balance": 284299.69
     },
     {
       "date": "2026-01-25",
-      "inflow": 4462.12,
-      "outflow": 5262.04,
-      "net": -799.92,
-      "running_balance": 301599.28
+      "inflow": 6444.72,
+      "outflow": 6584.29,
+      "net": -139.57,
+      "running_balance": 284160.12
     },
     {
       "date": "2026-01-26",
-      "inflow": 9175.1,
-      "outflow": 6745.92,
-      "net": 2429.18,
-      "running_balance": 304028.46
+      "inflow": 6694.57,
+      "outflow": 4852.68,
+      "net": 1841.89,
+      "running_balance": 286002.01
     },
     {
       "date": "2026-01-27",
-      "inflow": 9671.21,
-      "outflow": 4247.8,
-      "net": 5423.41,
-      "running_balance": 309451.87
+      "inflow": 6439.42,
+      "outflow": 7053.14,
+      "net": -613.72,
+      "running_balance": 285388.29
     },
     {
       "date": "2026-01-28",
-      "inflow": 5612.52,
-      "outflow": 6195.4,
-      "net": -582.88,
-      "running_balance": 308868.99
+      "inflow": 5191.79,
+      "outflow": 4390.85,
+      "net": 800.94,
+      "running_balance": 286189.23
     },
     {
       "date": "2026-01-29",
-      "inflow": 6697.97,
-      "outflow": 6185.59,
-      "net": 512.38,
-      "running_balance": 309381.37
+      "inflow": 8826.62,
+      "outflow": 7910.63,
+      "net": 915.99,
+      "running_balance": 287105.22
     },
     {
       "date": "2026-01-30",
-      "inflow": 4942.84,
-      "outflow": 7358.18,
-      "net": -2415.34,
-      "running_balance": 306966.03
+      "inflow": 5405.21,
+      "outflow": 6299.02,
+      "net": -893.81,
+      "running_balance": 286211.41
     },
     {
       "date": "2026-01-31",
-      "inflow": 6655.33,
-      "outflow": 4229.88,
-      "net": 2425.45,
-      "running_balance": 309391.48
+      "inflow": 4224.52,
+      "outflow": 4424.32,
+      "net": -199.8,
+      "running_balance": 286011.61
     },
     {
       "date": "2026-02-01",
-      "inflow": 6655.54,
-      "outflow": 4878.6,
-      "net": 1776.94,
-      "running_balance": 311168.42
+      "inflow": 5905.41,
+      "outflow": 5133.76,
+      "net": 771.65,
+      "running_balance": 286783.26
     },
     {
       "date": "2026-02-02",
-      "inflow": 5002.32,
-      "outflow": 6228.6,
-      "net": -1226.28,
-      "running_balance": 309942.14
+      "inflow": 5175.3,
+      "outflow": 6574.92,
+      "net": -1399.62,
+      "running_balance": 285383.64
     },
     {
       "date": "2026-02-03",
-      "inflow": 6822.45,
-      "outflow": 4385.94,
-      "net": 2436.51,
-      "running_balance": 312378.65
+      "inflow": 8001.96,
+      "outflow": 5784.0,
+      "net": 2217.96,
+      "running_balance": 287601.6
     },
     {
       "date": "2026-02-04",
-      "inflow": 7303.9,
-      "outflow": 7800.35,
-      "net": -496.45,
-      "running_balance": 311882.2
+      "inflow": 5319.64,
+      "outflow": 6141.05,
+      "net": -821.41,
+      "running_balance": 286780.19
     },
     {
       "date": "2026-02-05",
-      "inflow": 4916.17,
-      "outflow": 8270.99,
-      "net": -3354.82,
-      "running_balance": 308527.38
+      "inflow": 4781.8,
+      "outflow": 5864.48,
+      "net": -1082.68,
+      "running_balance": 285697.51
     },
     {
       "date": "2026-02-06",
-      "inflow": 5118.93,
-      "outflow": 4372.46,
-      "net": 746.47,
-      "running_balance": 309273.85
+      "inflow": 5696.73,
+      "outflow": 3963.8,
+      "net": 1732.93,
+      "running_balance": 287430.44
     },
     {
       "date": "2026-02-07",
-      "inflow": 5251.53,
-      "outflow": 7210.08,
-      "net": -1958.55,
-      "running_balance": 307315.3
+      "inflow": 8371.55,
+      "outflow": 5440.67,
+      "net": 2930.88,
+      "running_balance": 290361.32
     },
     {
       "date": "2026-02-08",
-      "inflow": 5039.37,
-      "outflow": 5109.15,
-      "net": -69.78,
-      "running_balance": 307245.52
+      "inflow": 9611.56,
+      "outflow": 5130.15,
+      "net": 4481.41,
+      "running_balance": 294842.73
     },
     {
       "date": "2026-02-09",
-      "inflow": 5318.87,
-      "outflow": 5784.67,
-      "net": -465.8,
-      "running_balance": 306779.72
+      "inflow": 5344.39,
+      "outflow": 4055.03,
+      "net": 1289.36,
+      "running_balance": 296132.09
     },
     {
       "date": "2026-02-10",
-      "inflow": 8445.77,
-      "outflow": 7836.11,
-      "net": 609.66,
-      "running_balance": 307389.38
+      "inflow": 7809.34,
+      "outflow": 7268.13,
+      "net": 541.21,
+      "running_balance": 296673.3
     },
     {
       "date": "2026-02-11",
-      "inflow": 6790.43,
-      "outflow": 4582.52,
-      "net": 2207.91,
-      "running_balance": 309597.29
+      "inflow": 6798.04,
+      "outflow": 5439.26,
+      "net": 1358.78,
+      "running_balance": 298032.08
     },
     {
       "date": "2026-02-12",
-      "inflow": 7498.26,
-      "outflow": 4311.61,
-      "net": 3186.65,
-      "running_balance": 312783.94
+      "inflow": 8758.57,
+      "outflow": 7953.93,
+      "net": 804.64,
+      "running_balance": 298836.72
     },
     {
       "date": "2026-02-13",
-      "inflow": 6492.22,
-      "outflow": 5288.51,
-      "net": 1203.71,
-      "running_balance": 313987.65
+      "inflow": 7700.0,
+      "outflow": 4541.25,
+      "net": 3158.75,
+      "running_balance": 301995.47
     },
     {
       "date": "2026-02-14",
-      "inflow": 7701.63,
-      "outflow": 7572.73,
-      "net": 128.9,
-      "running_balance": 314116.55
+      "inflow": 9463.6,
+      "outflow": 4751.24,
+      "net": 4712.36,
+      "running_balance": 306707.83
     },
     {
       "date": "2026-02-15",
-      "inflow": 6094.55,
-      "outflow": 4923.46,
-      "net": 1171.09,
-      "running_balance": 315287.64
+      "inflow": 4265.2,
+      "outflow": 4387.88,
+      "net": -122.68,
+      "running_balance": 306585.15
     },
     {
       "date": "2026-02-16",
-      "inflow": 5645.46,
-      "outflow": 6461.23,
-      "net": -815.77,
-      "running_balance": 314471.87
+      "inflow": 5589.32,
+      "outflow": 7676.66,
+      "net": -2087.34,
+      "running_balance": 304497.81
     },
     {
       "date": "2026-02-17",
-      "inflow": 6205.17,
-      "outflow": 6975.34,
-      "net": -770.17,
-      "running_balance": 313701.7
+      "inflow": 4311.01,
+      "outflow": 5958.46,
+      "net": -1647.45,
+      "running_balance": 302850.36
     },
     {
       "date": "2026-02-18",
-      "inflow": 7789.51,
-      "outflow": 7445.66,
-      "net": 343.85,
-      "running_balance": 314045.55
+      "inflow": 8550.09,
+      "outflow": 4831.7,
+      "net": 3718.39,
+      "running_balance": 306568.75
     },
     {
       "date": "2026-02-19",
-      "inflow": 6301.63,
-      "outflow": 3638.53,
-      "net": 2663.1,
-      "running_balance": 316708.65
+      "inflow": 6879.28,
+      "outflow": 5657.57,
+      "net": 1221.71,
+      "running_balance": 307790.46
     },
     {
       "date": "2026-02-20",
-      "inflow": 5522.81,
-      "outflow": 4435.95,
-      "net": 1086.86,
-      "running_balance": 317795.51
+      "inflow": 8420.42,
+      "outflow": 7982.01,
+      "net": 438.41,
+      "running_balance": 308228.87
     },
     {
       "date": "2026-02-21",
-      "inflow": 7429.76,
-      "outflow": 5636.93,
-      "net": 1792.83,
-      "running_balance": 319588.34
+      "inflow": 4348.95,
+      "outflow": 3844.22,
+      "net": 504.73,
+      "running_balance": 308733.6
     },
     {
       "date": "2026-02-22",
-      "inflow": 8117.28,
-      "outflow": 7618.74,
-      "net": 498.54,
-      "running_balance": 320086.88
+      "inflow": 4386.15,
+      "outflow": 7468.31,
+      "net": -3082.16,
+      "running_balance": 305651.44
     },
     {
       "date": "2026-02-23",
-      "inflow": 8915.31,
-      "outflow": 8064.41,
-      "net": 850.9,
-      "running_balance": 320937.78
+      "inflow": 5817.81,
+      "outflow": 7597.06,
+      "net": -1779.25,
+      "running_balance": 303872.19
     },
     {
       "date": "2026-02-24",
-      "inflow": 8407.2,
-      "outflow": 6915.86,
-      "net": 1491.34,
-      "running_balance": 322429.12
+      "inflow": 9362.78,
+      "outflow": 6322.98,
+      "net": 3039.8,
+      "running_balance": 306911.99
     },
     {
       "date": "2026-02-25",
-      "inflow": 8677.35,
-      "outflow": 6007.01,
-      "net": 2670.34,
-      "running_balance": 325099.46
+      "inflow": 6350.75,
+      "outflow": 3976.52,
+      "net": 2374.23,
+      "running_balance": 309286.22
     },
     {
       "date": "2026-02-26",
-      "inflow": 7276.55,
-      "outflow": 7433.54,
-      "net": -156.99,
-      "running_balance": 324942.47
+      "inflow": 4721.32,
+      "outflow": 7408.9,
+      "net": -2687.58,
+      "running_balance": 306598.64
     },
     {
       "date": "2026-02-27",
-      "inflow": 5499.27,
-      "outflow": 4058.73,
-      "net": 1440.54,
-      "running_balance": 326383.01
+      "inflow": 4452.69,
+      "outflow": 4960.34,
+      "net": -507.65,
+      "running_balance": 306090.99
     },
     {
       "date": "2026-02-28",
-      "inflow": 8123.32,
-      "outflow": 6931.81,
-      "net": 1191.51,
-      "running_balance": 327574.52
+      "inflow": 4373.44,
+      "outflow": 4218.09,
+      "net": 155.35,
+      "running_balance": 306246.34
     },
     {
       "date": "2026-03-01",
-      "inflow": 7143.14,
-      "outflow": 6427.64,
-      "net": 715.5,
-      "running_balance": 328290.02
+      "inflow": 6603.81,
+      "outflow": 6858.03,
+      "net": -254.22,
+      "running_balance": 305992.12
     },
     {
       "date": "2026-03-02",
-      "inflow": 4603.84,
-      "outflow": 3813.41,
-      "net": 790.43,
-      "running_balance": 329080.45
+      "inflow": 8726.33,
+      "outflow": 6223.73,
+      "net": 2502.6,
+      "running_balance": 308494.72
     },
     {
       "date": "2026-03-03",
-      "inflow": 5373.77,
-      "outflow": 5662.1,
-      "net": -288.33,
-      "running_balance": 328792.12
+      "inflow": 5993.53,
+      "outflow": 6914.32,
+      "net": -920.79,
+      "running_balance": 307573.93
     },
     {
       "date": "2026-03-04",
-      "inflow": 7245.28,
-      "outflow": 6841.21,
-      "net": 404.07,
-      "running_balance": 329196.19
+      "inflow": 5045.92,
+      "outflow": 7272.98,
+      "net": -2227.06,
+      "running_balance": 305346.87
     },
     {
       "date": "2026-03-05",
-      "inflow": 8977.95,
-      "outflow": 7280.37,
-      "net": 1697.58,
-      "running_balance": 330893.77
+      "inflow": 9694.24,
+      "outflow": 5802.47,
+      "net": 3891.77,
+      "running_balance": 309238.64
     },
     {
       "date": "2026-03-06",
-      "inflow": 9486.34,
-      "outflow": 4852.4,
-      "net": 4633.94,
-      "running_balance": 335527.71
+      "inflow": 9195.98,
+      "outflow": 7624.13,
+      "net": 1571.85,
+      "running_balance": 310810.49
     },
     {
       "date": "2026-03-07",
-      "inflow": 7547.32,
-      "outflow": 8018.63,
-      "net": -471.31,
-      "running_balance": 335056.4
+      "inflow": 6892.61,
+      "outflow": 4827.34,
+      "net": 2065.27,
+      "running_balance": 312875.76
     },
     {
       "date": "2026-03-08",
-      "inflow": 8455.53,
-      "outflow": 6408.45,
-      "net": 2047.08,
-      "running_balance": 337103.48
+      "inflow": 7511.14,
+      "outflow": 6358.54,
+      "net": 1152.6,
+      "running_balance": 314028.36
     },
     {
       "date": "2026-03-09",
-      "inflow": 4320.96,
-      "outflow": 6771.59,
-      "net": -2450.63,
-      "running_balance": 334652.85
+      "inflow": 5570.97,
+      "outflow": 5533.74,
+      "net": 37.23,
+      "running_balance": 314065.59
     },
     {
       "date": "2026-03-10",
-      "inflow": 4511.89,
-      "outflow": 6610.84,
-      "net": -2098.95,
-      "running_balance": 332553.9
+      "inflow": 8618.46,
+      "outflow": 8299.41,
+      "net": 319.05,
+      "running_balance": 314384.64
     },
     {
       "date": "2026-03-11",
-      "inflow": 8532.1,
-      "outflow": 5190.77,
-      "net": 3341.33,
-      "running_balance": 335895.23
+      "inflow": 9766.83,
+      "outflow": 5007.26,
+      "net": 4759.57,
+      "running_balance": 319144.21
     },
     {
       "date": "2026-03-12",
-      "inflow": 7419.5,
-      "outflow": 5506.76,
-      "net": 1912.74,
-      "running_balance": 337807.97
+      "inflow": 7986.74,
+      "outflow": 5143.71,
+      "net": 2843.03,
+      "running_balance": 321987.24
     },
     {
       "date": "2026-03-13",
-      "inflow": 9176.88,
-      "outflow": 4888.03,
-      "net": 4288.85,
-      "running_balance": 342096.82
+      "inflow": 9142.78,
+      "outflow": 4849.44,
+      "net": 4293.34,
+      "running_balance": 326280.58
     },
     {
       "date": "2026-03-14",
-      "inflow": 4277.29,
-      "outflow": 4500.03,
-      "net": -222.74,
-      "running_balance": 341874.08
+      "inflow": 9752.44,
+      "outflow": 5991.34,
+      "net": 3761.1,
+      "running_balance": 330041.68
     },
     {
       "date": "2026-03-15",
-      "inflow": 8290.76,
-      "outflow": 3716.97,
-      "net": 4573.79,
-      "running_balance": 346447.87
+      "inflow": 5007.48,
+      "outflow": 4277.3,
+      "net": 730.18,
+      "running_balance": 330771.86
     },
     {
       "date": "2026-03-16",
-      "inflow": 8847.81,
-      "outflow": 7985.79,
-      "net": 862.02,
-      "running_balance": 347309.89
+      "inflow": 6342.94,
+      "outflow": 6979.89,
+      "net": -636.95,
+      "running_balance": 330134.91
     },
     {
       "date": "2026-03-17",
-      "inflow": 6503.19,
-      "outflow": 7889.78,
-      "net": -1386.59,
-      "running_balance": 345923.3
+      "inflow": 5086.1,
+      "outflow": 4133.48,
+      "net": 952.62,
+      "running_balance": 331087.53
     },
     {
       "date": "2026-03-18",
-      "inflow": 7165.58,
-      "outflow": 3637.55,
-      "net": 3528.03,
-      "running_balance": 349451.33
+      "inflow": 7191.49,
+      "outflow": 3968.43,
+      "net": 3223.06,
+      "running_balance": 334310.59
     },
     {
       "date": "2026-03-19",
-      "inflow": 5323.52,
-      "outflow": 5264.64,
-      "net": 58.88,
-      "running_balance": 349510.21
+      "inflow": 6071.61,
+      "outflow": 5948.05,
+      "net": 123.56,
+      "running_balance": 334434.15
     },
     {
       "date": "2026-03-20",
-      "inflow": 7788.02,
-      "outflow": 6542.21,
-      "net": 1245.81,
-      "running_balance": 350756.02
+      "inflow": 4425.27,
+      "outflow": 7661.4,
+      "net": -3236.13,
+      "running_balance": 331198.02
     },
     {
       "date": "2026-03-21",
-      "inflow": 8403.1,
-      "outflow": 4389.67,
-      "net": 4013.43,
-      "running_balance": 354769.45
+      "inflow": 6008.63,
+      "outflow": 8317.77,
+      "net": -2309.14,
+      "running_balance": 328888.88
     },
     {
       "date": "2026-03-22",
-      "inflow": 8109.8,
-      "outflow": 6049.57,
-      "net": 2060.23,
-      "running_balance": 356829.68
+      "inflow": 9361.97,
+      "outflow": 6301.29,
+      "net": 3060.68,
+      "running_balance": 331949.56
     },
     {
       "date": "2026-03-23",
-      "inflow": 4463.05,
-      "outflow": 4659.64,
-      "net": -196.59,
-      "running_balance": 356633.09
+      "inflow": 4465.76,
+      "outflow": 4388.54,
+      "net": 77.22,
+      "running_balance": 332026.78
     },
     {
       "date": "2026-03-24",
-      "inflow": 8591.29,
-      "outflow": 7824.68,
-      "net": 766.61,
-      "running_balance": 357399.7
+      "inflow": 8749.39,
+      "outflow": 8054.97,
+      "net": 694.42,
+      "running_balance": 332721.2
     },
     {
       "date": "2026-03-25",
-      "inflow": 7332.17,
-      "outflow": 3670.44,
-      "net": 3661.73,
-      "running_balance": 361061.43
+      "inflow": 7219.41,
+      "outflow": 6817.82,
+      "net": 401.59,
+      "running_balance": 333122.79
     },
     {
       "date": "2026-03-26",
-      "inflow": 9313.84,
-      "outflow": 5338.84,
-      "net": 3975.0,
-      "running_balance": 365036.43
+      "inflow": 4658.9,
+      "outflow": 4283.57,
+      "net": 375.33,
+      "running_balance": 333498.12
     },
     {
       "date": "2026-03-27",
-      "inflow": 6696.79,
-      "outflow": 7303.33,
-      "net": -606.54,
-      "running_balance": 364429.89
+      "inflow": 4611.61,
+      "outflow": 8150.43,
+      "net": -3538.82,
+      "running_balance": 329959.3
     },
     {
       "date": "2026-03-28",
-      "inflow": 7996.98,
-      "outflow": 6672.04,
-      "net": 1324.94,
-      "running_balance": 365754.83
+      "inflow": 9228.38,
+      "outflow": 3727.0,
+      "net": 5501.38,
+      "running_balance": 335460.68
     },
     {
       "date": "2026-03-29",
-      "inflow": 8642.88,
-      "outflow": 6905.67,
-      "net": 1737.21,
-      "running_balance": 367492.04
+      "inflow": 7801.42,
+      "outflow": 5628.63,
+      "net": 2172.79,
+      "running_balance": 337633.47
     },
     {
       "date": "2026-03-30",
-      "inflow": 6566.04,
-      "outflow": 6597.07,
-      "net": -31.03,
-      "running_balance": 367461.01
+      "inflow": 6272.74,
+      "outflow": 4727.63,
+      "net": 1545.11,
+      "running_balance": 339178.58
     },
     {
       "date": "2026-03-31",
-      "inflow": 9376.65,
-      "outflow": 8337.77,
-      "net": 1038.88,
-      "running_balance": 368499.89
+      "inflow": 6165.43,
+      "outflow": 4255.72,
+      "net": 1909.71,
+      "running_balance": 341088.29
     },
     {
       "date": "2026-04-01",
-      "inflow": 5199.03,
-      "outflow": 4717.01,
-      "net": 482.02,
-      "running_balance": 368981.91
+      "inflow": 9581.67,
+      "outflow": 6409.53,
+      "net": 3172.14,
+      "running_balance": 344260.43
     },
     {
       "date": "2026-04-02",
-      "inflow": 7604.07,
-      "outflow": 6459.18,
-      "net": 1144.89,
-      "running_balance": 370126.8
+      "inflow": 6482.93,
+      "outflow": 6300.36,
+      "net": 182.57,
+      "running_balance": 344443.0
     },
     {
       "date": "2026-04-03",
-      "inflow": 5456.01,
-      "outflow": 6570.87,
-      "net": -1114.86,
-      "running_balance": 369011.94
+      "inflow": 6634.84,
+      "outflow": 6448.57,
+      "net": 186.27,
+      "running_balance": 344629.27
     },
     {
       "date": "2026-04-04",
-      "inflow": 5742.98,
-      "outflow": 7267.22,
-      "net": -1524.24,
-      "running_balance": 367487.7
+      "inflow": 8561.81,
+      "outflow": 5416.93,
+      "net": 3144.88,
+      "running_balance": 347774.15
     },
     {
       "date": "2026-04-05",
-      "inflow": 8505.04,
-      "outflow": 4623.78,
-      "net": 3881.26,
-      "running_balance": 371368.96
+      "inflow": 6264.84,
+      "outflow": 8194.56,
+      "net": -1929.72,
+      "running_balance": 345844.43
     },
     {
       "date": "2026-04-06",
-      "inflow": 9312.96,
-      "outflow": 7742.69,
-      "net": 1570.27,
-      "running_balance": 372939.23
+      "inflow": 9543.25,
+      "outflow": 7501.26,
+      "net": 2041.99,
+      "running_balance": 347886.42
     },
     {
       "date": "2026-04-07",
-      "inflow": 7642.06,
-      "outflow": 4780.27,
-      "net": 2861.79,
-      "running_balance": 375801.02
+      "inflow": 4794.68,
+      "outflow": 5163.38,
+      "net": -368.7,
+      "running_balance": 347517.72
     },
     {
       "date": "2026-04-08",
-      "inflow": 5526.61,
-      "outflow": 4537.4,
-      "net": 989.21,
-      "running_balance": 376790.23
+      "inflow": 4250.5,
+      "outflow": 3751.33,
+      "net": 499.17,
+      "running_balance": 348016.89
     },
     {
       "date": "2026-04-09",
-      "inflow": 8793.41,
-      "outflow": 6494.36,
-      "net": 2299.05,
-      "running_balance": 379089.28
+      "inflow": 4738.72,
+      "outflow": 6412.35,
+      "net": -1673.63,
+      "running_balance": 346343.26
     },
     {
       "date": "2026-04-10",
-      "inflow": 4459.08,
-      "outflow": 8032.92,
-      "net": -3573.84,
-      "running_balance": 375515.44
+      "inflow": 8883.43,
+      "outflow": 4251.19,
+      "net": 4632.24,
+      "running_balance": 350975.5
     },
     {
       "date": "2026-04-11",
-      "inflow": 8777.54,
-      "outflow": 7540.89,
-      "net": 1236.65,
-      "running_balance": 376752.09
+      "inflow": 8092.85,
+      "outflow": 6430.51,
+      "net": 1662.34,
+      "running_balance": 352637.84
     },
     {
       "date": "2026-04-12",
-      "inflow": 7998.47,
-      "outflow": 6580.91,
-      "net": 1417.56,
-      "running_balance": 378169.65
+      "inflow": 7401.89,
+      "outflow": 7585.85,
+      "net": -183.96,
+      "running_balance": 352453.88
     },
     {
       "date": "2026-04-13",
-      "inflow": 4366.19,
-      "outflow": 6504.85,
-      "net": -2138.66,
-      "running_balance": 376030.99
+      "inflow": 7277.66,
+      "outflow": 6326.38,
+      "net": 951.28,
+      "running_balance": 353405.16
     },
     {
       "date": "2026-04-14",
-      "inflow": 6285.88,
-      "outflow": 7567.02,
-      "net": -1281.14,
-      "running_balance": 374749.85
+      "inflow": 8737.89,
+      "outflow": 6612.81,
+      "net": 2125.08,
+      "running_balance": 355530.24
     },
     {
       "date": "2026-04-15",
-      "inflow": 8362.98,
-      "outflow": 8212.0,
-      "net": 150.98,
-      "running_balance": 374900.83
+      "inflow": 7792.79,
+      "outflow": 7551.21,
+      "net": 241.58,
+      "running_balance": 355771.82
     },
     {
       "date": "2026-04-16",
-      "inflow": 5480.69,
-      "outflow": 5747.12,
-      "net": -266.43,
-      "running_balance": 374634.4
+      "inflow": 9501.91,
+      "outflow": 6732.76,
+      "net": 2769.15,
+      "running_balance": 358540.97
     },
     {
       "date": "2026-04-17",
-      "inflow": 9561.22,
-      "outflow": 4603.07,
-      "net": 4958.15,
-      "running_balance": 379592.55
+      "inflow": 6147.22,
+      "outflow": 5280.77,
+      "net": 866.45,
+      "running_balance": 359407.42
     },
     {
       "date": "2026-04-18",
-      "inflow": 6946.25,
-      "outflow": 5407.84,
-      "net": 1538.41,
-      "running_balance": 381130.96
+      "inflow": 8073.39,
+      "outflow": 8019.9,
+      "net": 53.49,
+      "running_balance": 359460.91
     },
     {
       "date": "2026-04-19",
-      "inflow": 5828.26,
-      "outflow": 4637.57,
-      "net": 1190.69,
-      "running_balance": 382321.65
+      "inflow": 4574.3,
+      "outflow": 6169.63,
+      "net": -1595.33,
+      "running_balance": 357865.58
     },
     {
       "date": "2026-04-20",
-      "inflow": 8686.68,
-      "outflow": 7601.47,
-      "net": 1085.21,
-      "running_balance": 383406.86
+      "inflow": 8411.66,
+      "outflow": 7933.46,
+      "net": 478.2,
+      "running_balance": 358343.78
     },
     {
       "date": "2026-04-21",
-      "inflow": 6133.58,
-      "outflow": 5860.91,
-      "net": 272.67,
-      "running_balance": 383679.53
+      "inflow": 6192.63,
+      "outflow": 6999.02,
+      "net": -806.39,
+      "running_balance": 357537.39
     },
     {
       "date": "2026-04-22",
-      "inflow": 5143.05,
-      "outflow": 7392.06,
-      "net": -2249.01,
-      "running_balance": 381430.52
+      "inflow": 7441.91,
+      "outflow": 4690.61,
+      "net": 2751.3,
+      "running_balance": 360288.69
     },
     {
       "date": "2026-04-23",
-      "inflow": 5597.29,
-      "outflow": 6439.57,
-      "net": -842.28,
-      "running_balance": 380588.24
+      "inflow": 9126.99,
+      "outflow": 4331.55,
+      "net": 4795.44,
+      "running_balance": 365084.13
     },
     {
       "date": "2026-04-24",
-      "inflow": 5690.51,
-      "outflow": 6075.29,
-      "net": -384.78,
-      "running_balance": 380203.46
+      "inflow": 4423.97,
+      "outflow": 4721.65,
+      "net": -297.68,
+      "running_balance": 364786.45
     },
     {
       "date": "2026-04-25",
-      "inflow": 4286.74,
-      "outflow": 7361.36,
-      "net": -3074.62,
-      "running_balance": 377128.84
+      "inflow": 9345.4,
+      "outflow": 5385.61,
+      "net": 3959.79,
+      "running_balance": 368746.24
     },
     {
       "date": "2026-04-26",
-      "inflow": 6822.2,
-      "outflow": 7160.45,
-      "net": -338.25,
-      "running_balance": 376790.59
+      "inflow": 6250.5,
+      "outflow": 8167.25,
+      "net": -1916.75,
+      "running_balance": 366829.49
     },
     {
       "date": "2026-04-27",
-      "inflow": 4978.94,
-      "outflow": 7469.98,
-      "net": -2491.04,
-      "running_balance": 374299.55
+      "inflow": 9798.98,
+      "outflow": 6254.13,
+      "net": 3544.85,
+      "running_balance": 370374.34
     },
     {
       "date": "2026-04-28",
-      "inflow": 4576.92,
-      "outflow": 4710.46,
-      "net": -133.54,
-      "running_balance": 374166.01
+      "inflow": 7491.57,
+      "outflow": 5025.27,
+      "net": 2466.3,
+      "running_balance": 372840.64
     },
     {
       "date": "2026-04-29",
-      "inflow": 8484.68,
-      "outflow": 4754.4,
-      "net": 3730.28,
-      "running_balance": 377896.29
+      "inflow": 7217.05,
+      "outflow": 4955.71,
+      "net": 2261.34,
+      "running_balance": 375101.98
     },
     {
       "date": "2026-04-30",
-      "inflow": 8319.21,
-      "outflow": 7898.77,
-      "net": 420.44,
-      "running_balance": 378316.73
+      "inflow": 4231.99,
+      "outflow": 5785.96,
+      "net": -1553.97,
+      "running_balance": 373548.01
     },
     {
       "date": "2026-05-01",
-      "inflow": 7481.29,
-      "outflow": 6370.75,
-      "net": 1110.54,
-      "running_balance": 379427.27
+      "inflow": 7719.37,
+      "outflow": 5990.5,
+      "net": 1728.87,
+      "running_balance": 375276.88
     },
     {
       "date": "2026-05-02",
-      "inflow": 4849.86,
-      "outflow": 4327.86,
-      "net": 522.0,
-      "running_balance": 379949.27
+      "inflow": 7147.9,
+      "outflow": 6773.92,
+      "net": 373.98,
+      "running_balance": 375650.86
     },
     {
       "date": "2026-05-03",
-      "inflow": 4718.38,
-      "outflow": 3798.81,
-      "net": 919.57,
-      "running_balance": 380868.84
+      "inflow": 7835.62,
+      "outflow": 5853.05,
+      "net": 1982.57,
+      "running_balance": 377633.43
     },
     {
       "date": "2026-05-04",
-      "inflow": 5040.77,
-      "outflow": 6018.39,
-      "net": -977.62,
-      "running_balance": 379891.22
+      "inflow": 5571.48,
+      "outflow": 5631.05,
+      "net": -59.57,
+      "running_balance": 377573.86
     },
     {
       "date": "2026-05-05",
-      "inflow": 6941.75,
-      "outflow": 6018.93,
-      "net": 922.82,
-      "running_balance": 380814.04
+      "inflow": 9696.51,
+      "outflow": 6016.6,
+      "net": 3679.91,
+      "running_balance": 381253.77
     },
     {
       "date": "2026-05-06",
-      "inflow": 8303.61,
-      "outflow": 4982.34,
-      "net": 3321.27,
-      "running_balance": 384135.31
+      "inflow": 9808.24,
+      "outflow": 6726.52,
+      "net": 3081.72,
+      "running_balance": 384335.49
     },
     {
       "date": "2026-05-07",
-      "inflow": 4917.91,
-      "outflow": 5173.48,
-      "net": -255.57,
-      "running_balance": 383879.74
+      "inflow": 7298.27,
+      "outflow": 6347.95,
+      "net": 950.32,
+      "running_balance": 385285.81
     },
     {
       "date": "2026-05-08",
-      "inflow": 7048.1,
-      "outflow": 5738.06,
-      "net": 1310.04,
-      "running_balance": 385189.78
+      "inflow": 5141.38,
+      "outflow": 5546.31,
+      "net": -404.93,
+      "running_balance": 384880.88
     },
     {
       "date": "2026-05-09",
-      "inflow": 5420.42,
-      "outflow": 5740.95,
-      "net": -320.53,
-      "running_balance": 384869.25
+      "inflow": 6688.83,
+      "outflow": 5218.45,
+      "net": 1470.38,
+      "running_balance": 386351.26
     },
     {
       "date": "2026-05-10",
-      "inflow": 9062.1,
-      "outflow": 6310.4,
-      "net": 2751.7,
-      "running_balance": 387620.95
+      "inflow": 8730.53,
+      "outflow": 7731.18,
+      "net": 999.35,
+      "running_balance": 387350.61
     },
     {
       "date": "2026-05-11",
-      "inflow": 6608.38,
-      "outflow": 4491.24,
-      "net": 2117.14,
-      "running_balance": 389738.09
+      "inflow": 9595.61,
+      "outflow": 5374.44,
+      "net": 4221.17,
+      "running_balance": 391571.78
     },
     {
       "date": "2026-05-12",
-      "inflow": 9526.03,
-      "outflow": 7277.9,
-      "net": 2248.13,
-      "running_balance": 391986.22
+      "inflow": 9585.98,
+      "outflow": 8082.62,
+      "net": 1503.36,
+      "running_balance": 393075.14
     },
     {
       "date": "2026-05-13",
-      "inflow": 6593.45,
-      "outflow": 6065.1,
-      "net": 528.35,
-      "running_balance": 392514.57
+      "inflow": 6500.9,
+      "outflow": 5070.35,
+      "net": 1430.55,
+      "running_balance": 394505.69
     },
     {
       "date": "2026-05-14",
-      "inflow": 5588.37,
-      "outflow": 5548.16,
-      "net": 40.21,
-      "running_balance": 392554.78
+      "inflow": 4350.29,
+      "outflow": 4496.22,
+      "net": -145.93,
+      "running_balance": 394359.76
     },
     {
       "date": "2026-05-15",
-      "inflow": 9787.23,
-      "outflow": 7022.46,
-      "net": 2764.77,
-      "running_balance": 395319.55
+      "inflow": 4532.45,
+      "outflow": 4399.39,
+      "net": 133.06,
+      "running_balance": 394492.82
     },
     {
       "date": "2026-05-16",
-      "inflow": 6002.39,
-      "outflow": 5878.28,
-      "net": 124.11,
-      "running_balance": 395443.66
+      "inflow": 5392.37,
+      "outflow": 4719.65,
+      "net": 672.72,
+      "running_balance": 395165.54
     },
     {
       "date": "2026-05-17",
-      "inflow": 5385.63,
-      "outflow": 3617.62,
-      "net": 1768.01,
-      "running_balance": 397211.67
+      "inflow": 4698.12,
+      "outflow": 6589.62,
+      "net": -1891.5,
+      "running_balance": 393274.04
     },
     {
       "date": "2026-05-18",
-      "inflow": 5075.08,
-      "outflow": 4951.94,
-      "net": 123.14,
-      "running_balance": 397334.81
+      "inflow": 9669.18,
+      "outflow": 6784.2,
+      "net": 2884.98,
+      "running_balance": 396159.02
     },
     {
       "date": "2026-05-19",
-      "inflow": 7596.59,
-      "outflow": 7945.94,
-      "net": -349.35,
-      "running_balance": 396985.46
+      "inflow": 6306.39,
+      "outflow": 4782.92,
+      "net": 1523.47,
+      "running_balance": 397682.49
     },
     {
       "date": "2026-05-20",
-      "inflow": 6001.82,
-      "outflow": 7541.44,
-      "net": -1539.62,
-      "running_balance": 395445.84
+      "inflow": 6157.77,
+      "outflow": 7256.57,
+      "net": -1098.8,
+      "running_balance": 396583.69
     },
     {
       "date": "2026-05-21",
-      "inflow": 6206.68,
-      "outflow": 7698.14,
-      "net": -1491.46,
-      "running_balance": 393954.38
+      "inflow": 8558.26,
+      "outflow": 8331.59,
+      "net": 226.67,
+      "running_balance": 396810.36
     },
     {
       "date": "2026-05-22",
-      "inflow": 4402.68,
-      "outflow": 5006.23,
-      "net": -603.55,
-      "running_balance": 393350.83
+      "inflow": 7204.26,
+      "outflow": 4204.84,
+      "net": 2999.42,
+      "running_balance": 399809.78
     },
     {
       "date": "2026-05-23",
-      "inflow": 5555.06,
-      "outflow": 5910.81,
-      "net": -355.75,
-      "running_balance": 392995.08
+      "inflow": 8055.56,
+      "outflow": 6737.26,
+      "net": 1318.3,
+      "running_balance": 401128.08
     },
     {
       "date": "2026-05-24",
-      "inflow": 4521.36,
-      "outflow": 7582.84,
-      "net": -3061.48,
-      "running_balance": 389933.6
+      "inflow": 8266.75,
+      "outflow": 3615.75,
+      "net": 4651.0,
+      "running_balance": 405779.08
     },
     {
       "date": "2026-05-25",
-      "inflow": 6918.84,
-      "outflow": 3841.31,
-      "net": 3077.53,
-      "running_balance": 393011.13
+      "inflow": 7464.08,
+      "outflow": 5798.78,
+      "net": 1665.3,
+      "running_balance": 407444.38
     },
     {
       "date": "2026-05-26",
-      "inflow": 9757.08,
-      "outflow": 4698.62,
-      "net": 5058.46,
-      "running_balance": 398069.59
+      "inflow": 6229.86,
+      "outflow": 5657.54,
+      "net": 572.32,
+      "running_balance": 408016.7
     },
     {
       "date": "2026-05-27",
-      "inflow": 7782.5,
-      "outflow": 5890.59,
-      "net": 1891.91,
-      "running_balance": 399961.5
+      "inflow": 5071.43,
+      "outflow": 5446.49,
+      "net": -375.06,
+      "running_balance": 407641.64
     },
     {
       "date": "2026-05-28",
-      "inflow": 5851.74,
-      "outflow": 3913.45,
-      "net": 1938.29,
-      "running_balance": 401899.79
+      "inflow": 9509.08,
+      "outflow": 8261.64,
+      "net": 1247.44,
+      "running_balance": 408889.08
     },
     {
       "date": "2026-05-29",
-      "inflow": 5047.24,
-      "outflow": 4991.83,
-      "net": 55.41,
-      "running_balance": 401955.2
+      "inflow": 8522.86,
+      "outflow": 4737.79,
+      "net": 3785.07,
+      "running_balance": 412674.15
     },
     {
       "date": "2026-05-30",
-      "inflow": 7286.49,
-      "outflow": 7264.93,
-      "net": 21.56,
-      "running_balance": 401976.76
+      "inflow": 5941.61,
+      "outflow": 3640.16,
+      "net": 2301.45,
+      "running_balance": 414975.6
+    },
+    {
+      "date": "2026-05-31",
+      "inflow": 7025.25,
+      "outflow": 5828.39,
+      "net": 1196.86,
+      "running_balance": 416172.46
     }
   ]
 }
