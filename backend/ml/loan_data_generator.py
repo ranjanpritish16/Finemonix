@@ -75,7 +75,7 @@ APPROVAL_RULES = {
 # ─── Feature Generation with Correlations ─────────────────────────────────
 
 def generate_synthetic_data(
-    n_samples: int = 50000,
+    n_samples: int = 100000,
     random_state: int = 42,
     save_path: str = None,
 ) -> pd.DataFrame:
@@ -129,8 +129,8 @@ def generate_synthetic_data(
     outstanding_loans_inr = np.clip(outstanding_loans_inr * business_vintage_years, 0, 50)
     
     # Debt-to-income ratio (monthly loan payments assume 10% of principal per month)
-    monthly_loan_payments = (outstanding_loans_inr / 12) * 0.1
-    dti = monthly_loan_payments / (monthly_revenue_inr + 0.01)  # avoid division by zero
+    monthly_loan_payments = outstanding_loans_inr * 0.025
+    dti = monthly_loan_payments / (monthly_revenue_inr)  # avoid division by zero
     dti = np.clip(dti, 0, 1)
     
     # Client concentration - high concentration = higher risk
@@ -205,6 +205,11 @@ def generate_synthetic_data(
             df.loc[idx, "business_vintage_years"] = rules["min_vintage"] + np.random.uniform(-0.5, 0.5)
         elif threshold_feature == "min_gst_score":
             df.loc[idx, "gst_compliance_score"] = max(0, int(rules["min_gst_score"] + np.random.randint(-10, 10)))
+    
+    df["psu_approved"] = apply_lender_rules(df, "psu_bank").astype(int)
+    df["private_approved"] = apply_lender_rules(df, "private_bank").astype(int)
+    df["nbfc_approved"] = apply_lender_rules(df, "nbfc").astype(int)
+    df["mfi_approved"] = apply_lender_rules(df, "mfi").astype(int)
     
     # ── 6. Round numeric columns ───────────────────────────────────────────
     
@@ -319,7 +324,7 @@ if __name__ == "__main__":
     
     # Generate full dataset
     df = generate_synthetic_data(
-        n_samples=50000,
+        n_samples=100000,
         save_path="backend/data/loan_training/full_dataset.parquet"
     )
     

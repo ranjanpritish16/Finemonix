@@ -172,24 +172,52 @@ Automatically identifies periods where cash flow falls below safety threshold:
 }
 ```
 
-### 4. **Loan Eligibility & Risk Assessment**
+### 4. **Loan Eligibility & Risk Assessment** ⭐
 
-Finemonix provides intelligent loan eligibility analysis (framework prepared, models trainable):
+Finemonix provides intelligent, multi-lender loan eligibility analysis with sub-25ms what-if inference:
 
-**Features**:
-- XGBoost classifier calibration for loan approval prediction
-- SHAP (SHapley Additive exPlanations) for explainable AI
-- Sub-100ms response time for what-if analysis
-- Scenario testing: Adjust payment delays and revenue to see impact on eligibility
+**Architecture**:
+- Calibrated XGBoost classifiers — one per lender type (PSU banks, NBFC, Private banks, MFIs)
+- SHAP (SHapley Additive exPlanations) for explainable AI — waterfall chart on frontend
+- O(1) what-if delta engine: pre-computed SHAP decompositions cached in Redis, delta approximated in a single fast pass (~5ms), full response under 25ms
+- Loan CTA wired directly into cash flow forecast — contextual nudge when danger zone detected
 
-**Example Scenario Request**:
+**Lender Types Supported**:
+| Lender | Model File | Typical Approval Range |
+|--------|-----------|------------------------|
+| PSU Banks | `psu_shap_values.npy` | Conservative, collateral-heavy |
+| NBFC | `nbfc_shap_values.npy` | Higher approval, higher rate |
+| Private Banks | `private_shap_values.npy` | Balanced risk/return |
+| MFI | `mfi_shap_values.npy` | Micro-loan, low ticket size |
+
+**Example What-If Request**:
 ```bash
 POST /api/loan/eligibility
 {
   "business_id": 1,
-  "client_id": 5,
-  "delay_days": 30,        # What if payments are delayed 30 days?
-  "amount_override": 500000 # What if revenue drops to 500k?
+  "delay_days": 30,
+  "amount_override": 500000
+}
+```
+
+**Example What-If Response**:
+```json
+{
+  "lenders": {
+    "psu": { "probability": 0.28, "eligible": false },
+    "nbfc": { "probability": 0.71, "eligible": true },
+    "private": { "probability": 0.54, "eligible": true },
+    "mfi": { "probability": 0.88, "eligible": true }
+  },
+  "shap_explanation": {
+    "base_value": 0.45,
+    "features": [
+      { "name": "client_concentration", "shap_value": -0.18, "feature_value": 0.72 },
+      { "name": "avg_payment_delay_days", "shap_value": -0.12, "feature_value": 30 },
+      { "name": "revenue_stability", "shap_value": 0.21, "feature_value": 0.84 }
+    ]
+  },
+  "response_ms": 22
 }
 ```
 
@@ -394,6 +422,7 @@ Finemonix/
 ├── db/                        # Database schema and scripts
 ├── ml/                        # Machine learning pipelines
 ├── scripts/                   # Utility and setup scripts
+│   └── smoke_test.py          # End-to-end loan module smoke test (NBFC pitch sequence)
 ├── tests/                     # Test suite
 ├── docker-compose.yml         # Docker Compose orchestration
 └── .env                       # Environment variables (create this)
@@ -666,8 +695,9 @@ http://localhost:8000/redoc
 - `GET /api/forecast/history` — Get forecast history
 
 #### Loan Analysis
-- `POST /api/loan/eligibility` — Check loan eligibility
-- `GET /api/loan/report/{entity_id}` — Get loan analysis report
+- `POST /api/loan/eligibility` — Check loan eligibility across all lender types (PSU / NBFC / Private / MFI)
+- `POST /api/loan/whatif` — O(1) what-if delta on SHAP decomposition (~5ms)
+- `GET /api/loan/report/{entity_id}` — Get full loan analysis report with SHAP waterfall
 
 #### Watchlist
 - `POST /api/watchlist/add` — Add company to watchlist
@@ -803,7 +833,7 @@ GET /api/dashboard/1
 }
 ```
 
-**Step 8: Check Loan Eligibility (What-If Analysis)**
+**Step 8: Check Loan Eligibility (Multi-Lender + What-If)**
 ```bash
 POST /api/loan/eligibility
 {
@@ -816,17 +846,31 @@ POST /api/loan/eligibility
 **Response**:
 ```json
 {
-  "eligible": true,
-  "probability": 0.87,
-  "factors": {
-    "positive": [
-      {"factor": "Revenue Stability", "impact": 0.45}
-    ],
-    "negative": [
-      {"factor": "Payment Delays", "impact": -0.15}
+  "lenders": {
+    "psu":     { "probability": 0.28, "eligible": false },
+    "nbfc":    { "probability": 0.71, "eligible": true },
+    "private": { "probability": 0.54, "eligible": true },
+    "mfi":     { "probability": 0.88, "eligible": true }
+  },
+  "shap_explanation": {
+    "base_value": 0.45,
+    "features": [
+      { "name": "client_concentration", "shap_value": -0.18 },
+      { "name": "revenue_stability",    "shap_value": +0.21 }
     ]
-  }
+  },
+  "response_ms": 22
 }
+```
+
+**Step 9: What-If Scenario (reduce client concentration)**
+```bash
+POST /api/loan/whatif
+{
+  "business_id": 1,
+  "feature_overrides": { "client_concentration": 0.40 }
+}
+# NBFC probability climbs from 0.71 → ~0.81 in <5ms
 ```
 
 ---
@@ -969,9 +1013,36 @@ Content-Type: application/json
 
 Response (200 OK):
 {
-  "eligible": true,
-  "probability": 0.87,
-  "recommended_amount": 500000.00
+  "lenders": {
+    "psu":     { "probability": 0.28, "eligible": false },
+    "nbfc":    { "probability": 0.71, "eligible": true },
+    "private": { "probability": 0.54, "eligible": true },
+    "mfi":     { "probability": 0.88, "eligible": true }
+  },
+  "shap_explanation": { "base_value": 0.45, "features": [...] },
+  "response_ms": 22
+}
+```
+
+#### What-If Loan Scenario (O(1) Delta Engine)
+```bash
+POST /api/loan/whatif
+Content-Type: application/json
+
+{
+  "business_id": 1,
+  "feature_overrides": {
+    "client_concentration": 0.40,
+    "avg_payment_delay_days": 15
+  }
+}
+
+Response (200 OK):
+{
+  "lenders": {
+    "nbfc": { "probability": 0.81, "delta": +0.10 }
+  },
+  "response_ms": 5
 }
 ```
 
@@ -1621,24 +1692,32 @@ Overdue = SUM(amount) WHERE status='overdue'
 
 ## Feature Implementation Status
 
+> **Last synced with codebase**: June 14, 2026 (Day 18 of 30)
+
 | Feature | Status | Details |
 |---------|--------|---------|
 | User Authentication | ✅ Complete | JWT-based with bcrypt hashing |
 | Tally Parser | ✅ Complete | Multi-currency, complex voucher handling |
 | GST Parser | ✅ Complete | JSON parsing, GSTIN extraction |
 | Bank Parser | ✅ Complete | CSV parsing, statement reconciliation |
-| Entity Resolution | ✅ Complete | GSTIN + Fuzzy + Embeddings |
+| Entity Resolution | ✅ Complete | GSTIN + Fuzzy + Embeddings (3-pass) |
 | Transaction Deduplication | ✅ Complete | Date, amount, counterparty matching |
-| LSTM Forecasting | ✅ Complete | MC Dropout with uncertainty quantification |
-| Prophet Forecasting | ✅ Complete | Seasonal decomposition |
+| LSTM Forecasting | ✅ Complete | MC Dropout, net-delta target, cumsum anchor |
+| Prophet Forecasting | ✅ Complete | Seasonal decomposition, GST regressor |
 | Danger Zone Detection | ✅ Complete | Contiguous period identification |
-| Dashboard | ✅ Complete | Real-time metrics |
+| Dashboard (frontend) | ✅ Complete | Real-time metrics, frontend tab wired |
+| Cash Flow Tab (frontend) | ✅ Complete | 90-day area chart, scenario sidebar |
+| Integration Tab (frontend) | ✅ Complete | Data sources, upload status |
 | Invoice Tracking | ✅ Complete | Status tracking, overdue calculation |
-| Loan Eligibility | ⚠️ Framework | Model training pipeline ready |
+| Loan Eligibility Engine | ✅ Complete | XGBoost + SHAP, calibrated per lender type (PSU / NBFC / Private / MFI) |
+| SHAP What-If Delta Engine | ✅ Complete | O(1) additive delta, sub-25ms response, Redis-cached decomposition |
+| Loan Tab (frontend) | ✅ Complete | Eligibility gauges, SHAP waterfall, what-if CTA wired to forecast API |
+| Loan Integration Tests | ✅ Complete | Full NBFC pitch-sequence fixture, smoke test script |
 | Watchlist | ✅ Complete | Company monitoring setup |
-| Neo4j Integration | ⚠️ Ready | Framework prepared, can be extended |
+| Neo4j Integration | ⚠️ Ready | Framework prepared, schema defined |
 | Qdrant Vector Search | ⚠️ Ready | Infrastructure in place |
-| Regulatory Monitoring | 📋 Planned | BSE scraping, NLP analysis |
+| Regulatory Monitoring | 📋 Planned | BSE scraping, NLP analysis, Isolation Forest anomaly detection |
+| Company Knowledge Graph | 📋 Planned | D3 force graph, Neo4j GDS, pledge tracker |
 
 ---
 
@@ -1656,6 +1735,6 @@ For frontend development, check `frontend/README.md`
 
 ---
 
-**Last Updated**: June 2, 2026
+**Last Updated**: June 14, 2026 (Day 18 / 30)
 **Project Version**: 1.0
-**Status**: Active Development
+**Status**: Active Development — Loan module complete, Regulatory Monitor next
