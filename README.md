@@ -21,6 +21,17 @@ Finemonix is an ML-powered financial intelligence platform for Indian MSMEs that
 
 ---
 
+## Feature Implementation Status
+
+- [x] **Phase 1: Data Foundation** — Database schema, API routing, Tally/GST parsing, Entity Resolution (Completed).
+- [x] **Phase 2: Cash Flow ML** — Prophet/LSTM forecasting, background Celery processing (Completed).
+- [x] **Phase 3: Loan Engine** — XGBoost loan eligibility models, SHAP explainability, What-If simulation (Completed).
+- [x] **Phase 4: Regulatory Filing Monitor** — BSE XML scraping, PDF text/OCR extraction, SpaCy NLP pipeline, Isolation Forest anomaly detection (Completed).
+- [ ] **Phase 4: Advanced ML** — Tone drift detection and Neo4j Graph algorithms (Pending).
+- [ ] **Phase 5: Demo & Polish** — DHFL retroactive analysis, production deployment, dashboard hardening (Pending).
+
+---
+
 ## Features
 
 Finemonix comes equipped with powerful, production-ready features designed specifically for Indian MSMEs:
@@ -255,14 +266,14 @@ Comprehensive business health dashboard with real-time metrics:
 }
 ```
 
-### 6. **Regulatory Risk Monitoring** (Framework Ready)
+### 6. **Regulatory Risk Monitoring** (Implemented)
 
 Monitor regulatory and compliance risks:
 
-**Planned Features**:
-- BSE filing scraping for listed companies
-- Promoter pledge data extraction
-- Auditor opinion analysis via NLP
+**Features**:
+- BSE filing scraping for listed companies (XML Feed Parsing)
+- PDF Extraction (pdfplumber & Tesseract OCR)
+- Entity Recognition (NER) and Ratio Extraction via SpaCy
 - Anomaly detection using Isolation Forest
 - Neo4j graph database for entity relationship mapping
 
