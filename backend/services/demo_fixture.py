@@ -69,6 +69,7 @@ DEMO_COMPANIES: Dict[str, List[Dict]] = {
         {"quarter": "2022Q3", "revenue_growth": 0.13, "expense_ratio": 0.71, "receivables_days": 65, "payables_days": 41, "cash_to_debt": 0.83, "promoter_pledge_pct": 0.0, "interest_coverage": 23.5},
         {"quarter": "2022Q4", "revenue_growth": 0.12, "expense_ratio": 0.72, "receivables_days": 66, "payables_days": 42, "cash_to_debt": 0.80, "promoter_pledge_pct": 0.0, "interest_coverage": 22.0},
     ],
+    
 }
 
 

@@ -116,13 +116,14 @@ class QdrantFilingsClient:
 
     def collection_info(self) -> Dict[str, Any]:
         info = self._client.get_collection(COLLECTION_NAME)
+        # vectors_count renamed to points_count in newer qdrant-client versions
+        points_count = getattr(info, "points_count", None) or getattr(info, "vectors_count", 0)
         return {
             "name": COLLECTION_NAME,
-            "vectors_count": info.vectors_count,
+            "points_count": points_count,
             "dimension": VECTOR_DIM,
             "distance": str(DISTANCE),
         }
-
 
 # Singleton
 _qdrant_client: Optional[QdrantFilingsClient] = None

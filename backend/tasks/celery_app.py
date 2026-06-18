@@ -1,9 +1,10 @@
 # pyrefly: ignore [missing-import]
 import sys
-
 from celery import Celery
-
+from celery.schedules import crontab
 from backend.config import get_settings
+import backend.tasks.nlp_tasks  # noqa: F401
+import backend.tasks.extraction_tasks  # noqa: F401
 
 settings = get_settings()
 
@@ -26,8 +27,20 @@ if sys.platform.startswith("win"):
     celery_app.conf.worker_pool = "solo"
     celery_app.conf.worker_concurrency = 1
 
+# ------------------------------------------------------------------
+# Celery Beat schedule
+# ------------------------------------------------------------------
+celery_app.conf.beat_schedule = {
+    # Scrape all watched companies every 30 minutes
+    "scrape-all-watched-every-30min": {
+        "task": "tasks.scrape_all_watched",
+        "schedule": crontab(minute="*/30"),
+    },
+}
+
 # Auto-discover tasks in backend/tasks/
 celery_app.autodiscover_tasks(["backend.tasks"])
 
 # Explicitly import tasks to ensure registration
-from backend.tasks import processing_tasks
+import backend.tasks.processing_tasks  # noqa: F401
+import backend.tasks.scraper_tasks     # noqa: F401

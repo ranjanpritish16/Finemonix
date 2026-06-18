@@ -9,6 +9,7 @@ from sqlalchemy import (
     Numeric,
     String,
     Text,
+    JSON
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -164,15 +165,19 @@ class Filing(Base):
     __tablename__ = "filings"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    company_bse_code: Mapped[str] = mapped_column(String(20), nullable=False)
-    filing_type: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    company_bse_code: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    bse_news_id: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, unique=True)  # BSE's NewsID
+    filing_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    subject: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     filing_date: Mapped[date] = mapped_column(Date, nullable=False)
+    pdf_path: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # local path
     source_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     raw_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    extraction_status: Mapped[str] = mapped_column(String(20), default="pending")  # 'pending', 'processed', 'failed'
+    extraction_status: Mapped[str] = mapped_column(String(20), default="pending")
     extractor_used: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    ocr_confidence: Mapped[Optional[float]] = mapped_column(Numeric(4, 3), nullable=True)
+    dedup_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, unique=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
-
 
 class AnomalyScore(Base):
     __tablename__ = "anomaly_scores"
@@ -209,7 +214,35 @@ class EntityAlias(Base):
     alias: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 
+class FilingNlpResult(Base):
+    __tablename__ = "filing_nlp_results"
 
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    filing_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("filings.id", ondelete="CASCADE"),
+        nullable=False, index=True, unique=True  # one NLP result per filing
+    )
+    # NER entities as JSON: [{text, label, start, end, confidence}, ...]
+    entities: Mapped[Optional[dict]] = mapped_column(
+        JSON, nullable=True
+    )
+    # Extracted financial ratios as JSON: {ratio_name: value, ...}
+    extracted_ratios: Mapped[Optional[dict]] = mapped_column(
+        JSON, nullable=True
+    )
+    # Custom entity counts
+    audit_opinions: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
+    regulatory_terms: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
+    promoter_actions: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
+    # NLP processing metadata
+    nlp_status: Mapped[str] = mapped_column(String(20), default="pending")
+    spacy_model: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    processed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow
+    )
 class FilingEntity(Base):
     __tablename__ = "filing_entities"
 
