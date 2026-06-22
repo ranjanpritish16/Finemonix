@@ -142,7 +142,7 @@ export default function CompanyPage() {
                   />
                   <Tooltip
                     contentStyle={{ fontSize: "12px", border: "1px solid #e2e8f0", borderRadius: "6px" }}
-                    formatter={(val: number) => [val.toFixed(4), "Score"]}
+                    formatter={(val: any) => [Number(val).toFixed(4), "Score"]}
                   />
                   <Bar dataKey="score_financial" radius={[3, 3, 0, 0]}>
                     {scores.map((s, i) => (

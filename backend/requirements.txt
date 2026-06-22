@@ -60,3 +60,8 @@ structlog==24.1.0
 pyjwt==2.8.0
 passlib[bcrypt]==1.7.4
 
+# Uploads
+python-multipart==0.0.9
+
+# Note: Download spacy model via:
+# python -m spacy download en_core_web_sm
