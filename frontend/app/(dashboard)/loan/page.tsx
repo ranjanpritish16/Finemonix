@@ -68,19 +68,19 @@ function fmtFeature(key: string, val: number): string {
 }
 
 const LENDER_META: Record<string, { icon: string; type: string; rate: string; amount: string; color: string }> = {
-  psu:     { icon: '🏛', type: 'PSU Bank Term Loan',        rate: '8.5% – 11.5%', amount: '₹50L – ₹5Cr',  color: '#1d4ed8' },
-  private: { icon: '🏦', type: 'Private Bank Credit Line', rate: '11% – 15%',    amount: '₹25L – ₹2Cr',  color: '#7c3aed' },
-  nbfc:    { icon: '💼', type: 'NBFC Working Capital',      rate: '15% – 24%',    amount: '₹5L – ₹50L',   color: '#0891b2' },
-  mfi:     { icon: '🤝', type: 'Microfinance (MFI)',         rate: '18% – 26%',    amount: '₹50K – ₹10L',  color: '#059669' },
+  psu: { icon: '🏛', type: 'PSU Bank Term Loan', rate: '8.5% – 11.5%', amount: '₹50L – ₹5Cr', color: '#1d4ed8' },
+  private: { icon: '🏦', type: 'Private Bank Credit Line', rate: '11% – 15%', amount: '₹25L – ₹2Cr', color: '#7c3aed' },
+  nbfc: { icon: '💼', type: 'NBFC Working Capital', rate: '15% – 24%', amount: '₹5L – ₹50L', color: '#0891b2' },
+  mfi: { icon: '🤝', type: 'Microfinance (MFI)', rate: '18% – 26%', amount: '₹50K – ₹10L', color: '#059669' },
 };
 
 const FEATURE_META: Record<string, { label: string; unit: string; min: number; max: number; step: number }> = {
-  cibil_score:              { label: 'CIBIL Score',         unit: '',   min: 300, max: 900, step: 5 },
-  debt_to_income_ratio:     { label: 'Debt-to-Income',      unit: 'x',  min: 0,   max: 3,   step: 0.05 },
-  client_concentration_pct: { label: 'Client Concentration',unit: '%',  min: 0,   max: 100, step: 1 },
-  revenue_stability:        { label: 'Revenue Stability CV', unit: '',  min: 0,   max: 2,   step: 0.05 },
-  cash_flow_coverage:       { label: 'Cash Flow Coverage',  unit: 'x',  min: 0,   max: 5,   step: 0.1 },
-  gst_compliance_score:     { label: 'GST Compliance',      unit: '%',  min: 0,   max: 100, step: 1 },
+  cibil_score: { label: 'CIBIL Score', unit: '', min: 300, max: 900, step: 5 },
+  debt_to_income_ratio: { label: 'Debt-to-Income', unit: 'x', min: 0, max: 3, step: 0.05 },
+  client_concentration_pct: { label: 'Client Concentration', unit: '%', min: 0, max: 100, step: 1 },
+  revenue_stability: { label: 'Revenue Stability CV', unit: '', min: 0, max: 2, step: 0.05 },
+  cash_flow_coverage: { label: 'Cash Flow Coverage', unit: 'x', min: 0, max: 5, step: 0.1 },
+  gst_compliance_score: { label: 'GST Compliance', unit: '%', min: 0, max: 100, step: 1 },
 };
 
 // ─── Donut Chart ─────────────────────────────────────────────────────────────
@@ -143,14 +143,14 @@ function ShapBar({ attribution }: { attribution: ShapAttribution }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function LoanAnalyzerPage() {
-  const [result, setResult]           = useState<EligibilityResponse | null>(null);
-  const [prefill, setPrefill]         = useState<PrefillResponse | null>(null);
-  const [loading, setLoading]         = useState(true);
-  const [analyzing, setAnalyzing]     = useState(false);
-  const [error, setError]             = useState<string | null>(null);
+  const [result, setResult] = useState<EligibilityResponse | null>(null);
+  const [prefill, setPrefill] = useState<PrefillResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [whatifDeltas, setWhatifDeltas] = useState<Record<string, number>>({});
   const [sliderValues, setSliderValues] = useState<Record<string, number>>({});
-  const [activeTab, setActiveTab]     = useState<'overview' | 'factors' | 'actions' | 'whatif'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'factors' | 'actions' | 'whatif'>('overview');
 
   // Load prefill on mount
   useEffect(() => {
@@ -255,13 +255,13 @@ export default function LoanAnalyzerPage() {
 
   const tabs: { id: typeof activeTab; label: string }[] = [
     { id: 'overview', label: '📊 Overview' },
-    { id: 'factors',  label: '🔬 SHAP Factors' },
-    { id: 'actions',  label: '⚡ Actions' },
-    { id: 'whatif',   label: '🎛 What-If Simulator' },
+    { id: 'factors', label: '🔬 SHAP Factors' },
+    { id: 'actions', label: '⚡ Actions' },
+    { id: 'whatif', label: '🎛 What-If Simulator' },
   ];
 
   return (
-    <div style={{ padding: '20px 24px', fontFamily: 'system-ui, sans-serif', maxWidth: 1100 }}>
+    <div style={{ padding: '20px 24px', fontFamily: 'system-ui, sans-serif', maxWidth: '100%' }}>
 
       {/* ── Header ── */}
       <div style={{ marginBottom: 20 }}>
@@ -315,8 +315,8 @@ export default function LoanAnalyzerPage() {
               {result.best_probability_pct >= 75
                 ? 'Your business shows strong revenue resilience. You are currently in the Top 12% of applicants in your sector.'
                 : result.best_probability_pct >= 50
-                ? 'Your business shows moderate creditworthiness. Improve key factors to unlock better loan terms.'
-                : 'Your business needs improvement in critical credit factors before applying.'}
+                  ? 'Your business shows moderate creditworthiness. Improve key factors to unlock better loan terms.'
+                  : 'Your business needs improvement in critical credit factors before applying.'}
             </p>
             <button
               onClick={() => { setLoading(true); runAnalysis(); }}
@@ -334,7 +334,7 @@ export default function LoanAnalyzerPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
             {/* Lender Scores Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
               {Object.entries(result.lender_scores).map(([key, score]) => {
                 const meta = LENDER_META[key];
                 const approved = score.verdict === 'approved';
