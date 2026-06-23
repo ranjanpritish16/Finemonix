@@ -69,17 +69,16 @@ async def upload_data(
             detail="Upload processing is unavailable because Celery is not installed in this environment.",
         )
 
-    # Save uploaded file to temp path
-    filename = f"biz_{business_id}_{file_type_cleaned}_{file.filename}"
-    temp_file_path = os.path.join(TEMP_DIR, filename)
-
+    # ── Read file into memory instead of saving to disk ──
+    # Since FastAPI and Celery run in separate containers on Railway without shared storage,
+    # we pass the text content directly in the task payload.
     try:
-        with open(temp_file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        content_bytes = await file.read()
+        text_content = content_bytes.decode("utf-8", errors="replace")
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to save file: {e}",
+            detail=f"Failed to read file: {e}",
         )
 
     task_id = str(uuid4())
@@ -95,13 +94,14 @@ async def upload_data(
     db.add(job)
     await db.commit()
 
-    # Queue Celery task
+    # Queue Celery task with the raw string content instead of file path
     if file_type_cleaned == "tally":
-        process_tally_upload.apply_async(args=[temp_file_path, business_id], task_id=task_id)
+        process_tally_upload.apply_async(args=[text_content, business_id], task_id=task_id)
     elif file_type_cleaned == "gst":
-        process_gst_upload.apply_async(args=[temp_file_path, business_id], task_id=task_id)
+        # Pass filename to infer GSTR type inside the task
+        process_gst_upload.apply_async(args=[text_content, business_id, file.filename], task_id=task_id)
     elif file_type_cleaned == "bank":
-        process_bank_upload.apply_async(args=[temp_file_path, business_id], task_id=task_id)
+        process_bank_upload.apply_async(args=[text_content, business_id], task_id=task_id)
 
     return {
         "message": "File uploaded successfully, processing started",

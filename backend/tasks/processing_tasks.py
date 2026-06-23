@@ -97,20 +97,11 @@ async def _store_task_failure(task_id: str, error_message: str):
 
 
 @shared_task(bind=True)
-def process_tally_upload(self, file_path: str, business_id: int):
+def process_tally_upload(self, xml_content: str, business_id: int):
     """
     Background Celery task to parse Tally XML and save to Database.
     """
-    self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading file"})
-    
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(file_path)
-
-    try:
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            xml_content = f.read()
-    except Exception as e:
-        raise
+    self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading data"})
 
     self.update_state(state="PROGRESS", meta={"percent": 30, "status": "Parsing Tally XML"})
 
@@ -253,10 +244,6 @@ def process_tally_upload(self, file_path: str, business_id: int):
 
                 await session.commit()
                 
-                # Cleanup file
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-
                 return result
             
             except Exception as inner_e:
@@ -269,32 +256,20 @@ def process_tally_upload(self, file_path: str, business_id: int):
         res = asyncio.run(run())
         return res
     except Exception as e:
-        # Cleanup file on error
-        if os.path.exists(file_path):
-            os.remove(file_path)
         asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise
 
 
 @shared_task(bind=True)
-def process_gst_upload(self, file_path: str, business_id: int):
+def process_gst_upload(self, json_content: str, business_id: int, filename: str = ""):
     """
     Background Celery task to parse GST JSON (GSTR-1 or GSTR-2A) and save to Database.
     """
-    self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading file"})
-    
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(file_path)
+    self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading data"})
 
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            json_content = f.read()
-    except Exception as e:
-        raise
-
-    # Guess GSTR type from file path or content
+    # Guess GSTR type from filename or content
     file_type = "gstr1"
-    if "gstr2" in file_path.lower() or "gstr2a" in file_path.lower() or "gstr-2" in file_path.lower():
+    if "gstr2" in filename.lower() or "gstr2a" in filename.lower() or "gstr-2" in filename.lower():
         file_type = "gstr2a"
 
     self.update_state(state="PROGRESS", meta={"percent": 30, "status": "Parsing GST JSON"})
@@ -402,10 +377,6 @@ def process_gst_upload(self, file_path: str, business_id: int):
 
                 await session.commit()
                 
-                # Cleanup file
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-
                 return result
             
             except Exception as inner_e:
@@ -418,27 +389,16 @@ def process_gst_upload(self, file_path: str, business_id: int):
         res = asyncio.run(run())
         return res
     except Exception as e:
-        if os.path.exists(file_path):
-            os.remove(file_path)
         asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise
 
 
 @shared_task(bind=True)
-def process_bank_upload(self, file_path: str, business_id: int):
+def process_bank_upload(self, csv_content: str, business_id: int):
     """
     Background Celery task to parse Bank statement CSV and save to Database.
     """
-    self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading file"})
-    
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(file_path)
-
-    try:
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            csv_content = f.read()
-    except Exception as e:
-        raise
+    self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading data"})
 
     self.update_state(state="PROGRESS", meta={"percent": 30, "status": "Parsing Bank CSV"})
 
@@ -523,10 +483,6 @@ def process_bank_upload(self, file_path: str, business_id: int):
 
                 await session.commit()
                 
-                # Cleanup file
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-
                 return result
             
             except Exception as inner_e:
@@ -539,8 +495,6 @@ def process_bank_upload(self, file_path: str, business_id: int):
         res = asyncio.run(run())
         return res
     except Exception as e:
-        if os.path.exists(file_path):
-            os.remove(file_path)
         asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise
 
