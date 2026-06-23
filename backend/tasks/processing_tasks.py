@@ -502,18 +502,11 @@ def train_prophet(self, business_id: int):
 
 @shared_task(bind=True)
 def retrain_lstm(self, business_id: int):
-    """
-    Retrains the LSTM cash flow model on current data and reports
-    live progress to Redis (polled by the frontend via /status endpoint).
-    """
     logger.info(f"Retraining LSTM model for business {business_id}")
 
     progress_key = f"training_progress:{business_id}"
     redis_url = os.environ.get("REDIS_URL")
 
-    # Plain sync Redis client — used ONLY inside the sync on_epoch_end callback,
-    # since that callback is invoked from inside an already-running asyncio loop
-    # and cannot safely call asyncio.run() itself.
     sync_r = sync_redis.from_url(redis_url)
 
     def on_epoch_end(epoch, total_epochs, loss):
@@ -531,7 +524,6 @@ def retrain_lstm(self, business_id: int):
         from backend.ml.lstm_model import train_lstm_model
         import redis.asyncio as aioredis
 
-        # Fresh async client — not the global one bound to a dead loop
         r = aioredis.from_url(redis_url, decode_responses=True)
         try:
             await r.set(progress_key, json.dumps({"status": "starting", "pct": 0}), ex=300)
@@ -541,12 +533,20 @@ def retrain_lstm(self, business_id: int):
                     return build_cashflow_features(sync_s, business_id)
                 df = await session.run_sync(build)
 
+            logger.info(f"retrain_lstm: got {len(df)} rows, starting training")
+
             model, fs, ts = train_lstm_model(
                 df, FEATURE_COLS, TARGET_COL, business_id,
                 on_epoch_end=on_epoch_end,
             )
 
             await r.set(progress_key, json.dumps({"status": "done", "pct": 100}), ex=60)
+            logger.info(f"retrain_lstm: done, {len(df)} rows")
             return {"status": "Success", "model": "lstm", "rows": len(df)}
+        except Exception as e:
+            logger.exception(f"retrain_lstm FAILED: {e}")
+            raise
         finally:
             await r.aclose()
+
+    return asyncio.run(run())
