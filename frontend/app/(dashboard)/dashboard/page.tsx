@@ -49,7 +49,7 @@ type DashboardData = {
   }>;
 };
 
-const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const backendUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 const cardBase: React.CSSProperties = {
   background: "white",
