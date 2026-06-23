@@ -15,7 +15,7 @@ async def seed_data():
         # 1. Create a Test Business
         business = Business(
             name="Neev Test Business Ltd",
-            gstin="27AAAAA1111A1Z1",
+            gstin="27AAAAA1111A1Z0",
             pan="AAAAA1111A",
             business_type="Private Limited",
             onboarding_date=date.today() - timedelta(days=90),
