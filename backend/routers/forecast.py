@@ -231,7 +231,44 @@ def _run_lstm(
     return forecast_df, 85.0
 
 
-# ── Routes ────────────────────────────────────────────────────────────────────
+def _run_linear_fallback(df: pd.DataFrame, horizon_days: int) -> tuple[pd.DataFrame, float]:
+    """
+    Fast statistical fallback (< 100ms) using linear regression on running balance.
+    Used when: data < 90 days, or LSTM training fails.
+    """
+    from sklearn.linear_model import LinearRegression
+
+    df = df.copy().reset_index(drop=True)
+    X = np.arange(len(df)).reshape(-1, 1)
+    y = df["running_balance"].values
+
+    model = LinearRegression()
+    model.fit(X, y)
+
+    # Extrapolate
+    last_idx = len(df)
+    future_X = np.arange(last_idx, last_idx + horizon_days).reshape(-1, 1)
+    predicted = model.predict(future_X)
+
+    # Simple uncertainty: ±1 std of recent residuals
+    residuals = y - model.predict(X)
+    std = float(np.std(residuals)) if len(residuals) > 1 else abs(float(y[-1]) * 0.05)
+
+    base_date = pd.Timestamp.today().date()
+    dates = [base_date + pd.Timedelta(days=i) for i in range(1, horizon_days + 1)]
+
+    forecast_df = pd.DataFrame({
+        "date":              dates,
+        "predicted_balance": predicted,
+        "p10_balance":       predicted - 1.28 * std,
+        "p90_balance":       predicted + 1.28 * std,
+    })
+
+    logger.info("Linear fallback: day1=%.2f, trend_slope=%.2f/day", predicted[0], model.coef_[0])
+    return forecast_df, 60.0  # 60% baseline accuracy for linear model
+
+
+
 
 @router.get("/{business_id}")
 async def get_forecast(
@@ -272,17 +309,43 @@ async def get_forecast(
     if df.empty:
         raise HTTPException(status_code=404, detail="No transaction data found.")
 
-    # ── 4. Run model ──────────────────────────────────────────────────────────
-    try:
-        forecast_df, accuracy_pct = _run_lstm(df, horizon_days, business_id)
-        model_used = "lstm"
-        warning = (
-            None if has_sufficient_data
-            else "Due to scarcity of dataset, predictions may be imprecise."
-        )
-    except Exception as e:
-        logger.error("Model inference failed: %s", e)
-        raise HTTPException(status_code=500, detail=f"Model inference failed: {e}")
+    # ── 4. Run model (in thread pool so we don't block the event loop) ────────
+    import asyncio
+    loop = asyncio.get_event_loop()
+
+    warning = (
+        None if has_sufficient_data
+        else "Due to scarcity of dataset, predictions may be imprecise."
+    )
+
+    # Use fast linear fallback when data is insufficient for LSTM (<90 days)
+    if days_of_data < 90:
+        logger.info("Insufficient data for LSTM (%d days). Using linear fallback.", days_of_data)
+        try:
+            forecast_df, accuracy_pct = await loop.run_in_executor(
+                None, _run_linear_fallback, df, horizon_days
+            )
+            model_used = "linear"
+        except Exception as e:
+            logger.error("Linear fallback failed: %s", e)
+            raise HTTPException(status_code=500, detail=f"Fallback model failed: {e}")
+    else:
+        try:
+            forecast_df, accuracy_pct = await loop.run_in_executor(
+                None, _run_lstm, df, horizon_days, business_id
+            )
+            model_used = "lstm"
+        except Exception as e:
+            logger.warning("LSTM failed (%s). Falling back to linear model.", e)
+            try:
+                forecast_df, accuracy_pct = await loop.run_in_executor(
+                    None, _run_linear_fallback, df, horizon_days
+                )
+                model_used = "linear"
+                warning = "LSTM model failed; using statistical fallback."
+            except Exception as e2:
+                logger.error("All models failed: %s", e2)
+                raise HTTPException(status_code=500, detail=f"All forecast models failed: {e2}")
 
     # ── 5. Compute danger zones ───────────────────────────────────────────────
     try:
