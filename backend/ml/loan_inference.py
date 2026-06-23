@@ -102,8 +102,27 @@ class LoanInferenceService:
         self._load_all()
 
     def _load_all(self) -> None:
-        """Load all 4 models and recreate SHAP explainers fresh at runtime."""
+        """Load all 4 models; auto-train if any are missing."""
         import shap
+
+        # ── Auto-train if any model file is missing ───────────────────────────
+        any_missing = any(
+            not (MODEL_DIR / f"{lender}_model.pkl").exists()
+            for lender in LENDER_TYPES
+        )
+        if any_missing:
+            logger.warning(
+                "Loan model files not found. Auto-training with synthetic data (~30s)..."
+            )
+            try:
+                from backend.ml.train_loan_models_quick import train_and_save_all
+                train_and_save_all()
+                logger.info("Auto-training complete.")
+            except Exception as e:
+                logger.error("Auto-training failed: %s", e)
+                return
+
+        # ── Load models ───────────────────────────────────────────────────────
         missing = []
         for lender in LENDER_TYPES:
             model_path    = MODEL_DIR / f"{lender}_model.pkl"
@@ -117,8 +136,8 @@ class LoanInferenceService:
             with open(model_path, "rb") as f:
                 self.models[lender] = pickle.load(f)
 
-            # Recreate SHAP explainer from the loaded model instead of
-            # loading from pkl — avoids TreeEnsemble version mismatch.
+            # Recreate SHAP explainer from the loaded model to avoid
+            # TreeEnsemble version mismatch when loading from pkl.
             try:
                 base_model = self.models[lender].estimator
                 self.explainers[lender] = shap.TreeExplainer(base_model)
