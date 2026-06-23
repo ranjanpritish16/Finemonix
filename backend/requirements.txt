@@ -59,6 +59,7 @@ structlog==24.1.0
 # Auth
 pyjwt==2.8.0
 passlib[bcrypt]==1.7.4
+bcrypt==3.2.2
 
 # Uploads
 python-multipart==0.0.9
