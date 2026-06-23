@@ -112,18 +112,25 @@ def train_lstm_model(
           f"max={df[target_col].max():,.2f}")
 
     # ── Adapt window/horizon for small datasets ───────────────────────────────
-    min_required = window_size + horizon + 10
-    if len(df) < min_required:
-        ratio = len(df) / (min_required + 10)
-        window_size = max(10, int(window_size * ratio))
-        horizon = max(7, int(horizon * ratio))
-        print(f"DEBUG adapted window={window_size}, horizon={horizon} for small dataset")
-        if len(df) < window_size + horizon + 1:
-            raise ValueError(
-                f"Dataset has only {len(df)} rows — too short to train even "
-                f"with reduced window={window_size}, horizon={horizon}. "
-                "Use the Prophet cold-start model."
-            )
+    # We must ensure: window_size + horizon <= 0.8 * len(df) - 1
+    # (because the training set is only 80% of the data)
+    train_n = int(len(df) * 0.8)
+    max_wh  = train_n - 1   # need at least 1 training sample
+
+    if window_size + horizon > max_wh:
+        # Scale down proportionally keeping the ratio
+        total = window_size + horizon
+        window_size = max(5, int(max_wh * window_size / total))
+        horizon     = max(7, max_wh - window_size)
+        print(f"DEBUG adapted window={window_size}, horizon={horizon} for small dataset (train_n={train_n})")
+
+    if train_n < window_size + horizon + 1:
+        raise ValueError(
+            f"Dataset has only {len(df)} rows — too short to train even "
+            f"with reduced window={window_size}, horizon={horizon}. "
+            "Use the Prophet cold-start model."
+        )
+
 
     # ── Normalise on FULL dataset before splitting ────────────────────────────
     # net_cash_flow values are small (±₹25k range), so StandardScaler
