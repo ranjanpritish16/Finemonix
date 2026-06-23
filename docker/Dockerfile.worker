@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ ./backend/
 
-CMD ["celery", "-A", "backend.tasks.celery_app", "worker", "--loglevel=info"]
+CMD ["celery", "-A", "backend.tasks.celery_app", "worker", "--loglevel=info", "--concurrency=1"]
