@@ -1,9 +1,11 @@
 import asyncio
 import os
+import json
 import logging
 from datetime import datetime
 from celery import shared_task
 from sqlalchemy.future import select
+import redis as sync_redis
 
 from backend.database import async_session_maker
 from backend.models import Business, Client, DataImportJob, Transaction, Invoice
@@ -12,6 +14,7 @@ from backend.services.gst_parser import GSTParser
 from backend.services.bank_parser import BankParser
 from backend.services.deduplication import deduplicate_transactions
 from backend.services.entity_resolution import EntityResolutionPipeline
+from backend.redis_client import redis_client
 
 logger = logging.getLogger(__name__)
 
@@ -96,13 +99,20 @@ async def _store_task_failure(task_id: str, error_message: str):
             logger.exception("Failed to persist import job failure")
 
 
+async def _invalidate_and_retrain(business_id: int):
+    # Wipe stale cached forecast
+    for horizon in (30, 90, 180):
+        await redis_client.delete(f"forecast:{business_id}:{horizon}")
+    # Kick off retrain (non-blocking, runs in Celery worker)
+    retrain_lstm.delay(business_id)
+
+
 @shared_task(bind=True)
 def process_tally_upload(self, xml_content: str, business_id: int):
     """
     Background Celery task to parse Tally XML and save to Database.
     """
     self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading data"})
-
     self.update_state(state="PROGRESS", meta={"percent": 30, "status": "Parsing Tally XML"})
 
     async def run():
@@ -117,31 +127,28 @@ def process_tally_upload(self, xml_content: str, business_id: int):
                     "Reading file",
                 )
 
-                # Parse
                 parser = TallyParser(xml_content)
                 parsed_txs, parsed_invoices, parsed_clients = parser.parse()
 
                 self.update_state(state="PROGRESS", meta={"percent": 50, "status": "Resolving entities"})
-                
+
                 pipeline = EntityResolutionPipeline(session)
-                
-                # Fetch or create clients
-                client_map = {}  # maps canonical_name to Client ORM model
+
+                client_map = {}
                 for pc in parsed_clients:
                     entity = await pipeline.resolve_client(
                         client_name=pc["canonical_name"],
                         gstin=pc["gstin"],
                         entity_type="company"
                     )
-                    
-                    # Check if client already exists for this business
+
                     stmt = select(Client).where(
                         Client.business_id == business_id,
                         Client.canonical_name == pc["canonical_name"]
                     )
                     res = await session.execute(stmt)
                     client = res.scalars().first()
-                    
+
                     if not client:
                         client = Client(
                             business_id=business_id,
@@ -152,15 +159,13 @@ def process_tally_upload(self, xml_content: str, business_id: int):
                         )
                         session.add(client)
                         await session.flush()
-                    
+
                     client_map[pc["canonical_name"]] = client
 
                 self.update_state(state="PROGRESS", meta={"percent": 70, "status": "Deduplicating transactions"})
 
-                # Load existing transactions for deduplication
                 existing_txs = await _get_existing_transactions(session, business_id)
-                
-                # Format parsed transactions for deduplication comparison
+
                 txs_to_compare = []
                 for ptx in parsed_txs:
                     txs_to_compare.append({
@@ -170,19 +175,16 @@ def process_tally_upload(self, xml_content: str, business_id: int):
                         "counterparty_name": ptx["counterparty_name"],
                     })
 
-                # Deduplicate
                 txs_deduped = deduplicate_transactions(txs_to_compare, [
                     {
                         "date": et.date,
                         "amount": et.amount,
                         "direction": et.direction,
-                        "counterparty_name": et.raw_description, # simple fallback
+                        "counterparty_name": et.raw_description,
                     } for et in existing_txs
                 ])
 
-                # Insert deduplicated transactions
                 for tx_data in txs_deduped:
-                    # Find counterparty ID
                     cp_id = None
                     cp_name = tx_data.get("counterparty_name")
                     if cp_name and cp_name in client_map:
@@ -202,7 +204,6 @@ def process_tally_upload(self, xml_content: str, business_id: int):
                     )
                     session.add(new_tx)
 
-                # Insert invoices
                 for pinv in parsed_invoices:
                     cp_id = None
                     cp_name = pinv.get("counterparty_name")
@@ -243,9 +244,10 @@ def process_tally_upload(self, xml_content: str, business_id: int):
                 )
 
                 await session.commit()
-                
+                await _invalidate_and_retrain(business_id)
+
                 return result
-            
+
             except Exception as inner_e:
                 await session.rollback()
                 logger.error(f"Error in process_tally_upload run: {inner_e}")
@@ -267,7 +269,6 @@ def process_gst_upload(self, json_content: str, business_id: int, filename: str 
     """
     self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading data"})
 
-    # Guess GSTR type from filename or content
     file_type = "gstr1"
     if "gstr2" in filename.lower() or "gstr2a" in filename.lower() or "gstr-2" in filename.lower():
         file_type = "gstr2a"
@@ -300,7 +301,6 @@ def process_gst_upload(self, json_content: str, business_id: int, filename: str 
                         entity_type="company"
                     )
 
-                    # Check if client already exists
                     stmt = select(Client).where(
                         Client.business_id == business_id,
                         Client.canonical_name == pc["canonical_name"]
@@ -318,12 +318,11 @@ def process_gst_upload(self, json_content: str, business_id: int, filename: str 
                         )
                         session.add(client)
                         await session.flush()
-                    
+
                     client_map[pc["canonical_name"]] = client
 
                 self.update_state(state="PROGRESS", meta={"percent": 75, "status": "Saving invoices"})
 
-                # Insert invoices
                 added_invoices = 0
                 for pinv in parsed_invoices:
                     cp_id = None
@@ -331,7 +330,6 @@ def process_gst_upload(self, json_content: str, business_id: int, filename: str 
                     if cp_name and cp_name in client_map:
                         cp_id = client_map[cp_name].id
 
-                    # Check for duplicate invoice
                     stmt = select(Invoice).where(
                         Invoice.business_id == business_id,
                         Invoice.amount == pinv["amount"],
@@ -376,9 +374,10 @@ def process_gst_upload(self, json_content: str, business_id: int, filename: str 
                 )
 
                 await session.commit()
-                
+                await _invalidate_and_retrain(business_id)
+
                 return result
-            
+
             except Exception as inner_e:
                 await session.rollback()
                 logger.error(f"Error in process_gst_upload run: {inner_e}")
@@ -399,7 +398,6 @@ def process_bank_upload(self, csv_content: str, business_id: int):
     Background Celery task to parse Bank statement CSV and save to Database.
     """
     self.update_state(state="PROGRESS", meta={"percent": 10, "status": "Reading data"})
-
     self.update_state(state="PROGRESS", meta={"percent": 30, "status": "Parsing Bank CSV"})
 
     async def run():
@@ -419,7 +417,6 @@ def process_bank_upload(self, csv_content: str, business_id: int):
 
                 self.update_state(state="PROGRESS", meta={"percent": 60, "status": "Deduplicating bank transactions"})
 
-                # Load existing transactions
                 existing_txs = await _get_existing_transactions(session, business_id)
 
                 txs_to_compare = []
@@ -440,13 +437,9 @@ def process_bank_upload(self, csv_content: str, business_id: int):
                     } for et in existing_txs
                 ])
 
-                # Insert deduplicated transactions
                 for tx_data in txs_deduped:
-                    # Parse the description to see if we can resolve counterparty
-                    # Since it's a bank narration, we don't have direct clients, but we can do a best-effort lookup in clients
-                    # For simplicity, we keep counterparty_id as None or resolve it via simple query if exact match
                     cp_id = None
-                    
+
                     new_tx = Transaction(
                         business_id=business_id,
                         date=tx_data["date"],
@@ -482,9 +475,10 @@ def process_bank_upload(self, csv_content: str, business_id: int):
                 )
 
                 await session.commit()
-                
+                await _invalidate_and_retrain(business_id)
+
                 return result
-            
+
             except Exception as inner_e:
                 await session.rollback()
                 logger.error(f"Error in process_bank_upload run: {inner_e}")
@@ -498,15 +492,57 @@ def process_bank_upload(self, csv_content: str, business_id: int):
         asyncio.run(_store_task_failure(self.request.id, str(e)))
         raise
 
+
 @shared_task(bind=True)
 def train_prophet(self, business_id: int):
     """Async task to train prophet model"""
     logger.info(f"Training Prophet model for business {business_id}")
     return {"status": "Success", "model": "prophet"}
 
+
 @shared_task(bind=True)
 def retrain_lstm(self, business_id: int):
-    """Async task to retrain LSTM model"""
+    """
+    Retrains the LSTM cash flow model on current data and reports
+    live progress to Redis (polled by the frontend via /status endpoint).
+    """
     logger.info(f"Retraining LSTM model for business {business_id}")
-    return {"status": "Success", "model": "lstm"}
 
+    progress_key = f"training_progress:{business_id}"
+    redis_url = os.environ.get("REDIS_URL")
+
+    # Plain sync Redis client — used ONLY inside the sync on_epoch_end callback,
+    # since that callback is invoked from inside an already-running asyncio loop
+    # and cannot safely call asyncio.run() itself.
+    sync_r = sync_redis.from_url(redis_url)
+
+    def on_epoch_end(epoch, total_epochs, loss):
+        payload = json.dumps({
+            "status": "training",
+            "epoch": epoch,
+            "total_epochs": total_epochs,
+            "loss": round(float(loss), 4),
+            "pct": round((epoch / total_epochs) * 100, 1),
+        })
+        sync_r.set(progress_key, payload, ex=300)
+
+    async def run():
+        from backend.ml.features import build_cashflow_features, FEATURE_COLS, TARGET_COL
+        from backend.ml.lstm_model import train_lstm_model
+
+        await redis_client.set(progress_key, json.dumps({"status": "starting", "pct": 0}), ex=300)
+
+        async with async_session_maker() as session:
+            def build(sync_s):
+                return build_cashflow_features(sync_s, business_id)
+            df = await session.run_sync(build)
+
+        model, fs, ts = train_lstm_model(
+            df, FEATURE_COLS, TARGET_COL, business_id,
+            on_epoch_end=on_epoch_end,
+        )
+
+        await redis_client.set(progress_key, json.dumps({"status": "done", "pct": 100}), ex=60)
+        return {"status": "Success", "model": "lstm", "rows": len(df)}
+
+    return asyncio.run(run())

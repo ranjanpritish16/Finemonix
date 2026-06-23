@@ -85,6 +85,7 @@ def train_lstm_model(
     business_id: int,
     window_size: int = 60,
     horizon: int = 90,
+    on_epoch_end: Optional[callable] = None, 
 ) -> Tuple["CashFlowLSTM", StandardScaler, StandardScaler]:
     """
     Train a 2-layer LSTM to predict net_cash_flow (daily delta).
@@ -208,6 +209,8 @@ def train_lstm_model(
             val_loss = train_loss
 
         scheduler.step(val_loss)
+        if on_epoch_end is not None:
+            on_epoch_end(epoch + 1, epochs, val_loss)
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss

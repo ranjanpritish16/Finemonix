@@ -487,3 +487,14 @@ async def run_scenario(
             "recommended_action": action,
         },
     }
+
+@router.get("/{business_id}/status")
+async def get_training_status(business_id: int):
+    r = aioredis.from_url(settings.REDIS_URL, decode_responses=True)
+    try:
+        progress = await r.get(f"training_progress:{business_id}")
+        if progress:
+            return json.loads(progress)
+        return {"status": "idle"}
+    finally:
+        await r.aclose()
