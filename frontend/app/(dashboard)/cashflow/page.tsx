@@ -49,6 +49,14 @@ interface DashboardData {
   recent_transactions: Transaction[];
 }
 
+interface TrainingStatus {
+  status: 'idle' | 'starting' | 'training' | 'done';
+  pct?: number;
+  epoch?: number;
+  total_epochs?: number;
+  loss?: number;
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -58,8 +66,8 @@ const BUSINESS_ID = 1;
 
 function fmt(n: number) {
   if (n >= 1_00_00_000) return `₹${(n / 1_00_00_000).toFixed(1)}Cr`;
-  if (n >= 1_00_000)    return `₹${(n / 1_00_000).toFixed(1)}L`;
-  if (n >= 1_000)       return `₹${(n / 1_000).toFixed(1)}K`;
+  if (n >= 1_00_000) return `₹${(n / 1_00_000).toFixed(1)}L`;
+  if (n >= 1_000) return `₹${(n / 1_000).toFixed(1)}K`;
   return `₹${Math.round(n).toLocaleString('en-IN')}`;
 }
 
@@ -72,24 +80,25 @@ function daysUntil(dateStr: string) {
   const diff = Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86400000);
   if (diff === 0) return 'Today';
   if (diff === 1) return 'Tomorrow';
-  if (diff < 0)  return `${Math.abs(diff)}d ago`;
+  if (diff < 0) return `${Math.abs(diff)}d ago`;
   return `Due in ${diff}d`;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function CashFlowPage() {
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const chartRef   = useRef<unknown>(null);
-  const [horizon, setHorizon]           = useState<30 | 90 | 180>(90);
-  const [activeTab, setActiveTab]       = useState<'Daily' | 'Weekly'>('Daily');
-  const [forecast, setForecast]         = useState<ForecastResponse | null>(null);
-  const [dashboard, setDashboard]       = useState<DashboardData | null>(null);
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState<string | null>(null);
-  const [chartReady, setChartReady]     = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartRef = useRef<unknown>(null);
+  const [horizon, setHorizon] = useState<30 | 90 | 180>(90);
+  const [activeTab, setActiveTab] = useState<'Daily' | 'Weekly'>('Daily');
+  const [forecast, setForecast] = useState<ForecastResponse | null>(null);
+  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [chartReady, setChartReady] = useState(false);
   const [scenarioResult, setScenarioResult] = useState<string | null>(null);
   const [runningScenario, setRunningScenario] = useState(false);
+  const [trainingStatus, setTrainingStatus] = useState<TrainingStatus | null>(null);
 
   // ── 1. Load Chart.js once ────────────────────────────────────────────────
   useEffect(() => {
@@ -125,14 +134,43 @@ export default function CashFlowPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  // ── 2b. Poll training status (so we can show live retrain progress) ─────
+  useEffect(() => {
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`${API}/api/forecast/${BUSINESS_ID}/status`, { cache: 'no-store' });
+        if (!res.ok || cancelled) return;
+        const data: TrainingStatus = await res.json();
+        setTrainingStatus(prev => {
+          // When a retrain finishes, refresh the forecast/dashboard automatically
+          if (data.status === 'done' && prev?.status === 'training') {
+            fetchData();
+          }
+          return data;
+        });
+      } catch {
+        /* ignore — don't disrupt the page over a polling hiccup */
+      }
+    };
+
+    poll();
+    const interval = setInterval(poll, 1500);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [fetchData]);
+
   // ── 3. Build / update chart ──────────────────────────────────────────────
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Chart = (window as any).Chart;
     if (!chartReady || !Chart || !canvasRef.current || !forecast) return;
 
-    const step   = activeTab === 'Weekly' ? 7 : 1;
-    const data   = forecast.forecast.filter((_, i) => i % step === 0);
+    const step = activeTab === 'Weekly' ? 7 : 1;
+    const data = forecast.forecast.filter((_, i) => i % step === 0);
     const labels = data.map(p => fmtDate(p.date));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -248,25 +286,62 @@ export default function CashFlowPage() {
   const monthlyExpenses = dashboard?.cash_summary.monthly_expenses_inr ?? 0;
   const forecastPts = forecast?.forecast ?? [];
   const firstBalance = forecastPts[0]?.predicted_balance ?? 0;
-  const lastBalance  = forecastPts[forecastPts.length - 1]?.predicted_balance ?? 0;
-  const netChange    = lastBalance - firstBalance;
-  const runway       = monthlyExpenses > 0 ? Math.round((currentBalance / monthlyExpenses) * 10) / 10 : 0;
-  const burnRate     = monthlyExpenses;
-  const accuracyPct  = forecast?.accuracy_pct ?? 0;
-  const firstDanger  = forecast?.danger_zones?.[0];
+  const lastBalance = forecastPts[forecastPts.length - 1]?.predicted_balance ?? 0;
+  const netChange = lastBalance - firstBalance;
+  const runway = monthlyExpenses > 0 ? Math.round((currentBalance / monthlyExpenses) * 10) / 10 : 0;
+  const burnRate = monthlyExpenses;
+  const accuracyPct = forecast?.accuracy_pct ?? 0;
+  const firstDanger = forecast?.danger_zones?.[0];
 
   // ── Inflows/Outflows from recent transactions ────────────────────────────
-  const recentTx     = dashboard?.recent_transactions ?? [];
-  const inflows      = recentTx.filter(t => t.direction === 'in').slice(0, 4);
-  const outflows     = recentTx.filter(t => t.direction === 'out').slice(0, 4);
+  const recentTx = dashboard?.recent_transactions ?? [];
+  const inflows = recentTx.filter(t => t.direction === 'in').slice(0, 4);
+  const outflows = recentTx.filter(t => t.direction === 'out').slice(0, 4);
+
+  // ── Is a retrain actively in flight? ─────────────────────────────────────
+  const isRetraining =
+    trainingStatus?.status === 'starting' || trainingStatus?.status === 'training';
 
   // ─────────────────────────────────────────────────────────────────────────
-  if (loading) {
+  if (loading || isRetraining) {
+    const pct = trainingStatus?.pct ?? 0;
+    const showEpochs = trainingStatus?.status === 'training';
+
     return (
       <div className="cf-root" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
         <div style={{ textAlign: 'center' }}>
-          <div className="cf-spinner" />
-          <p style={{ color: '#94a3b8', marginTop: 16, fontSize: 14 }}>Loading AI forecast...</p>
+          {isRetraining ? (
+            <div style={{ width: 180, height: 180, margin: '0 auto', position: 'relative' }}>
+              <svg width="180" height="180" viewBox="0 0 180 180">
+                <circle cx="90" cy="90" r="78" fill="none" stroke="#e2e8f0" strokeWidth="10" />
+                <circle
+                  cx="90" cy="90" r="78" fill="none" stroke="#2563eb" strokeWidth="10"
+                  strokeLinecap="round"
+                  strokeDasharray={`${2 * Math.PI * 78 * (pct / 100)} ${2 * Math.PI * 78}`}
+                  transform="rotate(-90 90 90)"
+                  style={{ transition: 'stroke-dasharray 0.4s ease' }}
+                />
+              </svg>
+              <div style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <span style={{ fontSize: 30, fontWeight: 800, color: '#0f172a' }}>{Math.round(pct)}%</span>
+                {showEpochs && (
+                  <span style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>
+                    Epoch {trainingStatus?.epoch}/{trainingStatus?.total_epochs}
+                  </span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="cf-spinner" />
+          )}
+          <p style={{ color: '#64748b', marginTop: 16, fontSize: 14, fontWeight: isRetraining ? 600 : 400 }}>
+            {isRetraining
+              ? 'Retraining LSTM on your latest data...'
+              : 'Loading AI forecast...'}
+          </p>
         </div>
       </div>
     );
@@ -564,10 +639,10 @@ export default function CashFlowPage() {
           <div className="cf-card" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p className="cf-card-title">🔗 Quick Actions</p>
             {[
-              { label: '📊 Main Dashboard',     href: '/dashboard'    },
-              { label: '🔌 Upload Data',        href: '/integrations' },
-              { label: '💰 Loan Analyzer',      href: '/loan'         },
-              { label: '👁 Risk Monitor',       href: '/watchlist'    },
+              { label: '📊 Main Dashboard', href: '/dashboard' },
+              { label: '🔌 Upload Data', href: '/integrations' },
+              { label: '💰 Loan Analyzer', href: '/loan' },
+              { label: '👁 Risk Monitor', href: '/watchlist' },
             ].map(({ label, href }) => (
               <button
                 key={href}
