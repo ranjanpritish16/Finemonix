@@ -92,7 +92,14 @@ class BankParser:
 
                 elif mapping.get("amount") is not None:
                     amount_str = row[mapping["amount"]].strip() if mapping["amount"] < len(row) else ""
-                    is_negative = "-" in amount_str or "dr" in amount_str.lower()
+                    
+                    # Case 2a: Explicit DrCr column exists
+                    if mapping.get("drcr") is not None:
+                        drcr_str = row[mapping["drcr"]].strip().lower() if mapping["drcr"] < len(row) else ""
+                        is_negative = "dr" in drcr_str or "db" in drcr_str or "debit" in drcr_str
+                    # Case 2b: Sign is within amount column
+                    else:
+                        is_negative = "-" in amount_str or "dr" in amount_str.lower()
                     
                     val = self._clean_amount(amount_str)
                     if val == 0.0:
@@ -220,7 +227,7 @@ class BankParser:
 
     def _detect_columns(self, headers: List[str]) -> Dict[str, int]:
         """
-        Detects indices for date, desc, debit, credit, amount, and balance.
+        Detects indices for date, desc, debit, credit, amount, balance, and drcr columns.
         """
         mapping = {}
         headers_lower = [h.lower() for h in headers]
@@ -234,6 +241,10 @@ class BankParser:
             elif any(dh == h or dh in h for dh in self.DESC_HEADERS):
                 if "desc" not in mapping:
                     mapping["desc"] = i
+            # Check DrCr (must do before Debit/Credit to avoid catching "dr" in "drcr")
+            elif h in ["drcr", "type", "txn type", "sign"]:
+                if "drcr" not in mapping:
+                    mapping["drcr"] = i
             # Check Debit
             elif any(dh == h or dh in h for dh in self.DEBIT_HEADERS):
                 if "debit" not in mapping:
