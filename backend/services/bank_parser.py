@@ -12,7 +12,7 @@ class BankParser:
     """
 
     DATE_HEADERS = ["date", "txn date", "transaction date", "value date", "post date", "time"]
-    DESC_HEADERS = ["description", "narration", "remarks", "particulars", "transaction remarks", "details", "chq/ref no.", "ref no", "reference", "name", "mode", "counterparty", "payee", "party"]
+    DESC_HEADERS = ["description", "narration", "remarks", "particulars", "transaction remarks", "details", "chq/ref no.", "ref no", "reference", "name", "counterparty", "payee", "party"]
     DEBIT_HEADERS = ["debit", "withdrawal", "dr", "debit amount", "withdrawals"]
     CREDIT_HEADERS = ["credit", "deposit", "cr", "credit amount", "deposits"]
     AMOUNT_HEADERS = ["amount", "txn amount", "transaction amount", "amount (inr)"]
