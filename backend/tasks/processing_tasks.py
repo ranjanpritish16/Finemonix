@@ -529,20 +529,24 @@ def retrain_lstm(self, business_id: int):
     async def run():
         from backend.ml.features import build_cashflow_features, FEATURE_COLS, TARGET_COL
         from backend.ml.lstm_model import train_lstm_model
+        import redis.asyncio as aioredis
 
-        await redis_client.set(progress_key, json.dumps({"status": "starting", "pct": 0}), ex=300)
+        # Fresh async client — not the global one bound to a dead loop
+        r = aioredis.from_url(redis_url, decode_responses=True)
+        try:
+            await r.set(progress_key, json.dumps({"status": "starting", "pct": 0}), ex=300)
 
-        async with async_session_maker() as session:
-            def build(sync_s):
-                return build_cashflow_features(sync_s, business_id)
-            df = await session.run_sync(build)
+            async with async_session_maker() as session:
+                def build(sync_s):
+                    return build_cashflow_features(sync_s, business_id)
+                df = await session.run_sync(build)
 
-        model, fs, ts = train_lstm_model(
-            df, FEATURE_COLS, TARGET_COL, business_id,
-            on_epoch_end=on_epoch_end,
-        )
+            model, fs, ts = train_lstm_model(
+                df, FEATURE_COLS, TARGET_COL, business_id,
+                on_epoch_end=on_epoch_end,
+            )
 
-        await redis_client.set(progress_key, json.dumps({"status": "done", "pct": 100}), ex=60)
-        return {"status": "Success", "model": "lstm", "rows": len(df)}
-
-    return asyncio.run(run())
+            await r.set(progress_key, json.dumps({"status": "done", "pct": 100}), ex=60)
+            return {"status": "Success", "model": "lstm", "rows": len(df)}
+        finally:
+            await r.aclose()
