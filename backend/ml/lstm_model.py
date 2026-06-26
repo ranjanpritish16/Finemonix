@@ -276,7 +276,9 @@ def predict_lstm_mc_dropout(
     mean_pred = np.mean(preds_arr, axis=0)
     p10_pred  = np.percentile(preds_arr, 10, axis=0)
     p90_pred  = np.percentile(preds_arr, 90, axis=0)
-
+    cum_preds_arr = np.cumsum(preds_arr, axis=1)                    # (passes, horizon)
+    cum_p10_pred  = np.percentile(cum_preds_arr, 10, axis=0)
+    cum_p90_pred  = np.percentile(cum_preds_arr, 90, axis=0)
     print(f"DEBUG MC dropout: mean_net day1={mean_pred[0]:,.2f}, "
           f"p10={p10_pred[0]:,.2f}, p90={p90_pred[0]:,.2f}")
 
@@ -290,6 +292,8 @@ def predict_lstm_mc_dropout(
             "predicted_net": mean_pred,   # daily net cash flow delta
             "p10_net": p10_pred,
             "p90_net": p90_pred,
+            "cum_p10_net": cum_p10_pred,
+            "cum_p90_net": cum_p90_pred,
         }
     )
 
