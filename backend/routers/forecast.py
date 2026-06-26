@@ -209,8 +209,8 @@ def _run_lstm(
     last_known_balance = float(df["running_balance"].iloc[-1])
 
     predicted_balance = last_known_balance + net_forecast_df["predicted_net"].cumsum().values
-    p10_balance       = last_known_balance + net_forecast_df["cum_p10_net"].cumsum().values
-    p90_balance       = last_known_balance + net_forecast_df["cum_p90_net"].cumsum().values
+    p10_balance       = last_known_balance + net_forecast_df["cum_p10_net"].values
+    p90_balance       = last_known_balance + net_forecast_df["cum_p90_net"].values
 
     logger.info(
         "Forecast anchored: last_known=%.2f, day1_predicted=%.2f, day1_p10=%.2f, day1_p90=%.2f",
