@@ -17,8 +17,8 @@ class CashFlowLSTM(nn.Module):
     def __init__(
         self,
         input_size: int,
-        hidden_size: int = 128,
-        num_layers: int = 2,
+        hidden_size: int = 64,
+        num_layers: int = 1,
         output_horizon: int = 90,
         dropout: float = 0.3,
     ):
@@ -250,7 +250,7 @@ def predict_lstm_mc_dropout(
     last_window_features: np.ndarray,   # shape (window_size, num_features) — RAW unscaled
     feature_scaler: StandardScaler,
     target_scaler: StandardScaler,
-    num_passes: int = 30,
+    num_passes: int = 15,
 ) -> pd.DataFrame:
     """
     MC Dropout inference. Returns predicted NET CASH FLOW per day

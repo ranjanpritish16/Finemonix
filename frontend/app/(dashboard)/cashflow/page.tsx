@@ -99,6 +99,7 @@ export default function CashFlowPage() {
   const [scenarioResult, setScenarioResult] = useState<string | null>(null);
   const [runningScenario, setRunningScenario] = useState(false);
   const [trainingStatus, setTrainingStatus] = useState<TrainingStatus | null>(null);
+  const [displayPct, setDisplayPct] = useState(0);
 
   // ── 1. Load Chart.js once ────────────────────────────────────────────────
   useEffect(() => {
@@ -156,12 +157,45 @@ export default function CashFlowPage() {
     };
 
     poll();
-    const interval = setInterval(poll, 1500);
+    // Faster polling so we have a better chance of catching real intermediate progress
+    const interval = setInterval(poll, 350);
     return () => {
       cancelled = true;
       clearInterval(interval);
     };
   }, [fetchData]);
+
+  // ── 2c. Creep the displayed percentage so the ring never looks frozen ───
+  const isRetraining =
+    trainingStatus?.status === 'starting' || trainingStatus?.status === 'training';
+
+  useEffect(() => {
+    if (!isRetraining) {
+      if (trainingStatus?.status === 'done') {
+        setDisplayPct(100);
+        // Reset shortly after so the next retrain starts from 0
+        const t = setTimeout(() => setDisplayPct(0), 800);
+        return () => clearTimeout(t);
+      }
+      setDisplayPct(0);
+      return;
+    }
+
+    const realPct = trainingStatus?.pct ?? 0;
+
+    // If the real value jumped ahead, snap forward immediately
+    setDisplayPct(prev => (realPct > prev ? realPct : prev));
+
+    // Creep forward slowly between real updates so it never looks stuck at 0
+    const creep = setInterval(() => {
+      setDisplayPct(prev => {
+        const ceiling = Math.max(realPct + 15, 8); // always allow some movement even at pct=0
+        return Math.min(prev + 1, ceiling, 95);
+      });
+    }, 150);
+
+    return () => clearInterval(creep);
+  }, [trainingStatus, isRetraining]);
 
   // ── 3. Build / update chart ──────────────────────────────────────────────
   useEffect(() => {
@@ -298,13 +332,8 @@ export default function CashFlowPage() {
   const inflows = recentTx.filter(t => t.direction === 'in').slice(0, 4);
   const outflows = recentTx.filter(t => t.direction === 'out').slice(0, 4);
 
-  // ── Is a retrain actively in flight? ─────────────────────────────────────
-  const isRetraining =
-    trainingStatus?.status === 'starting' || trainingStatus?.status === 'training';
-
   // ─────────────────────────────────────────────────────────────────────────
   if (loading || isRetraining) {
-    const pct = trainingStatus?.pct ?? 0;
     const showEpochs = trainingStatus?.status === 'training';
 
     return (
@@ -317,17 +346,17 @@ export default function CashFlowPage() {
                 <circle
                   cx="90" cy="90" r="78" fill="none" stroke="#2563eb" strokeWidth="10"
                   strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 78 * (pct / 100)} ${2 * Math.PI * 78}`}
+                  strokeDasharray={`${2 * Math.PI * 78 * (displayPct / 100)} ${2 * Math.PI * 78}`}
                   transform="rotate(-90 90 90)"
-                  style={{ transition: 'stroke-dasharray 0.4s ease' }}
+                  style={{ transition: 'stroke-dasharray 0.25s linear' }}
                 />
               </svg>
               <div style={{
                 position: 'absolute', inset: 0,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               }}>
-                <span style={{ fontSize: 30, fontWeight: 800, color: '#0f172a' }}>{Math.round(pct)}%</span>
-                {showEpochs && (
+                <span style={{ fontSize: 30, fontWeight: 800, color: '#0f172a' }}>{Math.round(displayPct)}%</span>
+                {showEpochs && trainingStatus?.epoch != null && (
                   <span style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>
                     Epoch {trainingStatus?.epoch}/{trainingStatus?.total_epochs}
                   </span>
