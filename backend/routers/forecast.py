@@ -177,10 +177,23 @@ def _run_lstm(
                 should_retrain = True
 
     if should_retrain:
-        logger.info("Training new LSTM model for business %s", business_id)
-        model, feat_scaler, tgt_scaler = train_lstm_model(
-            df, FEATURE_COLS, TARGET_COL, business_id
-        )
+        if model is not None:
+            # Stale/old model exists — serve it now, retrain in background.
+            logger.info(
+                "Model for business %s is stale; serving existing model "
+                "while queuing background retrain.", business_id
+            )
+            from backend.tasks.processing_tasks import retrain_lstm
+            retrain_lstm.delay(business_id)
+        else:
+            # No model at all — this case must raise so the caller falls
+            # back to the linear model instead of blocking on a cold train.
+            from backend.tasks.processing_tasks import retrain_lstm
+            retrain_lstm.delay(business_id)
+            raise RuntimeError(
+                "No saved LSTM model found; triggering background training."
+            )
+            
 
     # ── Inference ─────────────────────────────────────────────────────────────
     # Use last 60 rows as input window (unscaled — predict_lstm_mc_dropout

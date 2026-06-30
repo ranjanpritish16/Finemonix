@@ -58,11 +58,13 @@ class CashFlowDataset(Dataset):
         y: np.ndarray,
         window_size: int = 60,
         horizon: int = 90,
+        weights: Optional[np.ndarray] = None,
     ):
         self.X = X
         self.y = y
         self.window_size = window_size
         self.horizon = horizon
+        self.weights = weights  # one weight per row in X/y, recency-based
         self._len = max(0, len(X) - window_size - horizon + 1)
 
     def __len__(self) -> int:
@@ -72,9 +74,18 @@ class CashFlowDataset(Dataset):
         x_window = self.X[idx : idx + self.window_size]
         # Target: the horizon net_cash_flow values immediately after the window
         y_horizon = self.y[idx + self.window_size : idx + self.window_size + self.horizon]
+
+        if self.weights is not None:
+            # Weight this sample by the recency of the LAST predicted day
+            w_idx = idx + self.window_size + self.horizon - 1
+            sample_weight = self.weights[w_idx]
+        else:
+            sample_weight = 1.0
+
         return (
             torch.tensor(x_window, dtype=torch.float32),
             torch.tensor(y_horizon, dtype=torch.float32),
+            torch.tensor(sample_weight, dtype=torch.float32),
         )
 
 
@@ -147,13 +158,18 @@ def train_lstm_model(
     print(f"DEBUG target_scaler: mean={target_scaler.mean_[0]:,.2f}, "
           f"scale={target_scaler.scale_[0]:,.2f}")
 
+    # ── Recency weights: oldest rows count less, newest rows count most ──────
+    n = len(X_scaled)
+    recency_weights = np.exp(np.linspace(np.log(0.1), np.log(1.0), n)).astype(np.float32)
+
     # ── Train / val split (80 / 20) ───────────────────────────────────────────
     split = int(len(X_scaled) * 0.8)
     X_train, y_train = X_scaled[:split], y_scaled[:split]
     X_val, y_val = X_scaled[split:], y_scaled[split:]
+    w_train, w_val = recency_weights[:split], recency_weights[split:]
 
-    train_ds = CashFlowDataset(X_train, y_train, window_size, horizon)
-    val_ds = CashFlowDataset(X_val, y_val, window_size, horizon)
+    train_ds = CashFlowDataset(X_train, y_train, window_size, horizon, weights=w_train)
+    val_ds = CashFlowDataset(X_val, y_val, window_size, horizon, weights=w_val)
     has_val = len(val_ds) > 0
 
     if len(train_ds) == 0:
@@ -172,7 +188,7 @@ def train_lstm_model(
 
     # ── Model ─────────────────────────────────────────────────────────────────
     model = CashFlowLSTM(input_size=len(feature_cols), output_horizon=horizon)
-    criterion = nn.HuberLoss()
+    criterion = nn.HuberLoss(reduction="none")
     optimizer = optim.Adam(model.parameters(), lr=1e-3)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode="min", patience=5, factor=0.5
@@ -186,10 +202,11 @@ def train_lstm_model(
         # Training pass
         model.train()
         train_loss = 0.0
-        for X_b, y_b in train_loader:
+        for X_b, y_b, w_b in train_loader:
             optimizer.zero_grad()
             pred = model(X_b)
-            loss = criterion(pred, y_b)
+            per_sample_loss = criterion(pred, y_b).mean(dim=1)   # (batch,)
+            loss = (per_sample_loss * w_b).mean()
             loss.backward()
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
@@ -201,9 +218,11 @@ def train_lstm_model(
             model.eval()
             val_loss = 0.0
             with torch.no_grad():
-                for X_b, y_b in val_loader:
+                for X_b, y_b, w_b in val_loader:
                     pred = model(X_b)
-                    val_loss += criterion(pred, y_b).item() * X_b.size(0)
+                    per_sample_loss = criterion(pred, y_b).mean(dim=1)
+                    weighted = (per_sample_loss * w_b).mean()
+                    val_loss += weighted.item() * X_b.size(0)
             val_loss /= len(val_loader.dataset)
         else:
             val_loss = train_loss

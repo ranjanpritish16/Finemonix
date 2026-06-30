@@ -29,18 +29,18 @@ SYNTHETIC_START = REAL_DATA_START - timedelta(days=SYNTHETIC_MONTHS * 30)
 SYNTHETIC_END   = REAL_DATA_START - timedelta(days=1)
 
 # Calibration from real data
-BASE_DAILY_INFLOW_MEAN  = 14_000   # tune so cash_in - cash_out ≈ +21,223 avg
+BASE_DAILY_INFLOW_MEAN  = 26_000   # tune so cash_in - cash_out ≈ +21,223 avg
 BASE_DAILY_INFLOW_STD   = 5_000
 BASE_DAILY_OUTFLOW_MEAN = 6_500    # smaller baseline outflow most days
 BASE_DAILY_OUTFLOW_STD  = 2_500
 
-GST_FILING_OUTFLOW_MEAN = 45_000   # large spike near the 18th-22nd
+GST_FILING_OUTFLOW_MEAN = 28_000   # large spike near the 18th-22nd
 GST_FILING_OUTFLOW_STD  = 8_000
 
-SALARY_WEEK_OUTFLOW_MEAN = 60_000  # large spike days 25-31
+SALARY_WEEK_OUTFLOW_MEAN = 32_000  # large spike days 25-31
 SALARY_WEEK_OUTFLOW_STD  = 10_000
 
-MONTH_END_EXTRA_OUTFLOW_MEAN = 15_000  # vendor settlements, last 2-3 days
+MONTH_END_EXTRA_OUTFLOW_MEAN = 10_000  # vendor settlements, last 2-3 days
 
 
 def is_gst_day(d: date) -> bool:
