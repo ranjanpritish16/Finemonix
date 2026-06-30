@@ -50,11 +50,12 @@ interface DashboardData {
 }
 
 interface TrainingStatus {
-  status: 'idle' | 'starting' | 'training' | 'done';
+  status: 'idle' | 'starting' | 'training' | 'done' | 'failed';
   pct?: number;
   epoch?: number;
   total_epochs?: number;
   loss?: number;
+  error?: string;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -168,7 +169,7 @@ export default function CashFlowPage() {
   // ── 2c. Creep the displayed percentage so the ring never looks frozen ───
   const isRetraining =
     trainingStatus?.status === 'starting' || trainingStatus?.status === 'training';
-
+  const trainingFailed = trainingStatus?.status === 'failed';
   useEffect(() => {
     if (!isRetraining) {
       if (trainingStatus?.status === 'done') {
@@ -176,6 +177,10 @@ export default function CashFlowPage() {
         // Reset shortly after so the next retrain starts from 0
         const t = setTimeout(() => setDisplayPct(0), 800);
         return () => clearTimeout(t);
+      }
+      if (trainingStatus?.status === 'failed') {
+        setDisplayPct(0);
+        return;
       }
       setDisplayPct(0);
       return;
@@ -401,6 +406,13 @@ export default function CashFlowPage() {
         <div className="cf-warning-banner">
           <span>⚠</span>
           <span>{forecast.warning}</span>
+        </div>
+      )}
+      {/* ── Retrain Failure Notice ── */}
+      {trainingFailed && (
+        <div className="cf-warning-banner" style={{ background: '#fef2f2', borderColor: '#fecaca', color: '#dc2626' }}>
+          <span>⚠</span>
+          <span>Model retraining failed{trainingStatus?.error ? `: ${trainingStatus.error}` : '.'} Showing last available forecast.</span>
         </div>
       )}
 
